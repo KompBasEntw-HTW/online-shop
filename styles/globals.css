@@ -1,3 +1,43 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  h1 {
+    @apply font-lora text-4xl font-bold;
+  }
+
+  h2 {
+    @apply font-lora text-3xl font-bold;
+  }
+
+  h3 {
+    @apply font-lora text-2xl font-bold;
+  }
+
+  h4 {
+    @apply font-lora text-xl font-bold;
+  }
+
+  p {
+    @apply text-base text-gray-500;
+  }
+}
+
+@layer components {
+  .link {
+    @apply font-semibold text-amber-700 underline decoration-amber-200 hover:decoration-amber-300;
+  }
+
+  .large-text {
+    @apply text-lg;
+  }
+
+  .small-text {
+    @apply text-sm;
+  }
+
+  .really-small-text {
+    @apply text-xs;
+  }
+}

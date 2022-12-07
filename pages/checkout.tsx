@@ -50,7 +50,7 @@ const Checkout = () => {
                     id='email-address'
                     name='email-address'
                     autoComplete='email'
-                    className='block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                    className='block w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm'
                   />
                 </div>
               </div>
@@ -70,7 +70,7 @@ const Checkout = () => {
                       id='first-name'
                       name='first-name'
                       autoComplete='given-name'
-                      className='block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                      className='block w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm'
                     />
                   </div>
                 </div>
@@ -85,7 +85,7 @@ const Checkout = () => {
                       id='last-name'
                       name='last-name'
                       autoComplete='family-name'
-                      className='block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                      className='block w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm'
                     />
                   </div>
                 </div>
@@ -99,7 +99,7 @@ const Checkout = () => {
                       type='text'
                       name='company'
                       id='company'
-                      className='block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                      className='block w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm'
                     />
                   </div>
                 </div>
@@ -114,7 +114,7 @@ const Checkout = () => {
                       name='address'
                       id='address'
                       autoComplete='street-address'
-                      className='block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                      className='block w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm'
                     />
                   </div>
                 </div>
@@ -128,7 +128,7 @@ const Checkout = () => {
                       type='text'
                       name='apartment'
                       id='apartment'
-                      className='block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                      className='block w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm'
                     />
                   </div>
                 </div>
@@ -143,7 +143,7 @@ const Checkout = () => {
                       name='city'
                       id='city'
                       autoComplete='address-level2'
-                      className='block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                      className='block w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm'
                     />
                   </div>
                 </div>
@@ -157,7 +157,7 @@ const Checkout = () => {
                       id='country'
                       name='country'
                       autoComplete='country-name'
-                      className='block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'>
+                      className='block w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm'>
                       <option>United States</option>
                       <option>Canada</option>
                       <option>Mexico</option>
@@ -175,7 +175,7 @@ const Checkout = () => {
                       name='region'
                       id='region'
                       autoComplete='address-level1'
-                      className='block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                      className='block w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm'
                     />
                   </div>
                 </div>
@@ -190,7 +190,7 @@ const Checkout = () => {
                       name='postal-code'
                       id='postal-code'
                       autoComplete='postal-code'
-                      className='block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                      className='block w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm'
                     />
                   </div>
                 </div>
@@ -205,7 +205,7 @@ const Checkout = () => {
                       name='phone'
                       id='phone'
                       autoComplete='tel'
-                      className='block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                      className='block w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm'
                     />
                   </div>
                 </div>
@@ -226,7 +226,7 @@ const Checkout = () => {
                       className={({ checked, active }) =>
                         clsx(
                           checked ? 'border-transparent' : 'border-gray-300',
-                          active ? 'ring-2 ring-indigo-500' : '',
+                          active ? 'ring-2 ring-amber-500' : '',
                           'relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm focus:outline-none'
                         )
                       }>
@@ -253,14 +253,14 @@ const Checkout = () => {
                           </span>
                           {checked ? (
                             <CheckCircleIcon
-                              className='h-5 w-5 text-indigo-600'
+                              className='h-5 w-5 text-amber-600'
                               aria-hidden='true'
                             />
                           ) : null}
                           <span
                             className={clsx(
                               active ? 'border' : 'border-2',
-                              checked ? 'border-indigo-500' : 'border-transparent',
+                              checked ? 'border-amber-500' : 'border-transparent',
                               'pointer-events-none absolute -inset-px rounded-lg'
                             )}
                             aria-hidden='true'
@@ -288,14 +288,14 @@ const Checkout = () => {
                           name='payment-type'
                           type='radio'
                           defaultChecked
-                          className='h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-500'
+                          className='h-4 w-4 border-gray-300 text-amber-600 focus:ring-amber-500'
                         />
                       ) : (
                         <input
                           id={paymentMethod.id}
                           name='payment-type'
                           type='radio'
-                          className='h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-500'
+                          className='h-4 w-4 border-gray-300 text-amber-600 focus:ring-amber-500'
                         />
                       )}
 
@@ -320,7 +320,7 @@ const Checkout = () => {
                       id='card-number'
                       name='card-number'
                       autoComplete='cc-number'
-                      className='block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                      className='block w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm'
                     />
                   </div>
                 </div>
@@ -335,7 +335,7 @@ const Checkout = () => {
                       id='name-on-card'
                       name='name-on-card'
                       autoComplete='cc-name'
-                      className='block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                      className='block w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm'
                     />
                   </div>
                 </div>
@@ -352,7 +352,7 @@ const Checkout = () => {
                       name='expiration-date'
                       id='expiration-date'
                       autoComplete='cc-exp'
-                      className='block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                      className='block w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm'
                     />
                   </div>
                 </div>
@@ -367,7 +367,7 @@ const Checkout = () => {
                       name='cvc'
                       id='cvc'
                       autoComplete='csc'
-                      className='block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                      className='block w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm'
                     />
                   </div>
                 </div>
@@ -428,7 +428,7 @@ const Checkout = () => {
                           <select
                             id='quantity'
                             name='quantity'
-                            className='rounded-md border border-gray-300 text-left text-base font-medium text-gray-700 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm'>
+                            className='rounded-md border border-gray-300 text-left text-base font-medium text-gray-700 shadow-sm focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 sm:text-sm'>
                             <option value={1}>1</option>
                             <option value={2}>2</option>
                             <option value={3}>3</option>
@@ -466,7 +466,7 @@ const Checkout = () => {
               <div className='border-t border-gray-200 py-6 px-4 sm:px-6'>
                 <button
                   type='submit'
-                  className='w-full rounded-md border border-transparent bg-indigo-600 py-3 px-4 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50'>
+                  className='w-full rounded-md border border-transparent bg-amber-600 py-3 px-4 text-base font-medium text-white shadow-sm hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 focus:ring-offset-gray-50'>
                   Confirm order
                 </button>
               </div>

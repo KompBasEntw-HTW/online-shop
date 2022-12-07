@@ -1,15 +1,6 @@
-import { Fragment, useState } from 'react'
-import { Dialog, Transition } from '@headlessui/react'
-import {
-  Bars3Icon,
-  MagnifyingGlassIcon,
-  ShoppingCartIcon,
-  UserIcon
-} from '@heroicons/react/24/outline'
+import { MagnifyingGlassIcon, ShoppingCartIcon, UserIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
 import Link from 'next/link'
-
-const pages = [{ name: 'Store', href: '/products' }]
 
 const Header = () => {
   return (
@@ -26,7 +17,7 @@ const Header = () => {
                     <span className='sr-only'>Your Company</span>
                     <Image
                       className='h-8 w-auto'
-                      src='https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600'
+                      src='https://tailwindui.com/img/logos/mark.svg?color=amber&shade=600'
                       alt=''
                       width={64}
                       height={64}
@@ -34,22 +25,13 @@ const Header = () => {
                   </Link>
                 </div>
 
-                <div className='ml-8 hidden h-full gap-x-2 lg:flex '>
-                  {pages.map(page => (
-                    <Link
-                      key={page.name}
-                      href={page.href}
-                      className='flex items-center text-sm font-medium text-gray-700 hover:text-gray-800'>
-                      {page.name}
-                    </Link>
-                  ))}
-                </div>
+                <div className='ml-8 hidden h-full gap-x-2 lg:flex '></div>
 
                 {/* Logo (lg-) */}
                 <Link href='/' className='lg:hidden'>
                   <span className='sr-only'>Your Company</span>
                   <Image
-                    src='https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600'
+                    src='https://tailwindui.com/img/logos/mark.svg?color=amber&shade=600'
                     alt=''
                     className='h-8 w-auto'
                     width={32}

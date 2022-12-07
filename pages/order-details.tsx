@@ -80,7 +80,7 @@ const OrderDetails = () => {
               </h1>
               <a
                 href='#'
-                className='hidden text-sm font-medium text-indigo-600 hover:text-indigo-500 sm:block'>
+                className='hidden text-sm font-medium text-amber-600 hover:text-amber-500 sm:block'>
                 View invoice
                 <span aria-hidden='true'> &rarr;</span>
               </a>
@@ -93,7 +93,7 @@ const OrderDetails = () => {
             </p>
             <a
               href='#'
-              className='text-sm font-medium text-indigo-600 hover:text-indigo-500 sm:hidden'>
+              className='text-sm font-medium text-amber-600 hover:text-amber-500 sm:hidden'>
               View invoice
               <span aria-hidden='true'> &rarr;</span>
             </a>
@@ -112,7 +112,7 @@ const OrderDetails = () => {
                   className='border-t border-b border-gray-200 bg-white shadow-sm sm:rounded-lg sm:border'>
                   <div className='py-6 px-4 sm:px-6 lg:grid lg:grid-cols-12 lg:gap-x-8 lg:p-8'>
                     <div className='sm:flex lg:col-span-7'>
-                      <div className='aspect-w-1 aspect-h-1 sm:aspect-none w-full flex-shrink-0 overflow-hidden rounded-lg sm:h-40 sm:w-40'>
+                      <div className='aspect-w-1 aspect-h-1 w-full flex-shrink-0 overflow-hidden rounded-lg sm:aspect-none sm:h-40 sm:w-40'>
                         <Image
                           src={product.imageSrc}
                           alt={product.imageAlt}
@@ -148,7 +148,7 @@ const OrderDetails = () => {
                             <p>{product.phone}</p>
                             <button
                               type='button'
-                              className='font-medium text-indigo-600 hover:text-indigo-500'>
+                              className='font-medium text-amber-600 hover:text-amber-500'>
                               Edit
                             </button>
                           </dd>
@@ -165,28 +165,22 @@ const OrderDetails = () => {
                     <div className='mt-6' aria-hidden='true'>
                       <div className='overflow-hidden rounded-full bg-gray-200'>
                         <div
-                          className='h-2 rounded-full bg-indigo-600'
+                          className='h-2 rounded-full bg-amber-600'
                           style={{ width: `calc((${product.step} * 2 + 1) / 8 * 100%)` }}
                         />
                       </div>
                       <div className='mt-6 hidden grid-cols-4 text-sm font-medium text-gray-600 sm:grid'>
-                        <div className='text-indigo-600'>Order placed</div>
+                        <div className='text-amber-600'>Order placed</div>
                         <div
-                          className={clsx(
-                            product.step > 0 ? 'text-indigo-600' : '',
-                            'text-center'
-                          )}>
+                          className={clsx(product.step > 0 ? 'text-amber-600' : '', 'text-center')}>
                           Processing
                         </div>
                         <div
-                          className={clsx(
-                            product.step > 1 ? 'text-indigo-600' : '',
-                            'text-center'
-                          )}>
+                          className={clsx(product.step > 1 ? 'text-amber-600' : '', 'text-center')}>
                           Shipped
                         </div>
                         <div
-                          className={clsx(product.step > 2 ? 'text-indigo-600' : '', 'text-right')}>
+                          className={clsx(product.step > 2 ? 'text-amber-600' : '', 'text-right')}>
                           Delivered
                         </div>
                       </div>
@@ -255,7 +249,7 @@ const OrderDetails = () => {
                 </div>
                 <div className='flex items-center justify-between pt-4'>
                   <dt className='font-medium text-gray-900'>Order total</dt>
-                  <dd className='font-medium text-indigo-600'>$83.16</dd>
+                  <dd className='font-medium text-amber-600'>$83.16</dd>
                 </div>
               </dl>
             </div>
