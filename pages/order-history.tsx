@@ -131,13 +131,13 @@ const OrderHistory = () => {
                     <div className='hidden lg:col-span-2 lg:flex lg:items-center lg:justify-end lg:space-x-4'>
                       <a
                         href={order.href}
-                        className='flex items-center justify-center rounded-md border border-gray-300 bg-white py-2 px-2.5 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'>
+                        className='flex items-center justify-center rounded-md border border-gray-300 bg-white py-2 px-2.5 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2'>
                         <span>View Order</span>
                         <span className='sr-only'>{order.number}</span>
                       </a>
                       <a
                         href={order.invoiceHref}
-                        className='flex items-center justify-center rounded-md border border-gray-300 bg-white py-2 px-2.5 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'>
+                        className='flex items-center justify-center rounded-md border border-gray-300 bg-white py-2 px-2.5 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2'>
                         <span>View Invoice</span>
                         <span className='sr-only'>for order {order.number}</span>
                       </a>
@@ -186,14 +186,14 @@ const OrderHistory = () => {
                             <div className='flex flex-1 justify-center'>
                               <a
                                 href={product.href}
-                                className='whitespace-nowrap text-indigo-600 hover:text-indigo-500'>
+                                className='whitespace-nowrap text-amber-600 hover:text-amber-500'>
                                 View product
                               </a>
                             </div>
                             <div className='flex flex-1 justify-center pl-4'>
                               <a
                                 href='#'
-                                className='whitespace-nowrap text-indigo-600 hover:text-indigo-500'>
+                                className='whitespace-nowrap text-amber-600 hover:text-amber-500'>
                                 Buy again
                               </a>
                             </div>
