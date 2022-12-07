@@ -28,4 +28,16 @@
   .link {
     @apply font-semibold text-amber-700 underline decoration-amber-200 hover:decoration-amber-300;
   }
+
+  .large-text {
+    @apply text-lg;
+  }
+
+  .small-text {
+    @apply text-sm;
+  }
+
+  .really-small-text {
+    @apply text-xs;
+  }
 }

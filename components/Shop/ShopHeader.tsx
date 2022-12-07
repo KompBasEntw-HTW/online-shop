@@ -1,6 +1,6 @@
 const ShopHeader = () => {
   return (
-    <div className='border-b border-gray-200 pt-24 pb-10'>
+    <div className='border-b border-gray-200 pt-20 pb-10'>
       <h1 className='font-lora text-4xl font-bold text-gray-900'>
         Specialty coffee - 100% fairtrade!
       </h1>

@@ -1,16 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { ReactNode } from 'react'
 import { CoffeeProductData } from '../../types'
-
-const Tag = ({ content, icon }: { content: string; icon?: ReactNode }) => {
-  return (
-    <span className='inline-flex items-center rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-medium text-amber-900 shadow-sm shadow-amber-100'>
-      {icon}
-      {content}
-    </span>
-  )
-}
+import Tag from '../General/Tag'
 
 const SingleProduct = ({ product }: { product: CoffeeProductData }) => {
   const formattedPrice = product.price.toLocaleString(undefined, {
@@ -22,7 +13,7 @@ const SingleProduct = ({ product }: { product: CoffeeProductData }) => {
     <div
       key={product.id}
       className='group relative flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white'>
-      <div className='bg-gray-200 group-hover:opacity-90'>
+      <div className='bg-amber-50 group-hover:opacity-90'>
         <Image
           src={product.imageUrl}
           alt={`${product.name} image`}
