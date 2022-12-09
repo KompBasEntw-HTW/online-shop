@@ -5,7 +5,6 @@ import { CoffeeProductData, FilterOption, ProductFilter } from '../types'
 import MobileFilterMenu from '../components/Shop/MoibleFilterMenu'
 import FilterMenu from '../components/Shop/FilterMenu'
 import ShopHeader from '../components/Shop/ShopHeader'
-
 const filters: ProductFilter[] = [
   {
     id: 'roastLevel',
@@ -33,7 +32,7 @@ const ShopHome = () => {
 
   useEffect(() => {
     const fetchProducts = async () => {
-      fetch(`http://${process.env.NEXT_PUBLIC_HOSTNAME}/api/product-service/coffee`)
+      fetch(`/api/product-service/coffee`)
         .then(res => res.json())
         .then(data => setProducts(data))
         .catch(err => console.log(err))
@@ -99,7 +98,7 @@ const ShopHome = () => {
       <div className='pt-12 pb-24 lg:grid lg:grid-cols-3 lg:gap-x-8 xl:grid-cols-4'>
         <FilterMenu
           filters={filters}
-          onFilterChange={() => {}}
+          onFilterChange={() => ({})}
           setMobileFiltersOpen={setMobileFiltersOpen}
         />
         <section
