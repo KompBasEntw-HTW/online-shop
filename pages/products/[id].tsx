@@ -14,13 +14,13 @@ const ProductPage = () => {
   const { id } = router.query
 
   const productQueryFunction = async (id: string) => {
-    return fetch(`http://localhost/api/products/${id}`)
+    return fetch(`http://${process.env.NEXT_PUBLIC_HOSTNAME}/api/product-service/coffee/${id}`)
       .then(res => res.json())
       .catch(err => Promise.reject(err))
   }
 
   const relatedProductsQueryFunction = async () => {
-    return fetch('http://localhost/api/products')
+    return fetch(`http://${process.env.NEXT_PUBLIC_HOSTNAME}/api/product-service/coffee`)
       .then(res => res.json())
       .catch(err => Promise.reject(err))
   }
