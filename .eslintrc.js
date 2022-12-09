@@ -1,21 +1,20 @@
 module.exports = {
-  extends: ['eslint:recommended', 'next'],
-  plugins: [
-    'prettier',
-    '@typescript-eslint/parser',
-    'eslint-plugin-jsx-a11y',
-    'eslint-plugin-react',
-    'eslint-plugin-react-hooks'
+  parser: '@typescript-eslint/parser',
+  plugins: ['@typescript-eslint'],
+  extends: [
+    'next/core-web-vitals',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:prettier/recommended'
   ],
   env: {
     browser: true,
     node: true,
     es6: true
   },
-  parser: '@typescript-eslint/parser',
   parserOptions: {
-    ecmaVersion: 2020,
+    ecmaVersion: 'latest',
     sourceType: 'module',
+    project: './tsconfig.json',
     ecmaFeatures: {
       impliedStrict: true,
       jsx: true
