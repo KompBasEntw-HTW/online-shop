@@ -33,7 +33,7 @@ const ShopHome = () => {
 
   useEffect(() => {
     const fetchProducts = async () => {
-      fetch('http://localhost/api/products')
+      fetch(`http://${process.env.NEXT_PUBLIC_HOSTNAME}/api/product-service/coffee`)
         .then(res => res.json())
         .then(data => setProducts(data))
         .catch(err => console.log(err))
