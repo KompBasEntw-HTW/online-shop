@@ -5,7 +5,6 @@ WORKDIR /app
 COPY package.json package-lock.json* ./
 RUN npm ci
 
-RUN echo ${HOSTNAME}
 # Rebuild the source code only when needed
 FROM node:18 AS runner
 
