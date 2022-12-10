@@ -1,18 +1,42 @@
 import { TileLayer, MapContainer, Marker } from 'react-leaflet'
+import { Icon } from 'leaflet'
+import PageLoader from '../General/PageLoader'
+import clsx from 'clsx'
 
-const MapComponent = () => {
+const CustomMarker = ({ position, icon }: { position: [number, number]; icon: Icon }) => {
+  return <Marker position={position} icon={icon}></Marker>
+}
+
+const MapComponent = ({
+  centerPosition,
+  className
+}: {
+  centerPosition: [number, number]
+  className: string
+}) => {
+  const CustomIcon = new Icon({
+    iconUrl: '/coffee-roastery-location-icon.svg',
+    iconSize: [40, 40]
+  })
+
+  const mapStyle = clsx('border h-[400px] overflow-hidden rounded-md border-gray-300', className)
+
   return (
     <MapContainer
       id='map'
-      className='relative z-0 h-[93vh] overflow-hidden'
-      center={[52.520008, 13.404954]}
-      zoom={14}
-      scrollWheelZoom>
+      className={mapStyle}
+      center={centerPosition}
+      zoom={10}
+      scrollWheelZoom={false}
+      placeholder={<PageLoader spinnerSize='h-24 w-24' />}
+      doubleClickZoom={false}
+      boxZoom={false}
+      dragging={false}>
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
       />
-      <Marker position={[52.520008, 13.404954]} />
+      <CustomMarker position={centerPosition} icon={CustomIcon} />
     </MapContainer>
   )
 }
