@@ -4,7 +4,7 @@ import { CoffeeProductData } from '../../types'
 import Tag from '../General/Tag'
 
 const SingleProduct = ({ product }: { product: CoffeeProductData }) => {
-  const formattedPrice = product.price.toLocaleString(undefined, {
+  const formattedPrice = product.pricePerKilo.toLocaleString(undefined, {
     maximumFractionDigits: 2,
     minimumFractionDigits: 2
   })
@@ -29,7 +29,7 @@ const SingleProduct = ({ product }: { product: CoffeeProductData }) => {
             {product.name}
           </Link>
         </h3>
-        <p className='text-xs font-semibold text-gray-600 line-clamp-1'>{product.flavorNotes}</p>
+        {/* <p className='text-xs font-semibold text-gray-600 line-clamp-1'>{product.flavorNotes}</p> */}
         <p className='text-sm text-gray-500 line-clamp-3'>{product.description}</p>
         <div className='flex gap-x-1'>
           <Tag content={`Roast level: ${product.roastLevel.toString()}`} />
