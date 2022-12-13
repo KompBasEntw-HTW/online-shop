@@ -3,9 +3,18 @@ export type CoffeeProductData = {
   name: string
   description: string
   flavor: string
-  flavorNotes: string
   imageUrl: string
   price: number
+  availableBagSizes: {
+    id: number
+    name: string
+    priceModifier: number
+    weightInGrams: number
+  }[]
+  flavorNotes: {
+    id: number
+    flavorNote: string
+  }[]
   roastLevel: number
   roaster: string
   roasterNotes: string

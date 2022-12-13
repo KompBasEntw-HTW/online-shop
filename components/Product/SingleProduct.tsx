@@ -29,7 +29,13 @@ const SingleProduct = ({ product }: { product: CoffeeProductData }) => {
             {product.name}
           </Link>
         </h3>
-        <p className='text-xs font-semibold text-gray-600 line-clamp-1'>{product.flavorNotes}</p>
+        <div className='flex flex-wrap divide-x divide-dotted'>
+          {product.flavorNotes.map((flavorNote, index) => (
+            <span className='px-1 text-xs font-semibold text-gray-600'>
+              {flavorNote.flavorNote}
+            </span>
+          ))}
+        </div>
         <p className='text-sm text-gray-500 line-clamp-3'>{product.description}</p>
         <div className='flex gap-x-1'>
           <Tag content={`Roast level: ${product.roastLevel.toString()}`} />
