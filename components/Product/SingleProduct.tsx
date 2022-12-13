@@ -1,10 +1,12 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { CoffeeProductData } from '../../types'
+
 import Tag from '../General/Tag'
 
-const SingleProduct = ({ product }: { product: CoffeeProductData }) => {
-  const formattedPrice = product.price.toLocaleString(undefined, {
+import { Coffee } from '../../types'
+
+const SingleProduct = ({ product }: { product: Coffee }) => {
+  const formattedPrice = product.pricePerKilo.toLocaleString(undefined, {
     maximumFractionDigits: 2,
     minimumFractionDigits: 2
   })
@@ -31,7 +33,7 @@ const SingleProduct = ({ product }: { product: CoffeeProductData }) => {
         </h3>
         <div className='flex flex-wrap divide-x divide-dotted'>
           {product.flavorNotes.map((flavorNote, index) => (
-            <span className='px-1 text-xs font-semibold text-gray-600'>
+            <span className='px-1 text-xs font-semibold text-gray-600' key={index}>
               {flavorNote.flavorNote}
             </span>
           ))}
