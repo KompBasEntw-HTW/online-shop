@@ -5,6 +5,11 @@ export type CoffeeSize = {
   weightInGrams: number
 }
 
+export type CoffeeBagSize = {
+  bagSize: CoffeeSize
+  quantity: number
+}
+
 export type Coffee = {
   id: number
   name: string
@@ -12,7 +17,7 @@ export type Coffee = {
   flavor: string
   imageUrl: string
   pricePerKilo: number
-  availableBagSizes: CoffeeSize[]
+  coffeeBagSizes: CoffeBagSize[]
   flavorNotes: {
     id: number
     flavorNote: string
@@ -99,3 +104,10 @@ export type ShopPageAction =
   | {
       type: 'RESET_FILTERS'
     }
+
+export type CartItem = {
+  id: number
+  quantity: number
+  size: CoffeeBagSize
+  totalPrice: number
+}
