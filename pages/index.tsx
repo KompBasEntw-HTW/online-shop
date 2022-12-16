@@ -16,7 +16,7 @@ import {
   getMinFilterValue,
   filterProducts,
   searchProducts
-} from '../helpers/shopHelpers'
+} from '../helpers/shop-helpers'
 
 import { Coffee, SortingsOptionsType, ShopPageState, ShopPageAction } from '../types'
 import Searchbar from '../components/Shop/Searchbar'
@@ -243,8 +243,6 @@ const ShopHome = () => {
     })
   }, [shopPageState.queryState])
 
-  console.log(shopPageState.queryState)
-
   const hasFiltersApplied =
     shopPageState.queryState.filters.length > 0 ||
     shopPageState.queryState.searchQuery !== '' ||
@@ -269,7 +267,7 @@ const ShopHome = () => {
         }
       />
       <ShopHeader />
-      <div className='flex justify-between gap-x-2 pt-8'>
+      <div className='flex flex-col justify-between gap-2 pt-8 sm:flex-row'>
         <Searchbar
           onChange={e => dispatch({ type: 'UPDATE_SEARCH_QUERY', payload: e.target.value })}
           value={shopPageState.queryState.searchQuery}

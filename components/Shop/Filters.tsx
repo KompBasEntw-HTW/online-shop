@@ -1,6 +1,7 @@
 import { ChangeEvent, useState } from 'react'
 import { CheckboxFilterType, RangeFilterType } from '../../types'
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/solid'
+import ReactSlider from 'react-slider'
 
 export const CheckboxFilter = ({
   filter,
@@ -72,6 +73,13 @@ export const RangeFilter = ({
 }) => {
   return (
     <div className='pt-6'>
+      <ReactSlider />
+    </div>
+  )
+}
+
+{
+  /* <div className='pt-6'>
       <fieldset>
         <legend className='block font-lora text-lg font-bold text-gray-900'>{filter.name}</legend>
         <div className='pt-3'>
@@ -100,6 +108,5 @@ export const RangeFilter = ({
           </div>
         </div>
       </fieldset>
-    </div>
-  )
+    </div> */
 }
