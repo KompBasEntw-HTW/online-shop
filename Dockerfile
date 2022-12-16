@@ -1,6 +1,6 @@
-ARG HOSTNAME
-FROM node:18 AS builder
-ARG HOSTNAME
+ARG POSITIONSTACK_API_KEY
+FROM node:16 AS builder
+ARG POSITIONSTACK_API_KEY
 
 WORKDIR /app
 
@@ -12,12 +12,12 @@ COPY . .
 # Uncomment the following line in case you want to disable telemetry during the build.
 ENV NEXT_TELEMETRY_DISABLED 1
 
-ENV NEXT_PUBLIC_HOSTNAME ${HOSTNAME}
+ENV POSITIONSTACK_API_KEY ${POSITIONSTACK_API_KEY}
 
 RUN npm run build
 
 # Production image, copy all the files and run next
-FROM node:18 AS runner
+FROM node:16 AS runner
 WORKDIR /app
 ENV NODE_ENV production
 # Uncomment the following line in case you want to disable telemetry during runtime.
