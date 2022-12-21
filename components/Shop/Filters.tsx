@@ -66,47 +66,35 @@ export const CheckboxFilter = ({
 
 export const RangeFilter = ({
   filter,
-  onFilterChange
+  onFilterChange,
+  currentValues
 }: {
   filter: RangeFilterType
-  onFilterChange: (e: ChangeEvent<HTMLInputElement>, filterId: string) => void
+  onFilterChange: (min: number, max: number, filterId: string) => void
+  currentValues: {
+    min: number
+    max: number
+  }
 }) => {
+  console.log(currentValues)
   return (
     <div className='pt-6'>
-      <ReactSlider />
-    </div>
-  )
-}
-
-{
-  /* <div className='pt-6'>
       <fieldset>
         <legend className='block font-lora text-lg font-bold text-gray-900'>{filter.name}</legend>
-        <div className='pt-3'>
-          <input
-            type='range'
-            id={filter.id}
-            name={filter.id}
-            min={filter.min}
-            max={filter.max}
-            step={2}
-            defaultValue={filter.min}
-            className='w-full decoration-amber-500'
-            onChange={e => onFilterChange(e, filter.id)}
-          />
-          <div className='grid grid-cols-2 gap-x-2'>
-            <input
-              value={filter.min}
-              type='number'
-              className='rounded-md border border-zinc-200 bg-zinc-50 text-sm text-gray-600 focus:border-amber-500 focus:ring-1 focus:ring-amber-500'
-            />
-            <input
-              value={filter.max}
-              type='number'
-              className='rounded-md border border-zinc-200 bg-zinc-50 text-sm text-gray-600 focus:border-amber-500 focus:ring-1 focus:ring-amber-500'
-            />
-          </div>
-        </div>
+        <ReactSlider
+          className='react-slider-two-thumb'
+          thumbClassName='react-slider-thumb'
+          trackClassName='react-slider-track'
+          defaultValue={[filter.min, filter.max]}
+          min={filter.min}
+          max={filter.max}
+          minDistance={1}
+          ariaLabel={['Lower thumb', 'Upper thumb']}
+          ariaValuetext={state => `Thumb value ${state.valueNow}`}
+          renderThumb={(props, state) => <div {...props}>${state.valueNow}</div>}
+          onChange={e => onFilterChange(e[0], e[1], filter.id)}
+        />
       </fieldset>
-    </div> */
+    </div>
+  )
 }

@@ -20,7 +20,7 @@ type PositionStackAPIResponse = {
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const { id } = params as { id: string }
 
-  const productRes = await fetch(`http://product-service/coffee/${id}`)
+  const productRes = await fetch(`http://product-service:8080/coffee/${id}`)
   const productData: Coffee = await productRes.json()
 
   const locationRes = await fetch(
@@ -32,7 +32,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 
   return {
     props: {
-      // latLng: [locationData.data[0].latitude, locationData.data[0].longitude],
+      latLng: [locationData.data[0].latitude, locationData.data[0].longitude],
       product: productData
     }
   }

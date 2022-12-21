@@ -1,4 +1,10 @@
-import { CheckboxFilterType, Coffee, FilterOption, SelectedFilterOptions } from '../types'
+import {
+  CheckboxFilterType,
+  Coffee,
+  FilterOption,
+  SelectedFilterOptions,
+  SortingsOptionsType
+} from '../types'
 
 export const getFilterOptions = (products: Coffee[], filter: CheckboxFilterType) => {
   // Handle the filter extraction for flavor notes
@@ -68,12 +74,8 @@ export const filterProducts = (products: Coffee[], filters: SelectedFilterOption
   return products.filter(product => {
     return filters.every(filter => {
       if (filter.type === 'range') {
-        const filterId = filter.id as keyof Coffee
-
-        return product[filterId] >= filter.min && product[filterId] <= filter.max
-      }
-
-      if (filter.type === 'checkbox') {
+        return product.pricePerKilo >= filter.min && product.pricePerKilo <= filter.max
+      } else if (filter.type === 'checkbox') {
         if (filter.values.length === 0) return true
 
         if (filter.id === 'flavorNotes') {
@@ -99,4 +101,19 @@ export const searchProducts = (products: Coffee[], searchQuery: string) => {
       product.description.toLowerCase().includes(searchQuery.toLowerCase())
     )
   })
+}
+
+export const sortProducts = (products: Coffee[], sorting: SortingsOptionsType) => {
+  switch (sorting.value) {
+    case 'name-alpha':
+      return products.sort((a, b) => a.name.localeCompare(b.name))
+    case 'name-reverse-alpha':
+      return products.sort((a, b) => b.name.localeCompare(a.name))
+    case 'price-desc':
+      return products.sort((a, b) => b.pricePerKilo - a.pricePerKilo)
+    case 'price-asc':
+      return products.sort((a, b) => a.pricePerKilo - b.pricePerKilo)
+    default:
+      return products
+  }
 }

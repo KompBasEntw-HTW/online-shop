@@ -15,10 +15,11 @@ import {
   getMaxFilterValue,
   getMinFilterValue,
   filterProducts,
-  searchProducts
+  searchProducts,
+  sortProducts
 } from '../helpers/shop-helpers'
 
-import { Coffee, SortingsOptionsType, ShopPageState, ShopPageAction } from '../types'
+import { Coffee, SortingsOptionsType, ShopPageState, ShopPageAction, ProductFilter } from '../types'
 import Searchbar from '../components/Shop/Searchbar'
 import SortingDropdown from '../components/Shop/SortingDropdown'
 import ClearFiltersButton from '../components/Shop/ClearFiltersButton'
@@ -30,36 +31,37 @@ const sortingOptions: SortingsOptionsType[] = [
   { name: 'Price (Ascending)', value: 'price-asc' }
 ]
 
+const filterOptions: ProductFilter[] = [
+  {
+    id: 'roastLevel',
+    name: 'Roast level',
+    type: 'checkbox',
+    values: []
+  },
+  {
+    id: 'flavor',
+    name: 'Flavor',
+    type: 'checkbox',
+    values: []
+  },
+  {
+    id: 'flavorNotes',
+    name: 'Flavor notes',
+    type: 'checkbox',
+    values: []
+  },
+  {
+    id: 'price',
+    name: 'Price',
+    type: 'range',
+    min: 0,
+    max: 20
+  }
+]
+
 const initialShopPageState: ShopPageState = {
   mobileFiltersOpen: false,
-  availableFilters: [
-    {
-      id: 'roastLevel',
-      name: 'Roast level',
-      type: 'checkbox',
-      values: []
-    },
-    {
-      id: 'flavor',
-      name: 'Flavor',
-      type: 'checkbox',
-      values: []
-    },
-    {
-      id: 'flavorNotes',
-      name: 'Flavor notes',
-      type: 'checkbox',
-      values: []
-    },
-    {
-      id: 'price',
-      name: 'Price',
-      type: 'range',
-      min: 0,
-      max: 0,
-      step: 2
-    }
-  ],
+  availableFilters: [],
   queryState: {
     searchQuery: '',
     filters: [],
@@ -114,9 +116,67 @@ const shopPageReducer = (state: ShopPageState, action: ShopPageAction): ShopPage
         }
       }
 
-    case 'UPDATE_APPLIED_FILTERS':
-      const filterId = action.payload.filterId
+    case 'UPDATE_RANGE_FILTER':
+      // Find the index of the filter in the selected filters array
+      const rangeFilterId = action.payload.id
+      const rangeFilterIndex = state.queryState.filters.findIndex(
+        filter => filter.id === rangeFilterId
+      )
 
+      // If the filter is not already selected, add it to the selected filters array
+      if (rangeFilterIndex === -1) {
+        const filter = state.availableFilters.find(filter => filter.id === rangeFilterId)
+
+        // If the filter exists in the available filters array, add it to the selected filters array
+        if (filter?.type !== 'range') {
+          // If the filter is not a range, do not add it to the selected filters array
+          return {
+            ...state
+          }
+        } else {
+          return {
+            ...state,
+            queryState: {
+              ...state.queryState,
+              filters: [
+                ...state.queryState.filters,
+                {
+                  id: filter.id,
+                  type: filter.type,
+                  min: action.payload.min,
+                  max: action.payload.max
+                }
+              ]
+            }
+          }
+        }
+      } else {
+        if (state.queryState.filters[rangeFilterIndex].type === 'range') {
+          return {
+            ...state,
+            queryState: {
+              ...state.queryState,
+              filters: [
+                ...state.queryState.filters.filter(filter => filter.id !== rangeFilterId),
+                {
+                  id: state.queryState.filters[rangeFilterIndex].id,
+                  type: state.queryState.filters[rangeFilterIndex].type as 'range',
+                  min: action.payload.min,
+                  max: action.payload.max
+                }
+              ]
+            }
+          }
+        } else {
+          return {
+            ...state
+          }
+        }
+      }
+
+    case 'UPDATE_CHECKBOX_FILTER':
+      // Find the index of the filter in the selected filters array
+      const filterId = action.payload.id
       const filterIndex = state.queryState.filters.findIndex(filter => filter.id === filterId)
 
       // If the filter is not already selected, add it to the selected filters array
@@ -124,22 +184,24 @@ const shopPageReducer = (state: ShopPageState, action: ShopPageAction): ShopPage
         const filter = state.availableFilters.find(filter => filter.id === filterId)
 
         // If the filter exists in the available filters array, add it to the selected filters array
-        if (filter) {
-          if (filter.type === 'range') {
-          } else {
-            return {
-              ...state,
-              queryState: {
-                ...state.queryState,
-                filters: [
-                  ...state.queryState.filters,
-                  {
-                    id: filter.id,
-                    type: filter.type,
-                    values: [action.payload.filterValue]
-                  }
-                ]
-              }
+        if (filter?.type !== 'checkbox') {
+          // If the filter is not a checkbox, do not add it to the selected filters array
+          return {
+            ...state
+          }
+        } else {
+          return {
+            ...state,
+            queryState: {
+              ...state.queryState,
+              filters: [
+                ...state.queryState.filters,
+                {
+                  id: filter.id,
+                  type: filter.type,
+                  values: [action.payload.value]
+                }
+              ]
             }
           }
         }
@@ -147,52 +209,43 @@ const shopPageReducer = (state: ShopPageState, action: ShopPageAction): ShopPage
         // If the filter is already selected, adjust the selected options based on the option that was clicked
         const safeFilterClone = structuredClone(state.queryState.filters[filterIndex])
 
-        // If the filter is the price filter, update the min and max values
-        if (safeFilterClone.type === 'range') {
+        if (safeFilterClone.type !== 'checkbox') {
           return {
             ...state
           }
-        } else {
-          // If the filter is a checkbox filter, update the values array
-          const filterValue = action.payload.filterValue
-          const hasValue = safeFilterClone.values.includes(filterValue)
+        }
 
-          if (hasValue) {
-            safeFilterClone.values = safeFilterClone.values.filter(value => value !== filterValue)
-          } else {
-            safeFilterClone.values = [...safeFilterClone.values, filterValue]
-          }
+        const filterValue = action.payload.value
+        const hasValue = safeFilterClone.values.includes(filterValue)
 
+        if (safeFilterClone.values.length === 1 && hasValue) {
           return {
             ...state,
             queryState: {
               ...state.queryState,
-              filters: [
-                ...state.queryState.filters.filter(filter => filter.id !== filterId),
-                safeFilterClone
-              ]
+              filters: state.queryState.filters.filter(filter => filter.id !== filterId)
             }
+          }
+        } else if (hasValue) {
+          safeFilterClone.values = safeFilterClone.values.filter(value => value !== filterValue)
+        } else {
+          safeFilterClone.values = [...safeFilterClone.values, filterValue]
+        }
+
+        return {
+          ...state,
+          queryState: {
+            ...state.queryState,
+            filters: [
+              ...state.queryState.filters.filter(filter => filter.id !== filterId),
+              safeFilterClone
+            ]
           }
         }
       }
 
     default:
       return state
-  }
-}
-
-const sortProducts = (products: Coffee[], sorting: SortingsOptionsType) => {
-  switch (sorting.value) {
-    case 'name-alpha':
-      return products.sort((a, b) => a.name.localeCompare(b.name))
-    case 'name-reverse-alpha':
-      return products.sort((a, b) => b.name.localeCompare(a.name))
-    case 'price-desc':
-      return products.sort((a, b) => b.pricePerKilo - a.pricePerKilo)
-    case 'price-asc':
-      return products.sort((a, b) => a.pricePerKilo - b.pricePerKilo)
-    default:
-      return products
   }
 }
 
@@ -205,11 +258,11 @@ const ShopHome = () => {
   const { data: products, isLoading, isError, isSuccess } = useQuery(['products'], productFetcher)
 
   useEffect(() => {
-    if (!products) {
+    if (isLoading || isError) {
       return
     }
 
-    const availableFilters = shopPageState.availableFilters.map(filter => {
+    const availableFilters = filterOptions.map(filter => {
       switch (filter.type) {
         case 'checkbox':
           return {
@@ -227,7 +280,12 @@ const ShopHome = () => {
 
     // Set the filters state variable to the updated filters array
     dispatch({ type: 'SET_AVAILABLE_FILTERS', payload: availableFilters })
+  }, [products, isError, isLoading])
 
+  useEffect(() => {
+    if (!products) {
+      return
+    }
     // Set the filtered products state variable to the products array => this is done to have a copy of the original products array which then can be filtered
     dispatch({ type: 'SET_FILTERED_PRODUCTS', payload: products })
   }, [products])
@@ -241,30 +299,43 @@ const ShopHome = () => {
       type: 'SET_FILTERED_PRODUCTS',
       payload: products
     })
-  }, [shopPageState.queryState])
+  }, [shopPageState.queryState, products])
 
   const hasFiltersApplied =
     shopPageState.queryState.filters.length > 0 ||
     shopPageState.queryState.searchQuery !== '' ||
     shopPageState.queryState.sorting.value !== 'name-alpha'
 
+  console.log(shopPageState.queryState.filters)
+
   return (
     <Layout>
       <MobileFilterMenu
         filters={shopPageState.availableFilters}
+        currentFilters={shopPageState.queryState.filters}
         mobileFiltersOpen={shopPageState.mobileFiltersOpen}
         setMobileFiltersOpen={() => {
           dispatch({ type: 'SET_MOBILE_FILTERS_OPEN', payload: !shopPageState.mobileFiltersOpen })
         }}
-        onFilterChange={(e, filterId) =>
-          dispatch({
-            type: 'UPDATE_APPLIED_FILTERS',
-            payload: {
-              filterId,
-              filterValue: e.target.value
-            }
-          })
-        }
+        onFilterChangeFuncs={{
+          onCheckboxFilterChange: (e, id) =>
+            dispatch({
+              type: 'UPDATE_CHECKBOX_FILTER',
+              payload: {
+                id,
+                value: e.target.value
+              }
+            }),
+          onRangeFilterChange: (min, max, id) =>
+            dispatch({
+              type: 'UPDATE_RANGE_FILTER',
+              payload: {
+                id,
+                min,
+                max
+              }
+            })
+        }}
       />
       <ShopHeader />
       <div className='flex flex-col justify-between gap-2 pt-8 sm:flex-row'>
@@ -291,15 +362,26 @@ const ShopHome = () => {
         <FilterMenu
           filters={shopPageState.availableFilters}
           currentFilters={shopPageState.queryState.filters}
-          onFilterChange={(e, filterId) =>
-            dispatch({
-              type: 'UPDATE_APPLIED_FILTERS',
-              payload: {
-                filterId,
-                filterValue: e.target.value
-              }
-            })
-          }
+          onFilterChangeFuncs={{
+            onCheckboxFilterChange: (e, id) =>
+              dispatch({
+                type: 'UPDATE_CHECKBOX_FILTER',
+                payload: {
+                  id,
+                  value: e.target.value
+                }
+              }),
+
+            onRangeFilterChange: (min, max, id) =>
+              dispatch({
+                type: 'UPDATE_RANGE_FILTER',
+                payload: {
+                  id,
+                  min,
+                  max
+                }
+              })
+          }}
           setMobileFiltersOpen={() =>
             dispatch({ type: 'SET_MOBILE_FILTERS_OPEN', payload: !shopPageState.mobileFiltersOpen })
           }

@@ -9,13 +9,16 @@ const MobileFilterMenu = ({
   mobileFiltersOpen,
   currentFilters,
   setMobileFiltersOpen,
-  onFilterChange
+  onFilterChangeFuncs
 }: {
   filters: ProductFilter[]
   mobileFiltersOpen: boolean
   currentFilters: SelectedFilterOptions[]
   setMobileFiltersOpen: (open: boolean) => void
-  onFilterChange: (e: ChangeEvent<HTMLInputElement>, filterId: string) => void
+  onFilterChangeFuncs: {
+    onCheckboxFilterChange: (e: ChangeEvent<HTMLInputElement>, filterId: string) => void
+    onRangeFilterChange: (min: number, max: number, filterId: string) => void
+  }
 }) => {
   return (
     <Transition.Root show={mobileFiltersOpen} as={Fragment}>
@@ -59,26 +62,54 @@ const MobileFilterMenu = ({
                 {filters.map((filter, sectionIdx) => {
                   switch (filter.type) {
                     case 'checkbox':
+                      const currentValues: string[] = []
+                      const current = currentFilters.find(f => f.id === filter.id)
+
+                      // If filter has been used before, use the current values
+                      if (current?.type === 'checkbox') {
+                        currentValues.push(...current.values)
+                      }
+
                       return (
                         <CheckboxFilter
                           filter={filter}
-                          onFilterChange={onFilterChange}
-                          // currentValues={}
+                          onFilterChange={onFilterChangeFuncs.onCheckboxFilterChange}
+                          currentValues={currentValues}
                           sectionIdx={sectionIdx}
                           key={filter.id}
                         />
                       )
                     case 'range':
-                      return (
-                        <RangeFilter
-                          filter={filter}
-                          onFilterChange={onFilterChange}
-                          key={filter.id}
-                        />
-                      )
+                      const currentRange = currentFilters.find(f => f.id === filter.id)
 
-                    default:
-                      return null
+                      // if the range filter exists in the current filters, use its values as the currentValues
+                      if (currentRange?.type === 'range') {
+                        return (
+                          <RangeFilter
+                            filter={filter}
+                            currentValues={{
+                              min: currentRange.min,
+                              max: currentRange.max
+                            }}
+                            onFilterChange={onFilterChangeFuncs.onRangeFilterChange}
+                            key={filter.id}
+                          />
+                        )
+
+                        // if the filter hasn't been used before, use the default values of the filter
+                      } else {
+                        return (
+                          <RangeFilter
+                            filter={filter}
+                            currentValues={{
+                              min: filter.min,
+                              max: filter.max
+                            }}
+                            onFilterChange={onFilterChangeFuncs.onRangeFilterChange}
+                            key={filter.id}
+                          />
+                        )
+                      }
                   }
                 })}
               </form>

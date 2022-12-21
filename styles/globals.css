@@ -41,3 +41,17 @@
     @apply text-xs;
   }
 }
+
+@layer utilities {
+  .react-slider-two-thumb {
+    @apply m-0 flex h-12 w-full items-center justify-between p-0;
+  }
+
+  .react-slider-track {
+    @apply h-1 rounded-full bg-amber-200;
+  }
+
+  .react-slider-thumb {
+    @apply rounded-full bg-amber-500 px-1 py-0.5 text-sm text-white hover:cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-opacity-50;
+  }
+}
