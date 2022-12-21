@@ -59,7 +59,6 @@ export type RangeFilterType = {
   type: 'range'
   min: number
   max: number
-  step: number
 }
 
 export type ProductFilter = CheckboxFilterType | RangeFilterType
@@ -82,16 +81,28 @@ export type ShopPageState = {
   filteredProducts: Coffee[]
 }
 
+export type CheckboxFilterUpdatePayload = {
+  id: string
+  value: string
+}
+
+export type RangeFilterUpdatePayload = {
+  id: string
+  min: number
+  max: number
+}
+
 export type ShopPageAction =
   | { type: 'SET_MOBILE_FILTERS_OPEN'; payload: boolean }
   | { type: 'SET_AVAILABLE_FILTERS'; payload: ProductFilter[] }
   | { type: 'SET_FILTERED_PRODUCTS'; payload: Coffee[] }
   | {
-      type: 'UPDATE_APPLIED_FILTERS'
-      payload: {
-        filterId: string
-        filterValue: string
-      }
+      type: 'UPDATE_CHECKBOX_FILTER'
+      payload: CheckboxFilterUpdatePayload
+    }
+  | {
+      type: 'UPDATE_RANGE_FILTER'
+      payload: RangeFilterUpdatePayload
     }
   | {
       type: 'UPDATE_SEARCH_QUERY'
