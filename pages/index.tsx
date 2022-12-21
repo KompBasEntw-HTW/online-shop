@@ -306,8 +306,6 @@ const ShopHome = () => {
     shopPageState.queryState.searchQuery !== '' ||
     shopPageState.queryState.sorting.value !== 'name-alpha'
 
-  console.log(shopPageState.queryState.filters)
-
   return (
     <Layout>
       <MobileFilterMenu

@@ -76,7 +76,6 @@ export const RangeFilter = ({
     max: number
   }
 }) => {
-  console.log(currentValues)
   return (
     <div className='pt-6'>
       <fieldset>
