@@ -17,7 +17,7 @@ const Header = () => {
                     <span className='sr-only'>Your Company</span>
                     <Image
                       className='h-10 w-auto'
-                      src='/android-chrome-192x192.png'
+                      src='/images/android-chrome-192x192.png'
                       alt=''
                       width={192}
                       height={192}
@@ -31,11 +31,11 @@ const Header = () => {
                 <Link href='/' className='lg:hidden'>
                   <span className='sr-only'>Your Company</span>
                   <Image
-                    src='https://tailwindui.com/img/logos/mark.svg?color=amber&shade=600'
+                    src='/images/android-chrome-192x192.png'
                     alt=''
-                    className='h-8 w-auto'
-                    width={32}
-                    height={32}
+                    className='h-10 w-auto'
+                    width={192}
+                    height={192}
                   />
                 </Link>
 

@@ -18,7 +18,7 @@ const Footer = () => {
           <div className='py-8'>
             <div className='md:flex md:justify-center'>
               <Image
-                src='/android-chrome-192x192.png'
+                src='/images/android-chrome-192x192.png'
                 alt=''
                 className='h-10 w-auto'
                 width={192}
