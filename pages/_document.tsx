@@ -7,7 +7,6 @@ const Document = () => {
         <link rel='preconnect' href='https://fonts.googleapis.com' />
         <link rel='preconnect' href='https://fonts.gstatic.com' crossOrigin='' />
         <link href='https://fonts.googleapis.com/css2?family=Lora&display=swap' rel='stylesheet' />
-        <link rel='icon' type='image/x-icon' href='/images/favicon.ico' />
         <link
           rel='stylesheet'
           href='https://unpkg.com/leaflet@1.9.2/dist/leaflet.css'
