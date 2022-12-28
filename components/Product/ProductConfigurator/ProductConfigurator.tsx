@@ -51,10 +51,10 @@ const ProductConfigurator = ({ product, className }: { product: Coffee; classNam
   const handleAddToCart = () => {
     try {
       verifyQuantity(quantity)
-    } catch (err: any) {
+    } catch (err) {
       setError({
         error: true,
-        message: err.message
+        message: (err as Error).message
       })
     }
 
