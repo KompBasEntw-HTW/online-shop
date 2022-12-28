@@ -16,11 +16,11 @@ const Header = () => {
                   <Link href='/'>
                     <span className='sr-only'>Your Company</span>
                     <Image
-                      className='h-8 w-auto'
-                      src='https://tailwindui.com/img/logos/mark.svg?color=amber&shade=600'
+                      className='h-10 w-auto'
+                      src='/android-chrome-192x192.png'
                       alt=''
-                      width={64}
-                      height={64}
+                      width={192}
+                      height={192}
                     />
                   </Link>
                 </div>
