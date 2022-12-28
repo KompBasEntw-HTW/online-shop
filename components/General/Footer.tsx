@@ -18,11 +18,11 @@ const Footer = () => {
           <div className='py-8'>
             <div className='md:flex md:justify-center'>
               <Image
-                src='https://tailwindui.com/img/logos/mark.svg?color=amber&shade=600'
+                src='/android-chrome-192x192.png'
                 alt=''
-                className='h-8 w-auto'
-                width={32}
-                height={32}
+                className='h-10 w-auto'
+                width={192}
+                height={192}
               />
             </div>
           </div>
