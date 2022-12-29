@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { RadioGroup } from '@headlessui/react'
+import { useMutation } from '@tanstack/react-query'
 
 import { Coffee, CoffeeBagSize, CartItem } from '../../../types'
 import clsx from 'clsx'
@@ -14,6 +15,45 @@ import {
   verifyQuantity
 } from './helpers'
 
+const getCardId = () => {
+  return localStorage.getItem('cartId')
+}
+
+const setCardId = (cartId: string) => {
+  localStorage.setItem('cartId', cartId)
+}
+
+const createCart = async () => {
+  const response = await fetch('/api/basket-service/basket/createEphemeral', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+
+  if (!response.ok) {
+    throw new Error(response.statusText)
+  }
+
+  return response.json()
+}
+
+const addToCart = async (cartItem: CartItem, cartId: string) => {
+  const response = await fetch('/api/cart', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(cartItem)
+  })
+
+  if (!response.ok) {
+    throw new Error('Something went wrong')
+  }
+
+  return response.json()
+}
+
 const ProductConfigurator = ({ product, className }: { product: Coffee; className?: string }) => {
   const [size, setSize] = useState<CoffeeBagSize>(product.coffeeBagSizes[0])
   const [quantity, setQuantity] = useState(1)
@@ -22,6 +62,14 @@ const ProductConfigurator = ({ product, className }: { product: Coffee; classNam
     error: false,
     message: ''
   })
+
+  createCart().then((data: string) => {
+    console.log('Test')
+    console.log(data)
+    setCardId(data)
+  })
+
+  const { mutate } = useMutation(addToCart )
 
   useEffect(() => {
     if (!quantity) return
@@ -38,6 +86,7 @@ const ProductConfigurator = ({ product, className }: { product: Coffee; classNam
           message: ''
         })
       }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError({
         error: true,
@@ -46,11 +95,12 @@ const ProductConfigurator = ({ product, className }: { product: Coffee; classNam
     }
 
     setTotalPrice(calculateTotalPrice(product.pricePerKilo, quantity, size.bagSize))
-  }, [size, quantity])
+  }, [size, quantity, product.pricePerKilo])
 
   const handleAddToCart = () => {
     try {
       verifyQuantity(quantity)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError({
         error: true,
@@ -64,6 +114,19 @@ const ProductConfigurator = ({ product, className }: { product: Coffee; classNam
       size,
       totalPrice
     }
+
+    const cartId = getCardId()
+
+    if (cartId) {
+      mutate(cartItem, cartId)
+    } else {
+      createCart().then((data: string) => {
+        setCardId(data)
+        mutate(cartItem, getCardId())
+      })
+    }
+
+    console.log(cartItem)
   }
 
   const sortedBagSizes = product.coffeeBagSizes.sort(
