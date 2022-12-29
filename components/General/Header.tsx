@@ -16,11 +16,11 @@ const Header = () => {
                   <Link href='/'>
                     <span className='sr-only'>Your Company</span>
                     <Image
-                      className='h-8 w-auto'
-                      src='https://tailwindui.com/img/logos/mark.svg?color=amber&shade=600'
+                      className='h-10 w-auto'
+                      src='/images/android-chrome-192x192.png'
                       alt=''
-                      width={64}
-                      height={64}
+                      width={192}
+                      height={192}
                     />
                   </Link>
                 </div>
@@ -31,11 +31,11 @@ const Header = () => {
                 <Link href='/' className='lg:hidden'>
                   <span className='sr-only'>Your Company</span>
                   <Image
-                    src='https://tailwindui.com/img/logos/mark.svg?color=amber&shade=600'
+                    src='/images/android-chrome-192x192.png'
                     alt=''
-                    className='h-8 w-auto'
-                    width={32}
-                    height={32}
+                    className='h-10 w-auto'
+                    width={192}
+                    height={192}
                   />
                 </Link>
 

@@ -110,7 +110,7 @@ const ProductPage = ({ latLng, product }: { latLng?: [number, number]; product: 
               <hr />
               <div className='grid grid-cols-1 gap-4 pt-8 sm:grid-cols-2 lg:grid-cols-3'>
                 {relatedProducts
-                  .filter((relatedProduct: any) => relatedProduct.id !== product.id)
+                  .filter(relatedProduct => relatedProduct.id !== product.id)
                   .slice(0, 3)
                   .map((product: Coffee) => (
                     <SingleProduct key={product.id} product={product} />

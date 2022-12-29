@@ -86,11 +86,10 @@ const ProductConfigurator = ({ product, className }: { product: Coffee; classNam
           message: ''
         })
       }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
+    } catch (err) {
       setError({
         error: true,
-        message: err.message
+        message: (err as Error).message
       })
     }
 
@@ -100,11 +99,10 @@ const ProductConfigurator = ({ product, className }: { product: Coffee; classNam
   const handleAddToCart = () => {
     try {
       verifyQuantity(quantity)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
+    } catch (err) {
       setError({
         error: true,
-        message: err.message
+        message: (err as Error).message
       })
     }
 

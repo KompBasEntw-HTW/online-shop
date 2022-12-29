@@ -4,7 +4,7 @@ const nextConfig = {
   swcMinify: true,
   images: {
     dangerouslyAllowSVG: true,
-    domains: ['images.unsplash.com', 'tailwindui.com', 'res.cloudinary.com']
+    domains: ['images.unsplash.com', 'tailwindui.com', 'res.cloudinary.com', 'exe.dlugoschvincent.de']
   },
   output: 'standalone',
 }
