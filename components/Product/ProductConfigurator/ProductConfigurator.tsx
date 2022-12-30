@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { RadioGroup } from '@headlessui/react'
-import { useMutation } from '@tanstack/react-query'
 
 import { Coffee, CoffeeBagSize, CartItem } from '../../../types'
 import clsx from 'clsx'
@@ -15,46 +14,51 @@ import {
   verifyQuantity
 } from './helpers'
 
-const getCardId = () => {
-  return localStorage.getItem('cartId')
+const getCart = () => {
+  return localStorage.getItem('cart')
 }
 
-const setCardId = (cartId: string) => {
-  localStorage.setItem('cartId', cartId)
-}
+const addToLocalCart = (cartItem: CartItem) => {
+  const cart = getCart()
 
-const createCart = async () => {
-  const response = await fetch('/api/basket-service/basket/createEphemeral', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
+  if (!cart) {
+    localStorage.setItem('cart', JSON.stringify([cartItem]))
+  } else {
+    const parsedCart = JSON.parse(cart)
+
+    const itemExists = parsedCart.find(
+      (item: CartItem) =>
+        item.id === cartItem.id && item.size.bagSize.id === cartItem.size.bagSize.id
+    )
+
+    if (itemExists) {
+      const updatedCart = parsedCart.map((item: CartItem) => {
+        if (item.id === cartItem.id && item.size.bagSize.id === cartItem.size.bagSize.id) {
+          return {
+            ...item,
+            quantity: item.quantity + cartItem.quantity
+          }
+        }
+
+        return item
+      })
+
+      localStorage.setItem('cart', JSON.stringify(updatedCart))
+    } else {
+      localStorage.setItem('cart', JSON.stringify([...parsedCart, cartItem]))
     }
-  })
-
-  if (!response.ok) {
-    throw new Error(response.statusText)
   }
-
-  return response.json()
 }
 
-const addToCart = async (cartItem: CartItem, cartId: string) => {
-  const response = await fetch('/api/cart', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(cartItem)
-  })
-
-  if (!response.ok) {
-    throw new Error('Something went wrong')
-  }
-
-  return response.json()
-}
-
-const ProductConfigurator = ({ product, className }: { product: Coffee; className?: string }) => {
+const ProductConfigurator = ({
+  product,
+  className,
+  onShowToast
+}: {
+  product: Coffee
+  className?: string
+  onShowToast: () => void
+}) => {
   const [size, setSize] = useState<CoffeeBagSize>(product.coffeeBagSizes[0])
   const [quantity, setQuantity] = useState(1)
   const [totalPrice, setTotalPrice] = useState(0)
@@ -62,14 +66,6 @@ const ProductConfigurator = ({ product, className }: { product: Coffee; classNam
     error: false,
     message: ''
   })
-
-  createCart().then((data: string) => {
-    console.log('Test')
-    console.log(data)
-    setCardId(data)
-  })
-
-  const { mutate } = useMutation(addToCart )
 
   useEffect(() => {
     if (!quantity) return
@@ -113,18 +109,8 @@ const ProductConfigurator = ({ product, className }: { product: Coffee; classNam
       totalPrice
     }
 
-    const cartId = getCardId()
-
-    if (cartId) {
-      mutate(cartItem, cartId)
-    } else {
-      createCart().then((data: string) => {
-        setCardId(data)
-        mutate(cartItem, getCardId())
-      })
-    }
-
-    console.log(cartItem)
+    addToLocalCart(cartItem)
+    onShowToast()
   }
 
   const sortedBagSizes = product.coffeeBagSizes.sort(
