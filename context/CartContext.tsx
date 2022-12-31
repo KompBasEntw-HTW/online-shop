@@ -4,6 +4,7 @@ import { CartItem } from '../types'
 type CartContext = {
   cart: CartItem[]
   addItem: (item: CartItem) => void
+  updateItem: (productId: number, bagSizeId: number, quantity: number) => void
   removeItem: (productId: number, bagSizeId: number) => void
 }
 
@@ -46,6 +47,27 @@ const addToLocalCart = (cartItem: CartItem) => {
   }
 }
 
+const updateLocalCartItem = (productId: number, bagSizeId: number, quantity: number) => {
+  const cart = getCart()
+
+  if (cart) {
+    const parsedCart = JSON.parse(cart)
+
+    const updatedCart = parsedCart.map((item: CartItem) => {
+      if (item.product.id === productId && item.size.bagSize.id === bagSizeId) {
+        return {
+          ...item,
+          quantity
+        }
+      }
+
+      return item
+    })
+
+    localStorage.setItem('cart', JSON.stringify(updatedCart))
+  }
+}
+
 const removeFromLocalCart = (productId: number, bagSizeId: number) => {
   const cart = getCart()
 
@@ -63,6 +85,7 @@ const removeFromLocalCart = (productId: number, bagSizeId: number) => {
 const CartContext = createContext<CartContext>({
   cart: [],
   addItem: addToLocalCart,
+  updateItem: updateLocalCartItem,
   removeItem: removeFromLocalCart
 })
 
@@ -81,6 +104,12 @@ export const CartContextProvider = ({ children }: { children: ReactNode }) => {
         cart,
         addItem: (item: CartItem) => {
           addToLocalCart(item)
+          setCart(
+            localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart') as string) : []
+          )
+        },
+        updateItem: (productId: number, bagSizeId: number, quantity: number) => {
+          updateLocalCartItem(productId, bagSizeId, quantity)
           setCart(
             localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart') as string) : []
           )

@@ -22,7 +22,6 @@ const Account = () => {
       })
       if (res.ok) {
         const user = await res.json()
-        console.log(user)
       }
     }
     getAuth()

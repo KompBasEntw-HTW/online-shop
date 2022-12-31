@@ -80,8 +80,6 @@ const ProductConfigurator = ({
     onShowToast()
   }
 
-  console.log('cart', cartContext.cart)
-
   const sortedBagSizes = product.coffeeBagSizes.sort(
     (a, b) => a.bagSize.weightInGrams - b.bagSize.weightInGrams
   )
