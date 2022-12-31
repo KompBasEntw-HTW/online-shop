@@ -4,6 +4,7 @@ import { RadioGroup } from '@headlessui/react'
 import { Coffee, CoffeeBagSize, CartItem } from '../../../types'
 import clsx from 'clsx'
 import { ShoppingCartIcon } from '@heroicons/react/24/solid'
+import { useCartContext } from '../../../context/CartContext'
 
 import { MAX_QUANTITY, MIN_QUANTITY } from '../../../constants/constants'
 
@@ -13,42 +14,6 @@ import {
   roundToTwoDecimals,
   verifyQuantity
 } from './helpers'
-
-const getCart = () => {
-  return localStorage.getItem('cart')
-}
-
-const addToLocalCart = (cartItem: CartItem) => {
-  const cart = getCart()
-
-  if (!cart) {
-    localStorage.setItem('cart', JSON.stringify([cartItem]))
-  } else {
-    const parsedCart = JSON.parse(cart)
-
-    const itemExists = parsedCart.find(
-      (item: CartItem) =>
-        item.id === cartItem.id && item.size.bagSize.id === cartItem.size.bagSize.id
-    )
-
-    if (itemExists) {
-      const updatedCart = parsedCart.map((item: CartItem) => {
-        if (item.id === cartItem.id && item.size.bagSize.id === cartItem.size.bagSize.id) {
-          return {
-            ...item,
-            quantity: item.quantity + cartItem.quantity
-          }
-        }
-
-        return item
-      })
-
-      localStorage.setItem('cart', JSON.stringify(updatedCart))
-    } else {
-      localStorage.setItem('cart', JSON.stringify([...parsedCart, cartItem]))
-    }
-  }
-}
 
 const ProductConfigurator = ({
   product,
@@ -66,6 +31,8 @@ const ProductConfigurator = ({
     error: false,
     message: ''
   })
+
+  const cartContext = useCartContext()
 
   useEffect(() => {
     if (!quantity) return
@@ -103,15 +70,17 @@ const ProductConfigurator = ({
     }
 
     const cartItem: CartItem = {
-      id: product.id,
+      product,
       quantity,
       size,
       totalPrice
     }
 
-    addToLocalCart(cartItem)
+    cartContext.addItem(cartItem)
     onShowToast()
   }
+
+  console.log('cart', cartContext.cart)
 
   const sortedBagSizes = product.coffeeBagSizes.sort(
     (a, b) => a.bagSize.weightInGrams - b.bagSize.weightInGrams

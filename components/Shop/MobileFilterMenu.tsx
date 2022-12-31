@@ -87,24 +87,6 @@ const MobileFilterMenu = ({
                         return (
                           <RangeFilter
                             filter={filter}
-                            currentValues={{
-                              min: currentRange.min,
-                              max: currentRange.max
-                            }}
-                            onFilterChange={onFilterChangeFuncs.onRangeFilterChange}
-                            key={filter.id}
-                          />
-                        )
-
-                        // if the filter hasn't been used before, use the default values of the filter
-                      } else {
-                        return (
-                          <RangeFilter
-                            filter={filter}
-                            currentValues={{
-                              min: filter.min,
-                              max: filter.max
-                            }}
                             onFilterChange={onFilterChangeFuncs.onRangeFilterChange}
                             key={filter.id}
                           />
