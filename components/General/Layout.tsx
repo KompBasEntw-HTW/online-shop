@@ -20,7 +20,7 @@ const Layout = ({
   includeFooter?: boolean
   className?: string
 }) => {
-  const mainContainerStyles = clsx('bg-sg-50', className)
+  const mainContainerStyles = clsx('bg-sg-50 isolate', className)
 
   const layoutContainerStyles = clsx(
     `${width === 'restricted' ? 'max-w-7xl px-4 sm:px-6 lg:px-8' : ''}`,

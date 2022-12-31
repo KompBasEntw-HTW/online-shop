@@ -4,6 +4,7 @@ import { RadioGroup } from '@headlessui/react'
 import { Coffee, CoffeeBagSize, CartItem } from '../../../types'
 import clsx from 'clsx'
 import { ShoppingCartIcon } from '@heroicons/react/24/solid'
+import { useCartContext } from '../../../context/CartContext'
 
 import { MAX_QUANTITY, MIN_QUANTITY } from '../../../constants/constants'
 
@@ -14,7 +15,15 @@ import {
   verifyQuantity
 } from './helpers'
 
-const ProductConfigurator = ({ product, className }: { product: Coffee; className?: string }) => {
+const ProductConfigurator = ({
+  product,
+  className,
+  onShowToast
+}: {
+  product: Coffee
+  className?: string
+  onShowToast: () => void
+}) => {
   const [size, setSize] = useState<CoffeeBagSize>(product.coffeeBagSizes[0])
   const [quantity, setQuantity] = useState(1)
   const [totalPrice, setTotalPrice] = useState(0)
@@ -22,6 +31,8 @@ const ProductConfigurator = ({ product, className }: { product: Coffee; classNam
     error: false,
     message: ''
   })
+
+  const cartContext = useCartContext()
 
   useEffect(() => {
     if (!quantity) return
@@ -59,11 +70,14 @@ const ProductConfigurator = ({ product, className }: { product: Coffee; classNam
     }
 
     const cartItem: CartItem = {
-      id: product.id,
+      product,
       quantity,
       size,
       totalPrice
     }
+
+    cartContext.addItem(cartItem)
+    onShowToast()
   }
 
   const sortedBagSizes = product.coffeeBagSizes.sort(

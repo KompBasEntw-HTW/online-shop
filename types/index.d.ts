@@ -117,7 +117,7 @@ export type ShopPageAction =
     }
 
 export type CartItem = {
-  id: number
+  product: Coffee
   quantity: number
   size: CoffeeBagSize
   totalPrice: number

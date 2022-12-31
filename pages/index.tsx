@@ -7,7 +7,7 @@ import MobileFilterMenu from '../components/Shop/MobileFilterMenu'
 import FilterMenu from '../components/Shop/FilterMenu'
 import ShopHeader from '../components/Shop/ShopHeader'
 import PageLoader from '../components/General/PageLoader'
-import EmptyShopStatePlaceholder from '../components/Shop/EmptyShopStatePlaceholder'
+import EmptyStatePlaceholder from '../components/Shop/EmptyStatePlaceholder'
 
 import {
   sortFilterOptions,
@@ -306,8 +306,6 @@ const ShopHome = () => {
     shopPageState.queryState.searchQuery !== '' ||
     shopPageState.queryState.sorting.value !== 'name-alpha'
 
-  console.log(shopPageState.queryState.filters)
-
   return (
     <Layout>
       <MobileFilterMenu
@@ -393,9 +391,27 @@ const ShopHome = () => {
             Products
           </h2>
           {isLoading && <PageLoader />}
-          {isError && <EmptyShopStatePlaceholder type='error' />}
+          {isError && (
+            <EmptyStatePlaceholder
+              type='error'
+              content={{
+                title: 'Something went wrong',
+                description: 'Please try again later.'
+              }}
+              colors={{
+                container: 'bg-red-50',
+                icon: 'text-red-400',
+                iconBackground: 'bg-red-100'
+              }}
+            />
+          )}
           {isSuccess && shopPageState.filteredProducts?.length === 0 && (
-            <EmptyShopStatePlaceholder />
+            <EmptyStatePlaceholder
+              content={{
+                title: 'No products found',
+                description: 'Try adjusting your filters or search query.'
+              }}
+            />
           )}
           {isSuccess && shopPageState.filteredProducts && (
             <div className='grid grid-cols-1 gap-y-4 sm:grid-cols-2 sm:gap-x-6 sm:gap-y-10 lg:gap-x-8 xl:grid-cols-3'>

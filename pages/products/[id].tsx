@@ -1,8 +1,10 @@
 import { useQuery } from '@tanstack/react-query'
+import { useState } from 'react'
 import Image from 'next/image'
 
 import Layout from '../../components/General/Layout'
 import Tag from '../../components/General/Tag'
+import Toast from '../../components/General/Toast'
 import SingleProduct from '../../components/Product/SingleProduct'
 import { Map } from '../../components/Map'
 
@@ -50,6 +52,8 @@ const ProductPage = ({ latLng, product }: { latLng?: [number, number]; product: 
     queryFn: relatedProductsQueryFunction
   })
 
+  const [showToast, setShowToast] = useState(false)
+
   return (
     <>
       {product && (
@@ -81,7 +85,7 @@ const ProductPage = ({ latLng, product }: { latLng?: [number, number]; product: 
                 </div>
               </div>
             </div>
-            <ProductConfigurator product={product} />
+            <ProductConfigurator product={product} onShowToast={() => setShowToast(true)} />
           </section>
 
           {product?.roasterNotes && (
@@ -93,7 +97,7 @@ const ProductPage = ({ latLng, product }: { latLng?: [number, number]; product: 
           )}
 
           {latLng && (
-            <section className='mx-auto max-w-5xl overflow-hidden pt-12'>
+            <section className='isolate mx-auto max-w-5xl overflow-hidden pt-12'>
               <h2 className='pb-4'>Origin</h2>
               <hr />
               <p className='pt-4'>
@@ -117,6 +121,13 @@ const ProductPage = ({ latLng, product }: { latLng?: [number, number]; product: 
                   ))}
               </div>
             </section>
+          )}
+          {showToast && (
+            <Toast
+              onFinished={() => setShowToast(false)}
+              title='Success'
+              description='Item added to cart'
+            />
           )}
         </Layout>
       )}

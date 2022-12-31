@@ -66,17 +66,11 @@ export const CheckboxFilter = ({
 
 export const RangeFilter = ({
   filter,
-  onFilterChange,
-  currentValues
+  onFilterChange
 }: {
   filter: RangeFilterType
   onFilterChange: (min: number, max: number, filterId: string) => void
-  currentValues: {
-    min: number
-    max: number
-  }
 }) => {
-  console.log(currentValues)
   return (
     <div className='pt-6'>
       <fieldset>

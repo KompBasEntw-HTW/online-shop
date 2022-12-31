@@ -53,36 +53,13 @@ const FilterMenu = ({
                   />
                 )
               case 'range':
-                const currentRange = currentFilters.find(f => f.id === filter.id)
-
-                // if the range filter exists in the current filters, use its values as the currentValues
-                if (currentRange?.type === 'range') {
-                  return (
-                    <RangeFilter
-                      filter={filter}
-                      currentValues={{
-                        min: currentRange.min,
-                        max: currentRange.max
-                      }}
-                      onFilterChange={onFilterChangeFuncs.onRangeFilterChange}
-                      key={filter.id}
-                    />
-                  )
-
-                  // if the filter hasn't been used before, use the default values of the filter
-                } else {
-                  return (
-                    <RangeFilter
-                      filter={filter}
-                      currentValues={{
-                        min: filter.min,
-                        max: filter.max
-                      }}
-                      onFilterChange={onFilterChangeFuncs.onRangeFilterChange}
-                      key={filter.id}
-                    />
-                  )
-                }
+                return (
+                  <RangeFilter
+                    filter={filter}
+                    onFilterChange={onFilterChangeFuncs.onRangeFilterChange}
+                    key={filter.id}
+                  />
+                )
             }
           })}
         </form>
