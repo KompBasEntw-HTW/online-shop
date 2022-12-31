@@ -12,8 +12,8 @@ async function refreshAccessToken(token: JWT) {
         },
         method: 'POST',
         body: new URLSearchParams({
-          client_id: process.env.KEYCLOAK_NEXTAUTH_CLIENT_ID!,
-          client_secret: process.env.KEYCLOAK_NEXTAUTH_CLIENT_SECRET!,
+          client_id: process.env.KEYCLOAK_NEXTAUTH_CLIENT_ID as string,
+          client_secret: process.env.KEYCLOAK_NEXTAUTH_CLIENT_SECRET as string,
           grant_type: 'refresh_token',
           refresh_token: token.refreshToken as string
         })
@@ -48,8 +48,8 @@ export default NextAuth({
   },
   providers: [
     KeycloakProvider({
-      clientId: process.env.KEYCLOAK_NEXTAUTH_CLIENT_ID!,
-      clientSecret: process.env.KEYCLOAK_NEXTAUTH_CLIENT_SECRET!,
+      clientId: process.env.KEYCLOAK_NEXTAUTH_CLIENT_ID as string,
+      clientSecret: process.env.KEYCLOAK_NEXTAUTH_CLIENT_SECRET as string,
       issuer: 'http://keycloak:8080/management/keycloak/realms/exe'
     })
   ],
