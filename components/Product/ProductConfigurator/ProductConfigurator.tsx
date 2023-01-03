@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { RadioGroup } from '@headlessui/react'
 
-import { Coffee, CoffeeBagSize, CartItem } from '../../../types'
+import { Coffee, CoffeeBagSize, BasketItem } from '../../../types'
 import clsx from 'clsx'
 import { ShoppingCartIcon } from '@heroicons/react/24/solid'
 import { useCartContext } from '../../../context/CartContext'
@@ -69,14 +69,18 @@ const ProductConfigurator = ({
       })
     }
 
-    const cartItem: CartItem = {
-      product,
-      quantity,
-      size,
-      totalPrice
-    }
+    const basketItems: BasketItem[] = [
+      {
+        item: {
+          bagSizeId: size.bagSize.id,
+          productId: product.id,
+          quantityInStock: null
+        },
+        quantity: quantity
+      }
+    ]
 
-    cartContext.addItem(cartItem)
+    cartContext.addItem(basketItems)
     onShowToast()
   }
 
