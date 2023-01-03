@@ -13,16 +13,6 @@ const Account = () => {
       setCsrfToken(crsfToken || '')
 
       if (!session) return
-      const res = await fetch('/api/product-service/users/me', {
-        headers: {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          Authorization: `Bearer ${session.accessToken}`
-        }
-      })
-      if (res.ok) {
-        const user = await res.json()
-      }
     }
     getAuth()
   }, [session])
