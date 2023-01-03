@@ -45,7 +45,7 @@ async function getCart(): Promise<CartItem[] | undefined> {
   if (session) {
     const localBasket = await getLocalBasket()
     if (localBasket.length > 0) {
-      updateItems(localBasket)
+      await updateItems(localBasket)
       localStorage.removeItem('basketItems')
     }
     const resCart = await fetch('/api/basket-service/basket', {
