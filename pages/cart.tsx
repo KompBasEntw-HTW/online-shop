@@ -68,11 +68,16 @@ const Cart = () => {
                           className='mt-1 w-24 rounded-md border border-gray-300 py-1 text-left text-base font-medium leading-5 text-gray-700 shadow-sm focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 sm:text-sm'
                           value={cartItem.quantity}
                           onChange={e =>
-                            cartContext?.updateItem(
-                              cartItem.product.id,
-                              cartItem.size.bagSize.id,
-                              parseInt(e.target.value)
-                            )
+                            cartContext?.updateItems([
+                              {
+                                item: {
+                                  productId: cartItem.product.id,
+                                  bagSizeId: cartItem.size.bagSize.id,
+                                  quantityInStock: null
+                                },
+                                quantity: parseInt(e.target.value)
+                              }
+                            ])
                           }>
                           {Array.from(Array(MAX_QUANTITY).keys()).map(i => (
                             <option key={i} value={i + 1}>

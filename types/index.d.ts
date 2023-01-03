@@ -17,7 +17,7 @@ export type Coffee = {
   flavor: string
   imageUrl: string
   pricePerKilo: number
-  coffeeBagSizes: CoffeBagSize[]
+  coffeeBagSizes: CoffeeBagSize[]
   flavorNotes: {
     id: number
     flavorNote: string
@@ -121,4 +121,19 @@ export type CartItem = {
   quantity: number
   size: CoffeeBagSize
   totalPrice: number
+}
+
+export type BasketItem = {
+  item: {
+    bagSizeId: number
+    productId: number
+    quantityInStock: number?
+  }
+  quantity: number
+}
+
+export type Basket = {
+  id: string
+  userName: string
+  basketItems: BasketItem[]
 }
