@@ -120,14 +120,13 @@ export type CartItem = {
   product: Coffee
   quantity: number
   size: CoffeeBagSize
-  totalPrice: number
 }
 
 export type BasketItem = {
   item: {
     bagSizeId: number
     productId: number
-    quantityInStock: number?
+    quantityInStock?: number
   }
   quantity: number
 }

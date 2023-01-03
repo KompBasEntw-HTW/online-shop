@@ -73,8 +73,7 @@ const ProductConfigurator = ({
       {
         item: {
           bagSizeId: size.bagSize.id,
-          productId: product.id,
-          quantityInStock: null
+          productId: product.id
         },
         quantity: quantity
       }

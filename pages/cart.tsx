@@ -72,8 +72,7 @@ const Cart = () => {
                               {
                                 item: {
                                   productId: cartItem.product.id,
-                                  bagSizeId: cartItem.size.bagSize.id,
-                                  quantityInStock: null
+                                  bagSizeId: cartItem.size.bagSize.id
                                 },
                                 quantity: parseInt(e.target.value)
                               }

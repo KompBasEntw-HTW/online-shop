@@ -9,11 +9,11 @@ type CartContext = {
   removeItem: (productId: number, bagSizeId: number) => void
 }
 
-async function storeLocalBasket(localBasket: BasketItem[]) {
+function storeLocalBasket(localBasket: BasketItem[]) {
   localStorage.setItem('basketItems', JSON.stringify(localBasket))
 }
 
-async function getLocalBasket() {
+function getLocalBasket() {
   const localBasketAsString = localStorage.getItem('basketItems')
   if (localBasketAsString) {
     return JSON.parse(localBasketAsString) as BasketItem[]
@@ -31,7 +31,6 @@ async function assembleCartFromBasketItems(
       return {
         product: coffees.filter(coffee => coffee.id == basketItem.item.productId)[0],
         quantity: basketItem.quantity,
-        totalPrice: 3,
         size: coffees.flatMap(c =>
           c.coffeeBagSizes.filter(bagSize => bagSize.bagSize.id == basketItem.item.bagSizeId)
         )[0]
@@ -43,7 +42,7 @@ async function assembleCartFromBasketItems(
 async function getCart(): Promise<CartItem[] | undefined> {
   const session = await getSession()
   if (session) {
-    const localBasket = await getLocalBasket()
+    const localBasket = getLocalBasket()
     if (localBasket.length > 0) {
       await updateItems(localBasket)
       localStorage.removeItem('basketItems')
@@ -56,7 +55,7 @@ async function getCart(): Promise<CartItem[] | undefined> {
       return assembleCartFromBasketItems(basket.basketItems)
     }
   } else {
-    return assembleCartFromBasketItems(await getLocalBasket())
+    return assembleCartFromBasketItems(getLocalBasket())
   }
 }
 
@@ -84,7 +83,7 @@ async function updateItems(basketItems: BasketItem[]): Promise<CartItem[] | unde
       return assembleCartFromBasketItems(updatedBasket.basketItems)
     }
   }
-  const localBasket = await getLocalBasket()
+  const localBasket = getLocalBasket()
 
   const itemToAdd = basketItems[0]
   const itemExists = localBasket.find(
@@ -153,7 +152,7 @@ async function removeItem(productId: number, bagSizeId: number): Promise<CartIte
     }
   }
 
-  const localBasket = await getLocalBasket()
+  const localBasket = getLocalBasket()
 
   const updatedBasket = localBasket.filter(
     basketItem => basketItem.item.bagSizeId !== bagSizeId || basketItem.item.productId !== productId
