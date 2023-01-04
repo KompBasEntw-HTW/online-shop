@@ -1,15 +1,18 @@
 import { QuestionMarkCircleIcon, XCircleIcon, ShoppingCartIcon } from '@heroicons/react/20/solid'
 import Image from 'next/image'
 import { useCartContext } from '../context/CartContext'
-import Layout from '../components/General/Layout'
-import { roundToTwoDecimals } from '../components/Product/ProductConfigurator/helpers'
+import { Layout } from '../components/General'
+import { calculateTotalPrice, roundToTwoDecimals } from '../helpers/price-calculation'
 import { MAX_QUANTITY } from '../constants/constants'
+import Link from 'next/link'
 
 const Cart = () => {
   const cartContext = useCartContext()
 
   const subtotal = cartContext.cart.reduce(
-    (total, cartItem) => total + cartItem.product.pricePerKilo * cartItem.quantity,
+    (total, cartItem) =>
+      total +
+      calculateTotalPrice(cartItem.product.pricePerKilo, cartItem.quantity, cartItem.size.bagSize),
     0
   )
 
@@ -21,7 +24,7 @@ const Cart = () => {
   return (
     <Layout>
       <div className='bg-white'>
-        <div className='mx-auto max-w-2xl px-4 pt-16 pb-24 sm:px-6 lg:max-w-7xl lg:px-8'>
+        <div className='mx-auto max-w-2xl py-16 sm:px-6 lg:max-w-7xl lg:px-8'>
           <h1 className='text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl'>
             Shopping Cart
           </h1>
@@ -146,11 +149,13 @@ const Cart = () => {
                 </dl>
 
                 <div className='mt-6'>
-                  <button
-                    type='submit'
-                    className='w-full rounded-md border border-transparent bg-amber-500 py-3 px-4 text-base font-medium text-white shadow-sm hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 focus:ring-offset-gray-50'>
-                    Checkout
-                  </button>
+                  <Link href='/checkout'>
+                    <button
+                      type='submit'
+                      className='w-full rounded-md border border-transparent bg-amber-500 py-3 px-4 text-base font-medium text-white shadow-sm hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 focus:ring-offset-gray-50'>
+                      Checkout
+                    </button>
+                  </Link>
                 </div>
               </section>
             </form>

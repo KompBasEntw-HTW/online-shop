@@ -1,19 +1,19 @@
 import { useEffect, useState } from 'react'
 import { RadioGroup } from '@headlessui/react'
 
-import { Coffee, CoffeeBagSize, BasketItem } from '../../../types'
+import { Coffee, CoffeeBagSize, BasketItem } from '../../types'
 import clsx from 'clsx'
 import { ShoppingCartIcon } from '@heroicons/react/24/solid'
-import { useCartContext } from '../../../context/CartContext'
+import { useCartContext } from '../../context/CartContext'
 
-import { MAX_QUANTITY, MIN_QUANTITY } from '../../../constants/constants'
+import { MAX_QUANTITY, MIN_QUANTITY } from '../../constants/constants'
 
 import {
   calculatePricePerKilo,
   calculateTotalPrice,
   roundToTwoDecimals,
   verifyQuantity
-} from './helpers'
+} from '../../helpers/price-calculation'
 
 const ProductConfigurator = ({
   product,

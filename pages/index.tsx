@@ -1,13 +1,17 @@
 import { useEffect, useReducer } from 'react'
 import { useQuery } from '@tanstack/react-query'
 
-import Layout from '../components/General/Layout'
-import SingleProduct from '../components/Product/SingleProduct'
-import MobileFilterMenu from '../components/Shop/MobileFilterMenu'
-import FilterMenu from '../components/Shop/FilterMenu'
-import ShopHeader from '../components/Shop/ShopHeader'
-import PageLoader from '../components/General/PageLoader'
-import EmptyStatePlaceholder from '../components/Shop/EmptyStatePlaceholder'
+import { Layout, PageLoader } from '../components/General'
+import { SingleProduct } from '../components/Product'
+import {
+  MobileFilterMenu,
+  FilterMenu,
+  ShopHeader,
+  EmptyStatePlaceholder,
+  Searchbar,
+  SortingDropdown,
+  ClearFiltersButton
+} from '../components/Shop'
 
 import {
   sortFilterOptions,
@@ -20,9 +24,6 @@ import {
 } from '../helpers/shop-helpers'
 
 import { Coffee, SortingsOptionsType, ShopPageState, ShopPageAction, ProductFilter } from '../types'
-import Searchbar from '../components/Shop/Searchbar'
-import SortingDropdown from '../components/Shop/SortingDropdown'
-import ClearFiltersButton from '../components/Shop/ClearFiltersButton'
 
 const sortingOptions: SortingsOptionsType[] = [
   { name: 'Name (Alphabetical)', value: 'name-alpha' },
@@ -393,7 +394,6 @@ const ShopHome = () => {
           {isLoading && <PageLoader />}
           {isError && (
             <EmptyStatePlaceholder
-              type='error'
               content={{
                 title: 'Something went wrong',
                 description: 'Please try again later.'

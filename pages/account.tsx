@@ -1,8 +1,8 @@
 import { useSession, signOut, getCsrfToken } from 'next-auth/react'
 import { useState } from 'react'
 import { useEffect } from 'react'
-import Layout from '../components/General/Layout'
-import EmptyStatePlaceholder from '../components/Shop/EmptyStatePlaceholder'
+import { Layout } from '../components/General'
+import { EmptyStatePlaceholder } from '../components/Shop'
 const Account = () => {
   const { data: session } = useSession()
   const [csrfToken, setCsrfToken] = useState('')
@@ -50,7 +50,7 @@ const Account = () => {
 
   return (
     <Layout>
-      <section className='flex h-[70vh] flex-col items-center justify-center py-12'>
+      <section className='flex h-[70vh] flex-col items-center justify-center py-12 text-center'>
         <h1>You&#39;re not currently logged in</h1>
         <p className='pt-2 text-lg'>
           You need to be signed in to view this page. You can sign in by clicking the button below.
