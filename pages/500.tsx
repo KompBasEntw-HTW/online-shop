@@ -1,4 +1,4 @@
-import Layout from '../components/General/Layout'
+import { Layout } from '../components/General'
 import Link from 'next/link'
 import { SparklesIcon } from '@heroicons/react/20/solid'
 

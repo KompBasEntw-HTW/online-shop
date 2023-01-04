@@ -1,16 +1,13 @@
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
+import { GetServerSideProps } from 'next'
 import Image from 'next/image'
 
-import Layout from '../../components/General/Layout'
-import Tag from '../../components/General/Tag'
-import Toast from '../../components/General/Toast'
-import SingleProduct from '../../components/Product/SingleProduct'
+import { Layout, Tag, Toast } from '../../components/General'
+import { SingleProduct, ProductConfigurator } from '../../components/Product'
 import { Map } from '../../components/Map'
 
 import { Coffee } from '../../types'
-import ProductConfigurator from '../../components/Product/ProductConfigurator/ProductConfigurator'
-import { GetServerSideProps } from 'next'
 
 type PositionStackAPIResponse = {
   data: {
@@ -30,11 +27,16 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
       process.env.POSITIONSTACK_API_KEY
     }&query=${encodeURIComponent(productData.location)}&limit=1`
   )
-  const locationData: PositionStackAPIResponse = await locationRes.json()
+
+  let locationData: PositionStackAPIResponse = { data: [] }
+
+  if (locationRes.ok) {
+    locationData = await locationRes.json()
+  }
 
   return {
     props: {
-      latLng: [locationData.data[0].latitude, locationData.data[0].longitude],
+      latLng: [locationData?.data[0]?.latitude, locationData?.data[0]?.longitude],
       product: productData
     }
   }

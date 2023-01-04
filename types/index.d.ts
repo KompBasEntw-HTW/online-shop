@@ -120,14 +120,13 @@ export type CartItem = {
   product: Coffee
   quantity: number
   size: CoffeeBagSize
-  totalPrice: number
 }
 
 export type BasketItem = {
   item: {
     bagSizeId: number
     productId: number
-    quantityInStock: number?
+    quantityInStock?: number
   }
   quantity: number
 }
@@ -136,4 +135,48 @@ export type Basket = {
   id: string
   userName: string
   basketItems: BasketItem[]
+}
+
+export type CreditCardMethodFields = [
+  { id: 'card-number'; label: 'Card number'; type: 'text' },
+  { id: 'card-expiration'; label: 'Expiration date'; type: 'text' },
+  { id: 'card-cvv'; label: 'CVV'; type: 'text' },
+  { id: 'card-name'; label: 'Name on card'; type: 'text' }
+]
+
+export type BankTransferMethodFields = [
+  { id: 'iban'; label: 'IBAN'; type: 'text' },
+  { id: 'bic'; label: 'BIC'; type: 'text' },
+  {
+    id: 'account-holder'
+    label: 'Account holder'
+    type: 'text'
+  }
+]
+
+export type PaymentMethodFields = CreditCardMethodFields | BankTransferMethodFields
+
+export type PaymentMethod = {
+  id: string
+  title: string
+  fields: PaymentMethodFields
+}
+
+export type DeliveryMethod = {
+  id: string
+  title: string
+  turnaround: string
+  basePrice: number
+  reducedPrice: number
+}
+
+export type Address = {
+  firstName: string
+  lastName: string
+  address: string
+  apartment?: string
+  city: string
+  zipCode: string
+  state?: string
+  country: string
 }

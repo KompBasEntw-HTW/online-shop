@@ -1,5 +1,5 @@
-import { CoffeeSize } from '../../../types'
-import { MAX_QUANTITY, MIN_QUANTITY } from '../../../constants/constants'
+import { CoffeeSize } from '../types'
+import { MAX_QUANTITY, MIN_QUANTITY } from '../constants/constants'
 
 export const calculateTotalPrice = (pricePerKilo: number, quantity: number, size: CoffeeSize) => {
   return pricePerKilo * quantity * (1 - size.volumeDiscount) * (size.weightInGrams / 1000)

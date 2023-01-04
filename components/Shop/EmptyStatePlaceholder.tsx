@@ -10,7 +10,6 @@ const EmptyStatePlaceholder = ({
   },
   className
 }: {
-  type?: 'noResults' | 'error'
   content: {
     title: string
     description: string
@@ -23,7 +22,7 @@ const EmptyStatePlaceholder = ({
   className?: string
 }) => {
   const containerStyles = clsx(
-    'col flex h-96 flex-col place-items-center justify-center rounded-lg border p-12',
+    'col flex h-96 flex-col place-items-center justify-center rounded-lg border p-4 md:p-12',
     colors?.container,
     className
   )
@@ -32,7 +31,7 @@ const EmptyStatePlaceholder = ({
     colors?.iconBackground
   )
 
-  const iconStyles = clsx('place h-12 w-12', colors?.icon)
+  const iconStyles = clsx('h-12 w-12', colors?.icon)
 
   return (
     <div className={containerStyles}>
