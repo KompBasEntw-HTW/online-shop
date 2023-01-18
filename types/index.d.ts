@@ -1,3 +1,12 @@
+import { z } from 'zod'
+import {
+  ShippingAddress,
+  ShippingMethod,
+  CreditCardDetails,
+  BankTransferDetails,
+  Email
+} from '../constants/zod'
+
 export type CoffeeSize = {
   id: number
   name: string
@@ -137,46 +146,27 @@ export type Basket = {
   basketItems: BasketItem[]
 }
 
-export type CreditCardMethodFields = [
-  { id: 'card-number'; label: 'Card number'; type: 'text' },
-  { id: 'card-expiration'; label: 'Expiration date'; type: 'text' },
-  { id: 'card-cvv'; label: 'CVV'; type: 'text' },
-  { id: 'card-name'; label: 'Name on card'; type: 'text' }
-]
+export type CreditCardDetailsType = z.infer<typeof CreditCardDetails>
+export type BankTransferDetailsType = z.infer<typeof BankTransferDetails>
+export type PaymentDetailsType = CreditCardDetailsType | BankTransferDetailsType
 
-export type BankTransferMethodFields = [
-  { id: 'iban'; label: 'IBAN'; type: 'text' },
-  { id: 'bic'; label: 'BIC'; type: 'text' },
-  {
-    id: 'account-holder'
-    label: 'Account holder'
-    type: 'text'
-  }
-]
+export type ShippingMethodType = z.infer<typeof ShippingMethod>
+export type ShippingAddressType = z.infer<typeof ShippingAddress>
+export type EmailType = z.infer<typeof Email>
 
-export type PaymentMethodFields = CreditCardMethodFields | BankTransferMethodFields
-
-export type PaymentMethod = {
-  id: string
-  title: string
-  fields: PaymentMethodFields
+export type LoggedInUserCheckoutState = {
+  selectedShippingMethod: ShippingMethod
+  persistedShippingAddresses: AddressType[] | []
+  shippingAddress: AddressType
+  persistedPaymentDetails: PaymentDetailsType[] | []
+  paymentDetails: PaymentDetailsType
 }
 
-export type DeliveryMethod = {
-  id: string
-  title: string
-  turnaround: string
-  basePrice: number
-  reducedPrice: number
+export type LoggedOutUserCheckoutState = {
+  selectedShippingMethod: ShippingMethod
+  email: EmailType
+  shippingAddress: AddressType
+  paymentDetails: PaymentDetailsType
 }
 
-export type Address = {
-  firstName: string
-  lastName: string
-  address: string
-  apartment?: string
-  city: string
-  zipCode: string
-  state?: string
-  country: string
-}
+export type CheckoutState = LoggedInUserCheckoutState | LoggedOutUserCheckoutState

@@ -1,59 +1,67 @@
-import { DeliveryMethod, PaymentMethod } from '../types'
+import {
+  ShippingMethodType,
+  ShippingAddressType,
+  CreditCardDetailsType,
+  BankTransferDetailsType
+} from '../types'
 
 export const MAX_QUANTITY = 25
 export const MIN_QUANTITY = 1
 export const FREE_SHIPPING_THRESHOLD = 100
+export const STANDARD_SHIPPING_COST = 5
+export const EXPRESS_SHIPPING_COST = 10
+export const DISCOUNTED_STANDARD_SHIPPING_COST = 0
+export const DISCOUNTED_EXPRESS_SHIPPING_COST = 5
+export const AVAILABLE_PAYMENT_METHODS = [
+  {
+    id: 'credit-card',
+    title: 'Credit card'
+  },
+  {
+    id: 'bank-transfer',
+    title: 'Bank transfer'
+  }
+]
 
-export const deliveryMethods: DeliveryMethod[] = [
+export const SHIPPING_METHODS: ShippingMethodType[] = [
   {
     id: 'standard',
     title: 'Standard',
     turnaround: '4–10 business days',
-    basePrice: 5,
-    reducedPrice: 0
+    basePrice: STANDARD_SHIPPING_COST,
+    reducedPrice: DISCOUNTED_STANDARD_SHIPPING_COST
   },
   {
     id: 'express',
     title: 'Express',
     turnaround: '2–5 business days',
-    basePrice: 10,
-    reducedPrice: 5
+    basePrice: EXPRESS_SHIPPING_COST,
+    reducedPrice: DISCOUNTED_EXPRESS_SHIPPING_COST
   }
 ]
 
-export const paymentMethods: PaymentMethod[] = [
-  {
-    id: 'credit-card',
-    title: 'Credit card',
-    fields: [
-      { id: 'card-number', label: 'Card number', type: 'text' },
-      { id: 'card-expiration', label: 'Expiration date', type: 'text' },
-      { id: 'card-cvv', label: 'CVV', type: 'text' },
-      { id: 'card-name', label: 'Name on card', type: 'text' }
-    ]
-  },
-  {
-    id: 'bank-transfer',
-    title: 'Bank transfer',
-    fields: [
-      { id: 'iban', label: 'IBAN', type: 'text' },
-      { id: 'bic', label: 'BIC', type: 'text' },
-      { id: 'account-holder', label: 'Account holder', type: 'text' }
-    ]
-  }
-]
+export const SUPPORTED_COUNTRIES = ['Germany', 'Switzerland', 'Austria'] as const
 
-export const supportedCountries = [
-  {
-    id: 'de',
-    name: 'Germany'
-  },
-  {
-    id: 'at',
-    name: 'Austria'
-  },
-  {
-    id: 'ch',
-    name: 'Switzerland'
-  }
-]
+export const DEFAULT_ADDRESS: ShippingAddressType = {
+  firstName: '',
+  lastName: '',
+  address: '',
+  zip: '',
+  city: '',
+  country: SUPPORTED_COUNTRIES[0]
+}
+
+export const DEFAULT_CREDIT_CARD_DETAILS: CreditCardDetailsType = {
+  type: 'credit-card',
+  cardNumber: '',
+  expirationDate: '',
+  cvv: '',
+  cardHolder: ''
+}
+
+export const DEFAULT_BANK_TRANSFER_DETAILS: BankTransferDetailsType = {
+  type: 'bank-transfer',
+  accountHolder: '',
+  iban: '',
+  bic: ''
+}
