@@ -1,19 +1,18 @@
 import { RadioGroup } from '@headlessui/react'
-import { DeliveryMethod } from '../../types'
-import { Dispatch, SetStateAction } from 'react'
+import { ShippingMethodType } from '../../types'
 import clsx from 'clsx'
 import { CheckCircleIcon } from '@heroicons/react/24/solid'
 
 const ShippingMethodWidget = ({
-  deliveryMethods,
+  shippingMethods,
   selectedMethod,
   setSelected,
-  discountedShippingThreshold
+  hasDiscountedShippingCost
 }: {
-  deliveryMethods: DeliveryMethod[]
-  selectedMethod: DeliveryMethod
-  setSelected: Dispatch<SetStateAction<DeliveryMethod>>
-  discountedShippingThreshold: boolean
+  shippingMethods: ShippingMethodType[]
+  selectedMethod: ShippingMethodType
+  setSelected: (method: ShippingMethodType) => void
+  hasDiscountedShippingCost: boolean
 }) => {
   return (
     <div className='mt-10 border-t border-gray-200 pt-10'>
@@ -23,10 +22,10 @@ const ShippingMethodWidget = ({
         </RadioGroup.Label>
 
         <div className='mt-4 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4'>
-          {deliveryMethods.map(deliveryMethod => (
+          {shippingMethods.map(shippingMethod => (
             <RadioGroup.Option
-              key={deliveryMethod.id}
-              value={deliveryMethod}
+              key={shippingMethod.id}
+              value={shippingMethod}
               className={({ checked, active }) =>
                 clsx(
                   checked ? 'border-transparent bg-amber-50' : 'border-gray-300',
@@ -41,19 +40,19 @@ const ShippingMethodWidget = ({
                       <RadioGroup.Label
                         as='span'
                         className='block text-sm font-medium text-gray-900'>
-                        {deliveryMethod.title}
+                        {shippingMethod.title}
                       </RadioGroup.Label>
                       <RadioGroup.Description
                         as='span'
                         className='mt-1 flex items-center text-sm text-gray-500'>
-                        {deliveryMethod.turnaround}
+                        {shippingMethod.turnaround}
                       </RadioGroup.Description>
                       <RadioGroup.Description
                         as='span'
                         className='mt-6 text-sm font-medium text-gray-900'>
-                        {discountedShippingThreshold
-                          ? `$${deliveryMethod.reducedPrice} USD`
-                          : `$${deliveryMethod.basePrice} USD`}
+                        {hasDiscountedShippingCost
+                          ? `$${shippingMethod.reducedPrice} USD`
+                          : `$${shippingMethod.basePrice} USD`}
                       </RadioGroup.Description>
                     </span>
                   </span>
