@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 import { Layout } from '../components/General'
 import { EmptyStatePlaceholder } from '../components/Shop'
 const Account = () => {
-  const { data: session } = useSession()
+  const { data: session, status } = useSession()
   const [csrfToken, setCsrfToken] = useState('')
 
   useEffect(() => {
@@ -17,7 +17,7 @@ const Account = () => {
     getAuth()
   }, [session])
 
-  if (session) {
+  if (status === 'authenticated') {
     return (
       <Layout>
         <section className='py-12'>

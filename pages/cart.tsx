@@ -1,9 +1,19 @@
-import { QuestionMarkCircleIcon, XCircleIcon, ShoppingCartIcon } from '@heroicons/react/20/solid'
+import {
+  QuestionMarkCircleIcon,
+  XCircleIcon,
+  ShoppingCartIcon,
+  CheckCircleIcon
+} from '@heroicons/react/20/solid'
 import Image from 'next/image'
 import { useCartContext } from '../context/CartContext'
 import { Layout } from '../components/General'
 import { calculateTotalPrice, roundToTwoDecimals } from '../helpers/price-calculation'
-import { MAX_QUANTITY } from '../constants/constants'
+import {
+  MAX_QUANTITY,
+  FREE_SHIPPING_THRESHOLD,
+  STANDARD_SHIPPING_COST,
+  DISCOUNTED_STANDARD_SHIPPING_COST
+} from '../constants/constants'
 import Link from 'next/link'
 
 const Cart = () => {
@@ -16,15 +26,18 @@ const Cart = () => {
     0
   )
 
-  const SHIPPING_COST = 5
+  const hasDiscountedShippingCost = subtotal >= FREE_SHIPPING_THRESHOLD
+  const shippingCost = hasDiscountedShippingCost
+    ? DISCOUNTED_STANDARD_SHIPPING_COST
+    : STANDARD_SHIPPING_COST
 
-  const tax = (subtotal + SHIPPING_COST) * 0.19
-  const total = subtotal + SHIPPING_COST + tax
+  const tax = (subtotal + shippingCost) * 0.19
+  const total = subtotal + shippingCost + tax
 
   return (
     <Layout>
       <div className='bg-white'>
-        <div className='mx-auto max-w-2xl py-16 sm:px-6 lg:max-w-7xl lg:px-8'>
+        <div className='mx-auto py-16'>
           <h1 className='text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl'>
             Shopping Cart
           </h1>
@@ -109,8 +122,36 @@ const Cart = () => {
                   Order summary
                 </h2>
 
-                <dl className='mt-6 space-y-4'>
-                  <div className='flex items-center justify-between'>
+                <dl className='mt-4 space-y-4'>
+                  {hasDiscountedShippingCost && (
+                    <div className='flex items-center gap-x-2 rounded-md border border-amber-200 bg-amber-50 px-4 py-2'>
+                      <CheckCircleIcon className='h-6 w-6 shrink-0 text-amber-600' />
+                      <div>
+                        <p className='text-sm font-semibold text-gray-800'>
+                          You&#39;re eligible for free standard shipping!
+                        </p>
+                        <p className='text-xs text-gray-600'>
+                          Select standard shipping at checkout, or upgrade to express shipping at a
+                          discount.
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                  {!hasDiscountedShippingCost && (
+                    <div className='flex items-center gap-x-2 rounded-md border border-amber-200 bg-amber-50 px-4 py-2'>
+                      <ShoppingCartIcon className='h-6 w-6 shrink-0 text-amber-600' />
+                      <div>
+                        <p className='text-sm font-semibold text-gray-800'>
+                          You&#39;re almost there!
+                        </p>
+                        <p className='text-xs text-gray-600'>
+                          Spend ${roundToTwoDecimals(FREE_SHIPPING_THRESHOLD - subtotal)} more to
+                          get free standard shipping.
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                  <div className='flex items-center justify-between pt-2'>
                     <dt className='text-sm text-gray-600'>Subtotal</dt>
                     <dd className='text-sm font-medium text-gray-900'>
                       ${roundToTwoDecimals(subtotal)}
@@ -125,7 +166,7 @@ const Cart = () => {
                       </a>
                     </dt>
                     <dd className='text-sm font-medium text-gray-900'>
-                      ${roundToTwoDecimals(SHIPPING_COST)}
+                      ${roundToTwoDecimals(shippingCost)}
                     </dd>
                   </div>
                   <div className='flex items-center justify-between border-t border-gray-200 pt-4'>
