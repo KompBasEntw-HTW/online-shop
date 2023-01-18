@@ -1,4 +1,11 @@
-import { PaymentDetailsType, BankTransferDetailsType, CreditCardDetailsType } from '../types'
+import {
+  PaymentDetailsType,
+  BankTransferDetailsType,
+  CreditCardDetailsType,
+  CheckoutState,
+  LoggedInUserCheckoutState,
+  LoggedOutUserCheckoutState
+} from '../types'
 
 export const isBankTransferDetails = (
   obj: PaymentDetailsType | Partial<PaymentDetailsType> | null
@@ -7,3 +14,12 @@ export const isBankTransferDetails = (
 export const isCreditCardDetails = (
   obj: PaymentDetailsType | Partial<PaymentDetailsType> | null
 ): obj is CreditCardDetailsType => obj?.type === 'credit-card'
+
+export const isLoggedInUserCheckoutState = (
+  state: CheckoutState
+): state is LoggedInUserCheckoutState =>
+  (state as LoggedInUserCheckoutState).persistedShippingAddresses !== undefined
+
+export const isLoggedOutUserCheckoutState = (
+  state: CheckoutState
+): state is LoggedOutUserCheckoutState => (state as LoggedOutUserCheckoutState).email !== undefined

@@ -23,15 +23,18 @@ import {
   BankTransferDetailsType,
   CreditCardDetailsType,
   EmailType,
-  LoggedInUserCheckoutState,
-  LoggedOutUserCheckoutState,
   CheckoutState,
   PaymentDetailsType,
   ShippingAddressType,
   ShippingMethodType
 } from '../types'
 import EmailWidget from '../components/Checkout/EmailWidget'
-import { ShippingAddress, Email } from '../constants/zod'
+import { ShippingAddress, Email, PaymentMethodDetails, ShippingMethod } from '../constants/zod'
+import { ZodError } from 'zod'
+import {
+  isLoggedInUserCheckoutState,
+  isLoggedOutUserCheckoutState
+} from '../helpers/type-predicates'
 
 const testCreditCardDetails: CreditCardDetailsType = {
   type: 'credit-card',
@@ -92,12 +95,6 @@ type checkoutReducerAction =
   | { type: 'SET_EMAIL'; payload: EmailType }
   | { type: 'SUBMIT_ORDER' }
 
-const isLoggedInUserCheckoutState = (state: CheckoutState): state is LoggedInUserCheckoutState =>
-  (state as LoggedInUserCheckoutState).persistedShippingAddresses !== undefined
-
-const isLoggedOutUserCheckoutState = (state: CheckoutState): state is LoggedOutUserCheckoutState =>
-  (state as LoggedOutUserCheckoutState).email !== undefined
-
 const checkoutReducer = (state: CheckoutState, action: checkoutReducerAction): CheckoutState => {
   switch (action.type) {
     case 'SET_SHIPPING_ADDRESS':
@@ -126,13 +123,27 @@ const checkoutReducer = (state: CheckoutState, action: checkoutReducerAction): C
 
     case 'SUBMIT_ORDER':
       if (isLoggedInUserCheckoutState(state)) {
-        const validShippingAddress = ShippingAddress.safeParse(state.shippingAddress)
+        try {
+          ShippingAddress.parse(state.shippingAddress)
+          PaymentMethodDetails.parse(state.paymentDetails)
+          ShippingMethod.parse(state.selectedShippingMethod)
+
+          // TODO: submit order
+        } catch (error) {
+          const actualError = error as ZodError
+          console.log(actualError)
+        }
       } else {
-        const validShippingAddress = ShippingAddress.safeParse(state.shippingAddress)
-        const validEmail = Email.safeParse(state.email)
-        console.log(validEmail)
-        return {
-          ...state
+        try {
+          Email.parse(state.email)
+          ShippingAddress.parse(state.shippingAddress)
+          PaymentMethodDetails.parse(state.paymentDetails)
+          ShippingMethod.parse(state.selectedShippingMethod)
+
+          // TODO: submit order
+        } catch (error) {
+          const actualError = error as ZodError
+          console.log(actualError)
         }
       }
     default:
@@ -177,8 +188,6 @@ const Checkout = () => {
 
   const isAuthenticated =
     session.status === 'authenticated' && isLoggedInUserCheckoutState(checkoutState)
-  const isNotAuthenticated =
-    session.status !== 'authenticated' && isLoggedOutUserCheckoutState(checkoutState)
 
   const hasDiscountedShippingCost = subtotal >= FREE_SHIPPING_THRESHOLD
   const shippingCost = hasDiscountedShippingCost
@@ -206,8 +215,6 @@ const Checkout = () => {
       value: `$${roundToTwoDecimals(total)} USD`
     }
   ]
-
-  console.log('checkoutState', checkoutState)
 
   return (
     <Layout>

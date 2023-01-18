@@ -95,6 +95,8 @@ export const BankTransferDetails = z.object({
   saveToDatabase: z.boolean().optional()
 })
 
+export const PaymentMethodDetails = z.union([CreditCardDetails, BankTransferDetails])
+
 export const ShippingAddress = z.object({
   firstName: z.string().min(1),
   lastName: z.string().min(1),
