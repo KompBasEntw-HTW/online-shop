@@ -15,6 +15,12 @@ import {
   verifyQuantity
 } from '../../helpers/price-calculation'
 
+const clearAndSortBagSizes = (bagSizes: CoffeeBagSize[]) => {
+  const sortedBagSizes = bagSizes.sort((a, b) => a.bagSize.weightInGrams - b.bagSize.weightInGrams)
+
+  return sortedBagSizes.filter(bagSize => bagSize.quantity > 0)
+}
+
 const ProductConfigurator = ({
   product,
   className,
@@ -24,11 +30,10 @@ const ProductConfigurator = ({
   className?: string
   onShowToast: () => void
 }) => {
-  const sortedBagSizes = product.coffeeBagSizes.sort(
-    (a, b) => a.bagSize.weightInGrams - b.bagSize.weightInGrams
-  )
+  const clearedAndSortedBagSizes = clearAndSortBagSizes(product.coffeeBagSizes)
 
-  const [size, setSize] = useState<CoffeeBagSize>(sortedBagSizes[0])
+  const [size, setSize] = useState<CoffeeBagSize>(clearedAndSortedBagSizes[0])
+  const [maxQuantity, setMaxQuantity] = useState(size.quantity)
   const [quantity, setQuantity] = useState(1)
   const [totalPrice, setTotalPrice] = useState(0)
   const [error, setError] = useState({
@@ -66,33 +71,39 @@ const ProductConfigurator = ({
   const handleAddToCart = () => {
     try {
       verifyQuantity(quantity)
+
+      const basketItem: BasketItem[] = [
+        {
+          item: {
+            bagSizeId: size.bagSize.id,
+            productId: product.id
+          },
+          quantity: quantity
+        }
+      ]
+
+      cartContext.addItem(basketItem)
+      onShowToast()
     } catch (err) {
       setError({
         error: true,
         message: (err as Error).message
       })
     }
-
-    const basketItems: BasketItem[] = [
-      {
-        item: {
-          bagSizeId: size.bagSize.id,
-          productId: product.id
-        },
-        quantity: quantity
-      }
-    ]
-
-    cartContext.addItem(basketItems)
-    onShowToast()
   }
 
   return (
     <div className={clsx('min-w-xs rounded-lg border border-zinc-200 bg-zinc-50 p-4', className)}>
-      <RadioGroup value={size} onChange={setSize}>
+      <RadioGroup
+        value={size}
+        onChange={(size: CoffeeBagSize) => {
+          setSize(size)
+          setMaxQuantity(size.quantity)
+          setQuantity(1)
+        }}>
         <RadioGroup.Label className='sr-only'>Choose your product variation</RadioGroup.Label>
         <div className='grid grid-cols-2 gap-1'>
-          {sortedBagSizes.map(size => (
+          {clearedAndSortedBagSizes.map(size => (
             <RadioGroup.Option key={size.bagSize.id} value={size} className='hover:cursor-pointer'>
               {({ checked }) => (
                 <div
@@ -119,7 +130,7 @@ const ProductConfigurator = ({
           name='quantity'
           id='quantity'
           min={MIN_QUANTITY}
-          max={MAX_QUANTITY}
+          max={maxQuantity > MAX_QUANTITY ? MAX_QUANTITY : maxQuantity}
           className='mt-1 block w-full rounded-md border border-zinc-200 px-2 py-1 focus:border-amber-400 focus:ring-amber-400'
           placeholder='Quantity'
           value={quantity}

@@ -34,6 +34,18 @@ const Cart = () => {
   const tax = (subtotal + shippingCost) * 0.19
   const total = subtotal + shippingCost + tax
 
+  const sortedCart = cartContext.cart.sort((a, b) => {
+    if (a.product.name < b.product.name) {
+      return -1
+    } else if (a.product.name > b.product.name) {
+      return 1
+    } else if (a.size.bagSize.weightInGrams < b.size.bagSize.weightInGrams) {
+      return 1
+    } else {
+      return -1
+    }
+  })
+
   return (
     <Layout>
       <div className='bg-white'>
@@ -57,7 +69,7 @@ const Cart = () => {
                   Items in your shopping cart
                 </h2>
                 <ul role='list' className='flex flex-col gap-2'>
-                  {cartContext.cart.map(cartItem => (
+                  {sortedCart.map(cartItem => (
                     <li
                       key={cartItem.product.id + cartItem.size.bagSize.id}
                       className='relative flex gap-6 rounded-md border border-zinc-100 p-3'>
@@ -94,7 +106,14 @@ const Cart = () => {
                               }
                             ])
                           }>
-                          {Array.from(Array(MAX_QUANTITY).keys()).map(i => (
+                          {Array.from(
+                            Array(
+                              cartItem.product.coffeeBagSizes.find(
+                                coffeeBagSize =>
+                                  coffeeBagSize.bagSize.id === cartItem.size.bagSize.id
+                              )?.quantity ?? MAX_QUANTITY
+                            ).keys()
+                          ).map(i => (
                             <option key={i} value={i + 1}>
                               {i + 1}
                             </option>

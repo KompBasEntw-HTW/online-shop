@@ -73,7 +73,13 @@ const SingleCheckoutItem = ({
               value={cartItem.quantity}
               className='rounded-md border border-gray-300 text-left text-base font-medium text-gray-700 shadow-sm focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 sm:text-sm'
               onChange={onQuantityChange}>
-              {Array.from(Array(MAX_QUANTITY).keys()).map(quantity => (
+              {Array.from(
+                Array(
+                  cartItem.product.coffeeBagSizes.find(
+                    coffeeBagSize => coffeeBagSize.bagSize.id === cartItem.size.bagSize.id
+                  )?.quantity ?? MAX_QUANTITY
+                ).keys()
+              ).map(quantity => (
                 <option key={quantity} value={quantity + 1}>
                   {quantity + 1}
                 </option>
