@@ -24,7 +24,11 @@ const ProductConfigurator = ({
   className?: string
   onShowToast: () => void
 }) => {
-  const [size, setSize] = useState<CoffeeBagSize>(product.coffeeBagSizes[0])
+  const sortedBagSizes = product.coffeeBagSizes.sort(
+    (a, b) => a.bagSize.weightInGrams - b.bagSize.weightInGrams
+  )
+
+  const [size, setSize] = useState<CoffeeBagSize>(sortedBagSizes[0])
   const [quantity, setQuantity] = useState(1)
   const [totalPrice, setTotalPrice] = useState(0)
   const [error, setError] = useState({
@@ -83,21 +87,13 @@ const ProductConfigurator = ({
     onShowToast()
   }
 
-  const sortedBagSizes = product.coffeeBagSizes.sort(
-    (a, b) => a.bagSize.weightInGrams - b.bagSize.weightInGrams
-  )
-
   return (
     <div className={clsx('min-w-xs rounded-lg border border-zinc-200 bg-zinc-50 p-4', className)}>
       <RadioGroup value={size} onChange={setSize}>
         <RadioGroup.Label className='sr-only'>Choose your product variation</RadioGroup.Label>
         <div className='grid grid-cols-2 gap-1'>
-          {sortedBagSizes.map((size, id) => (
-            <RadioGroup.Option
-              key={size.bagSize.id}
-              value={size}
-              className='hover:cursor-pointer'
-              defaultChecked={id === 0}>
+          {sortedBagSizes.map(size => (
+            <RadioGroup.Option key={size.bagSize.id} value={size} className='hover:cursor-pointer'>
               {({ checked }) => (
                 <div
                   className={clsx(
