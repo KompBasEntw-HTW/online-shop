@@ -196,8 +196,7 @@ const Checkout = () => {
     0
   )
 
-  const isAuthenticated =
-    session.status === 'authenticated' && isLoggedInUserCheckoutState(checkoutState)
+  const isAuthenticated = session.status === 'authenticated'
 
   const hasDiscountedShippingCost = subtotal >= FREE_SHIPPING_THRESHOLD
   const shippingCost = hasDiscountedShippingCost
@@ -237,6 +236,8 @@ const Checkout = () => {
       return -1
     }
   })
+
+  console.log(cartContext.cart)
 
   return (
     <Layout>
