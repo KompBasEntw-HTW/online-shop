@@ -47,7 +47,7 @@ const ProductConfigurator = ({
     if (!quantity) return
 
     try {
-      if (!verifyQuantity(quantity)) {
+      if (!verifyQuantity(quantity, maxQuantity)) {
         setError({
           error: true,
           message: `Quantity must be between ${MIN_QUANTITY} and ${MAX_QUANTITY}`

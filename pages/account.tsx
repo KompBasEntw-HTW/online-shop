@@ -7,6 +7,7 @@ import { EmptyStatePlaceholder } from '../components/Shop'
 import { useCartContext } from '../context/CartContext'
 import { CartItem } from '../types'
 import { formatDate, addToDate } from '../helpers/utilities'
+import Link from 'next/link'
 
 type Order = {
   orderId: string
@@ -509,25 +510,27 @@ const Account = () => {
 
                   <div className='grid grid-cols-3 gap-4 pt-4'>
                     {order.items.map(item => (
-                      <div
+                      <Link
                         key={item.product.id + item.size.bagSize.id}
-                        className='flex gap-x-4 rounded-md border border-zinc-200 bg-zinc-50'>
-                        <div className='shrink-0 rounded-xl bg-amber-50'>
-                          <Image
-                            src={item.product.imageUrl}
-                            alt={item.product.name}
-                            width={80}
-                            height={80}
-                          />
+                        href={`/products/${item.product.id}`}>
+                        <div className='flex gap-x-4 rounded-md border border-zinc-200 bg-zinc-50 hover:cursor-pointer hover:border-zinc-300'>
+                          <div className='shrink-0 rounded-xl bg-amber-50'>
+                            <Image
+                              src={item.product.imageUrl}
+                              alt={item.product.name}
+                              width={80}
+                              height={80}
+                            />
+                          </div>
+                          <div className='flex flex-col justify-center'>
+                            <h4 className='text-base'>{item.product.name}</h4>
+                            <p className='text-sm text-gray-500'>
+                              {item.size.bagSize.weightInGrams}g
+                            </p>
+                            <p className='text-sm text-gray-500'>Quantity: {item.quantity}</p>
+                          </div>
                         </div>
-                        <div className='flex flex-col justify-center'>
-                          <h4 className='text-base'>{item.product.name}</h4>
-                          <p className='text-sm text-gray-500'>
-                            {item.size.bagSize.weightInGrams}g
-                          </p>
-                          <p className='text-sm text-gray-500'>Quantity: {item.quantity}</p>
-                        </div>
-                      </div>
+                      </Link>
                     ))}
                   </div>
                 </div>
