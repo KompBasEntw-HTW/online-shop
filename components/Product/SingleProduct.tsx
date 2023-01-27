@@ -32,7 +32,7 @@ const SingleProduct = ({ product }: { product: Coffee }) => {
           </Link>
         </h3>
         <div className='flex flex-wrap divide-x divide-dotted'>
-          {product.flavorNotes.map((flavorNote, index) => (
+          {product.flavorNotes.sort((a, b) => a.id - b.id).map((flavorNote, index) => (
             <span className='px-1 text-xs font-semibold text-gray-600' key={index}>
               {flavorNote.flavorNote}
             </span>
