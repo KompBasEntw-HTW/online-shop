@@ -31,7 +31,7 @@ const FilterMenu = ({
       </button>
 
       <div className='hidden lg:block'>
-        <form className='space-y-6 divide-y divide-gray-200'>
+        <form className='space-y-6 divide-y divide-gray-200' id='filter-form'>
           {filters.map((filter, sectionIdx) => {
             switch (filter.type) {
               case 'checkbox':

@@ -66,11 +66,11 @@ const ProductConfigurator = ({
     }
 
     setTotalPrice(calculateTotalPrice(product.pricePerKilo, quantity, size.bagSize))
-  }, [size, quantity, product.pricePerKilo])
+  }, [size, quantity, product.pricePerKilo, maxQuantity])
 
   const handleAddToCart = () => {
     try {
-      verifyQuantity(quantity)
+      verifyQuantity(quantity, maxQuantity)
 
       const basketItem: BasketItem[] = [
         {

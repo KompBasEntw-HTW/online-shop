@@ -2,6 +2,7 @@ import { ChangeEvent, useState } from 'react'
 import { CheckboxFilterType, RangeFilterType } from '../../types'
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/solid'
 import ReactSlider from 'react-slider'
+import clsx from 'clsx'
 
 export const CheckboxFilter = ({
   filter,
@@ -17,7 +18,9 @@ export const CheckboxFilter = ({
   const [showFullList, setShowFullList] = useState(false)
 
   return (
-    <div className={sectionIdx === 0 ? '' : 'pt-6'}>
+    <div
+      className={clsx(sectionIdx === 0 ? '' : 'pt-6', 'checkbox-filter')}
+      id='checkbox-filter-container'>
       <fieldset>
         <legend className='block font-lora text-lg font-bold text-gray-900'>{filter.name}</legend>
         <div className='space-y-2 pt-3'>
