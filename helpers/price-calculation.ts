@@ -14,10 +14,12 @@ export const roundToTwoDecimals = (num: number) => {
 }
 
 export const verifyQuantity = (quantity: number, maxQuantity: number) => {
-  if (!Number.isInteger(quantity)) {
-    throw new Error('Quantity must be a positive integer')
-  }
-  if (quantity < MIN_QUANTITY || quantity > maxQuantity) {
+  if (
+    !Number.isInteger(quantity) ||
+    quantity <= 0 ||
+    quantity < MIN_QUANTITY ||
+    quantity > maxQuantity
+  ) {
     throw new Error(`Quantity must be between ${MIN_QUANTITY} and ${maxQuantity}`)
   }
 

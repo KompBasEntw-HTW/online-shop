@@ -80,7 +80,9 @@ const ProductPage = ({ latLng, product }: { latLng?: [number, number]; product: 
                     </span>
                   ))}
                 </div>
-                <p className='large-text max-w-2xl pt-2'>{product.description}</p>
+                <p className='large-text max-w-2xl pt-2' id='product-description'>
+                  {product.description}
+                </p>
                 <div className='flex gap-x-1 pt-2'>
                   <Tag content={`Roast level: ${product.roastLevel.toString()}`} />
                   <Tag content={product.flavor} />
