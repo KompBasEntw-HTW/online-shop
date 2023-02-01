@@ -12,13 +12,14 @@ const HeaderCart = () => {
   return (
     <>
       <Popover className='relative z-50'>
-        <Popover.Button className='flex items-center'>
+        <Popover.Button className='flex items-center' id='header-cart-button'>
           <div className='group relative hover:cursor-pointer'>
             <ShoppingCartIcon
               className='h-6 w-6 flex-shrink-0 text-gray-400 group-hover:text-gray-500'
               aria-hidden='true'
             />
             <span
+              id='header-cart-count'
               className={clsx(
                 'absolute -top-1.5 -right-1.5 ml-2 h-4 w-4 text-xs font-medium',
                 cartContext?.cart?.length === 0
@@ -53,7 +54,7 @@ const HeaderCart = () => {
                 {cartContext.cart.map(item => (
                   <li
                     key={item.product.id + item.size.bagSize.id}
-                    className='relative flex gap-2 rounded-md border border-zinc-100 p-2'>
+                    className='header-cart-item relative flex gap-2 rounded-md border border-zinc-100 p-2'>
                     <div className='shrink-0 rounded-md border border-amber-100 bg-amber-50'>
                       <span className='sr-only'>{item.product.name}</span>
                       <Image

@@ -44,28 +44,21 @@ const ProductConfigurator = ({
   const cartContext = useCartContext()
 
   useEffect(() => {
-    if (!quantity) return
-
     try {
-      if (!verifyQuantity(quantity, maxQuantity)) {
-        setError({
-          error: true,
-          message: `Quantity must be between ${MIN_QUANTITY} and ${MAX_QUANTITY}`
-        })
-      } else {
-        setError({
-          error: false,
-          message: ''
-        })
-      }
+      verifyQuantity(quantity, maxQuantity)
+
+      setError({
+        error: false,
+        message: ''
+      })
+
+      setTotalPrice(calculateTotalPrice(product.pricePerKilo, quantity, size.bagSize))
     } catch (err) {
       setError({
         error: true,
         message: (err as Error).message
       })
     }
-
-    setTotalPrice(calculateTotalPrice(product.pricePerKilo, quantity, size.bagSize))
   }, [size, quantity, product.pricePerKilo, maxQuantity])
 
   const handleAddToCart = () => {
@@ -95,6 +88,7 @@ const ProductConfigurator = ({
   return (
     <div className={clsx('min-w-xs rounded-lg border border-zinc-200 bg-zinc-50 p-4', className)}>
       <RadioGroup
+        className='product-size-list'
         value={size}
         onChange={(size: CoffeeBagSize) => {
           setSize(size)
@@ -104,7 +98,10 @@ const ProductConfigurator = ({
         <RadioGroup.Label className='sr-only'>Choose your product variation</RadioGroup.Label>
         <div className='grid grid-cols-2 gap-1'>
           {clearedAndSortedBagSizes.map(size => (
-            <RadioGroup.Option key={size.bagSize.id} value={size} className='hover:cursor-pointer'>
+            <RadioGroup.Option
+              key={size.bagSize.id}
+              value={size}
+              className='product-size-option hover:cursor-pointer'>
               {({ checked }) => (
                 <div
                   className={clsx(
@@ -137,7 +134,9 @@ const ProductConfigurator = ({
           onChange={e => setQuantity(parseInt(e.target.value))}
         />
         {error.error && (
-          <p className='pb-2 pt-1.5 text-xs text-zinc-500 underline decoration-amber-500'>
+          <p
+            className='pb-2 pt-1.5 text-xs text-zinc-500 underline decoration-amber-500'
+            id='product-configurator-error'>
             {error.message}
           </p>
         )}
@@ -147,7 +146,7 @@ const ProductConfigurator = ({
           <span className='block text-xs font-semibold uppercase tracking-tight text-zinc-400'>
             Total price
           </span>
-          <span className='font-lora text-xl font-bold text-zinc-700'>
+          <span className='font-lora text-xl font-bold text-zinc-700' id='total-price'>
             ${roundToTwoDecimals(totalPrice)} USD*
           </span>
           {quantity > 0 && (
