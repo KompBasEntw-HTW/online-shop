@@ -1,4 +1,4 @@
-import { Coffee } from '../../../types'
+import { Coffee } from '../../types'
 
 describe('single product page', () => {
   before(() => {
