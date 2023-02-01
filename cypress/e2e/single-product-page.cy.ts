@@ -59,7 +59,7 @@ describe('single product page', () => {
     cy.get('#product-configurator-error').should('have.text', 'Quantity must be between 1 and 7')
   })
 
-  it.only('can add product to cart', () => {
+  it('can add product to cart', () => {
     cy.get('@addToCartButton').click()
     cy.get('#header-cart-count').should('have.text', '1')
     cy.get('#toast').should('be.visible')
@@ -70,6 +70,20 @@ describe('single product page', () => {
       .and('be.visible')
       .find('h3')
       .should('have.text', '71 House Blend')
+  })
+
+  it('can remove product from cart', () => {
+    cy.get('@addToCartButton').click()
+    cy.get('#header-cart-button').click()
+    cy.get('.header-cart-item')
+      .should('have.length', 1)
+      .and('be.visible')
+      .find('h3')
+      .should('have.text', '71 House Blend')
+
+    cy.get('.remove-cart-item-button').click()
+    cy.get('.header-cart-item').should('not.exist')
+    cy.get('#header-cart-count').should('have.text', '0')
   })
 })
 

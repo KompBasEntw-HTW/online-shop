@@ -70,7 +70,7 @@ const HeaderCart = () => {
                       <p className='text-xs'>Quantity: {item.quantity}</p>
                     </div>
                     <button
-                      className='absolute top-1 right-1'
+                      className='remove-cart-item-button absolute top-1 right-1'
                       type='button'
                       onClick={() =>
                         cartContext?.removeItem(item.product.id, item.size.bagSize.id)
