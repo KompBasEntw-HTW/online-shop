@@ -19,25 +19,28 @@ type PositionStackAPIResponse = {
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const { id } = params as { id: string }
 
-  const productRes = await fetch(`http://product-service:8080/coffee/${id}`)
-  const productData: Coffee = await productRes.json()
+  try {
+    const productRes = await fetch(`http://product-service:8080/coffee/${id}`)
+    const productData: Coffee = await productRes.json()
 
-  const locationRes = await fetch(
-    `http://api.positionstack.com/v1/forward?access_key=${
-      process.env.POSITIONSTACK_API_KEY
-    }&query=${encodeURIComponent(productData.location)}&limit=1`
-  )
+    const locationRes = await fetch(
+      `http://api.positionstack.com/v1/forward?access_key=${
+        process.env.POSITIONSTACK_API_KEY
+      }&query=${encodeURIComponent(productData.location)}&limit=1`
+    )
 
-  let locationData: PositionStackAPIResponse = { data: [] }
+    const locationData: PositionStackAPIResponse = await locationRes.json()
 
-  if (locationRes.ok) {
-    locationData = await locationRes.json()
-  }
-
-  return {
-    props: {
-      latLng: [locationData?.data[0]?.latitude, locationData?.data[0]?.longitude],
-      product: productData
+    return {
+      props: {
+        latLng: [locationData?.data[0]?.latitude, locationData?.data[0]?.longitude],
+        product: productData
+      }
+    }
+  } catch (err) {
+    console.log(err)
+    return {
+      notFound: true
     }
   }
 }
@@ -80,7 +83,9 @@ const ProductPage = ({ latLng, product }: { latLng?: [number, number]; product: 
                     </span>
                   ))}
                 </div>
-                <p className='large-text max-w-2xl pt-2'>{product.description}</p>
+                <p className='large-text max-w-2xl pt-2' id='product-description'>
+                  {product.description}
+                </p>
                 <div className='flex gap-x-1 pt-2'>
                   <Tag content={`Roast level: ${product.roastLevel.toString()}`} />
                   <Tag content={product.flavor} />

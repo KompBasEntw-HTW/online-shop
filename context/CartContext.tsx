@@ -61,6 +61,7 @@ async function getCart(): Promise<CartItem[] | undefined> {
 
 async function updateItems(basketItems: BasketItem[]): Promise<CartItem[] | undefined> {
   const session = await getSession()
+
   if (session) {
     const updatedBasketRes = await fetch('/api/basket-service/basket/update', {
       headers: {

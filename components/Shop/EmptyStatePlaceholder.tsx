@@ -34,7 +34,7 @@ const EmptyStatePlaceholder = ({
   const iconStyles = clsx('h-12 w-12', colors?.icon)
 
   return (
-    <div className={containerStyles}>
+    <div className={containerStyles} id='empty-state-placeholder'>
       <div className={iconBackgroundStyles}>
         <FaceFrownIcon className={iconStyles} />
       </div>

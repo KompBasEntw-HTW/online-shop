@@ -1,9 +1,4 @@
-import {
-  QuestionMarkCircleIcon,
-  XCircleIcon,
-  ShoppingCartIcon,
-  CheckCircleIcon
-} from '@heroicons/react/20/solid'
+import { XCircleIcon, ShoppingCartIcon, CheckCircleIcon } from '@heroicons/react/20/solid'
 import Image from 'next/image'
 import { useCartContext } from '../context/CartContext'
 import { Layout } from '../components/General'
@@ -34,6 +29,18 @@ const Cart = () => {
   const tax = (subtotal + shippingCost) * 0.19
   const total = subtotal + shippingCost + tax
 
+  const sortedCart = cartContext.cart.sort((a, b) => {
+    if (a.product.name < b.product.name) {
+      return -1
+    } else if (a.product.name > b.product.name) {
+      return 1
+    } else if (a.size.bagSize.weightInGrams < b.size.bagSize.weightInGrams) {
+      return 1
+    } else {
+      return -1
+    }
+  })
+
   return (
     <Layout>
       <div className='bg-white'>
@@ -57,10 +64,10 @@ const Cart = () => {
                   Items in your shopping cart
                 </h2>
                 <ul role='list' className='flex flex-col gap-2'>
-                  {cartContext.cart.map(cartItem => (
+                  {sortedCart.map(cartItem => (
                     <li
                       key={cartItem.product.id + cartItem.size.bagSize.id}
-                      className='relative flex gap-6 rounded-md border border-zinc-100 p-3'>
+                      className='cart-item relative flex gap-6 rounded-md border border-zinc-100 p-3'>
                       <div className='shrink-0 rounded-md border border-amber-100 bg-amber-50'>
                         <span className='sr-only'>{cartItem.product.name}</span>
                         <Image
@@ -94,7 +101,14 @@ const Cart = () => {
                               }
                             ])
                           }>
-                          {Array.from(Array(MAX_QUANTITY).keys()).map(i => (
+                          {Array.from(
+                            Array(
+                              cartItem.product.coffeeBagSizes.find(
+                                coffeeBagSize =>
+                                  coffeeBagSize.bagSize.id === cartItem.size.bagSize.id
+                              )?.quantity ?? MAX_QUANTITY
+                            ).keys()
+                          ).map(i => (
                             <option key={i} value={i + 1}>
                               {i + 1}
                             </option>
@@ -153,37 +167,25 @@ const Cart = () => {
                   )}
                   <div className='flex items-center justify-between pt-2'>
                     <dt className='text-sm text-gray-600'>Subtotal</dt>
-                    <dd className='text-sm font-medium text-gray-900'>
+                    <dd className='text-sm font-medium text-gray-900' id='subtotal'>
                       ${roundToTwoDecimals(subtotal)}
                     </dd>
                   </div>
                   <div className='flex items-center justify-between border-t border-gray-200 pt-4'>
-                    <dt className='flex items-center text-sm text-gray-600'>
-                      <span>Shipping estimate</span>
-                      <a href='#' className='ml-2 flex-shrink-0 text-gray-400 hover:text-gray-500'>
-                        <span className='sr-only'>Learn more about how shipping is calculated</span>
-                        <QuestionMarkCircleIcon className='h-5 w-5' aria-hidden='true' />
-                      </a>
-                    </dt>
-                    <dd className='text-sm font-medium text-gray-900'>
+                    <dt className='flex items-center text-sm text-gray-600'>Shipping estimate</dt>
+                    <dd className='text-sm font-medium text-gray-900' id='shipping-cost-estimate'>
                       ${roundToTwoDecimals(shippingCost)}
                     </dd>
                   </div>
                   <div className='flex items-center justify-between border-t border-gray-200 pt-4'>
-                    <dt className='flex text-sm text-gray-600'>
-                      <span>Tax estimate</span>
-                      <a href='#' className='ml-2 flex-shrink-0 text-gray-400 hover:text-gray-500'>
-                        <span className='sr-only'>Learn more about how tax is calculated</span>
-                        <QuestionMarkCircleIcon className='h-5 w-5' aria-hidden='true' />
-                      </a>
-                    </dt>
-                    <dd className='text-sm font-medium text-gray-900'>
+                    <dt className='flex text-sm text-gray-600'>Tax estimate</dt>
+                    <dd className='text-sm font-medium text-gray-900' id='tax-estimate'>
                       ${roundToTwoDecimals(tax)}
                     </dd>
                   </div>
                   <div className='flex items-center justify-between border-t border-gray-200 pt-4'>
                     <dt className='text-base font-medium text-gray-900'>Order total</dt>
-                    <dd className='text-base font-medium text-gray-900'>
+                    <dd className='text-base font-medium text-gray-900' id='order-total'>
                       ${roundToTwoDecimals(total)}
                     </dd>
                   </div>
@@ -192,6 +194,7 @@ const Cart = () => {
                 <div className='mt-6'>
                   <Link href='/checkout'>
                     <button
+                      id='checkout-button'
                       type='submit'
                       className='w-full rounded-md border border-transparent bg-amber-500 py-3 px-4 text-base font-medium text-white shadow-sm hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 focus:ring-offset-gray-50'>
                       Checkout

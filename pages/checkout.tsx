@@ -2,7 +2,7 @@ import { useEffect, useReducer } from 'react'
 import { Layout } from '../components/General'
 import { useCartContext } from '../context/CartContext'
 import { calculateTotalPrice, roundToTwoDecimals } from '../helpers/price-calculation'
-import { useSession } from 'next-auth/react'
+import { useSession, getCsrfToken } from 'next-auth/react'
 import { UserIcon } from '@heroicons/react/20/solid'
 import {
   DescriptionListItem,
@@ -35,6 +35,7 @@ import {
   isLoggedInUserCheckoutState,
   isLoggedOutUserCheckoutState
 } from '../helpers/type-predicates'
+import { useState } from 'react'
 
 const testCreditCardDetails: CreditCardDetailsType = {
   type: 'credit-card',
@@ -154,6 +155,7 @@ const checkoutReducer = (state: CheckoutState, action: checkoutReducerAction): C
 const Checkout = () => {
   const cartContext = useCartContext()
   const session = useSession()
+  const [csrfToken, setCsrfToken] = useState('')
 
   const initialCheckoutState: CheckoutState =
     session.status === 'authenticated'
@@ -174,6 +176,14 @@ const Checkout = () => {
   const [checkoutState, dispatch] = useReducer(checkoutReducer, initialCheckoutState)
 
   useEffect(() => {
+    async function getAuth() {
+      const crsfToken = await getCsrfToken()
+      setCsrfToken(crsfToken || '')
+    }
+    getAuth()
+  }, [])
+
+  useEffect(() => {
     if (session.status === 'authenticated') {
       // fetch user data from database
     }
@@ -186,8 +196,7 @@ const Checkout = () => {
     0
   )
 
-  const isAuthenticated =
-    session.status === 'authenticated' && isLoggedInUserCheckoutState(checkoutState)
+  const isAuthenticated = session.status === 'authenticated'
 
   const hasDiscountedShippingCost = subtotal >= FREE_SHIPPING_THRESHOLD
   const shippingCost = hasDiscountedShippingCost
@@ -216,6 +225,20 @@ const Checkout = () => {
     }
   ]
 
+  const sortedCart = cartContext.cart.sort((a, b) => {
+    if (a.product.name < b.product.name) {
+      return -1
+    } else if (a.product.name > b.product.name) {
+      return 1
+    } else if (a.size.bagSize.weightInGrams < b.size.bagSize.weightInGrams) {
+      return 1
+    } else {
+      return -1
+    }
+  })
+
+  console.log(cartContext.cart)
+
   return (
     <Layout>
       <div className='mx-auto py-16'>
@@ -234,12 +257,15 @@ const Checkout = () => {
                     Sign in or create an account to continue the checkout process
                   </p>
                   <div className='flex justify-center gap-x-2 pt-4'>
-                    <button className='rounded-md border border-transparent bg-amber-500 py-1 px-4 text-base font-medium text-white shadow-sm hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 focus:ring-offset-gray-50'>
-                      Log in
-                    </button>
-                    <button className='rounded-md border border-transparent bg-amber-50 py-1 px-4 text-base font-medium text-amber-600 shadow-sm hover:border-amber-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 focus:ring-offset-gray-50'>
-                      Sign up
-                    </button>
+                    <form action='/api/auth/signin/keycloak' method='POST' className='pt-4'>
+                      <input type='hidden' name='csrfToken' value={csrfToken} />
+                      <input type='hidden' name='callbackUrl' value='/checkout' />
+                      <button
+                        type='submit'
+                        className='rounded-md border border-amber-100 bg-amber-100 px-4 py-1 font-semibold text-amber-600 hover:border-amber-600'>
+                        <span>Sign in</span>
+                      </button>
+                    </form>
                   </div>
                 </div>
 
@@ -282,16 +308,6 @@ const Checkout = () => {
                 />
               </>
             )}
-            {/* <ShippingAddressWidget
-              shippingAddress={checkoutState.shippingAddress}
-              onChangeShippingAddress={value => {
-                dispatch({ type: 'SET_SHIPPING_ADDRESS', payload: value })
-              }}
-              persistedShippingAddresses={
-                isAuthenticated ? checkoutState.persistedShippingAddresses : undefined
-              }
-              isAuthenticated={isAuthenticated}
-            /> */}
 
             {isAuthenticated && isLoggedInUserCheckoutState(checkoutState) && (
               <>
@@ -333,7 +349,7 @@ const Checkout = () => {
             <div className='rounded-lg border border-gray-200 bg-white shadow-sm'>
               <h3 className='sr-only'>Items in your cart</h3>
               <ul role='list' className='divide-y divide-gray-200'>
-                {cartContext.cart.map(cartItem => (
+                {sortedCart.map(cartItem => (
                   <SingleCheckoutItem
                     key={cartItem.product.id + cartItem.size.bagSize.id}
                     cartItem={cartItem}

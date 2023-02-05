@@ -15,6 +15,12 @@ import {
   verifyQuantity
 } from '../../helpers/price-calculation'
 
+const clearAndSortBagSizes = (bagSizes: CoffeeBagSize[]) => {
+  const sortedBagSizes = bagSizes.sort((a, b) => a.bagSize.weightInGrams - b.bagSize.weightInGrams)
+
+  return sortedBagSizes.filter(bagSize => bagSize.quantity > 0)
+}
+
 const ProductConfigurator = ({
   product,
   className,
@@ -24,7 +30,10 @@ const ProductConfigurator = ({
   className?: string
   onShowToast: () => void
 }) => {
-  const [size, setSize] = useState<CoffeeBagSize>(product.coffeeBagSizes[0])
+  const clearedAndSortedBagSizes = clearAndSortBagSizes(product.coffeeBagSizes)
+
+  const [size, setSize] = useState<CoffeeBagSize>(clearedAndSortedBagSizes[0])
+  const [maxQuantity, setMaxQuantity] = useState(size.quantity)
   const [quantity, setQuantity] = useState(1)
   const [totalPrice, setTotalPrice] = useState(0)
   const [error, setError] = useState({
@@ -35,69 +44,64 @@ const ProductConfigurator = ({
   const cartContext = useCartContext()
 
   useEffect(() => {
-    if (!quantity) return
-
     try {
-      if (!verifyQuantity(quantity)) {
-        setError({
-          error: true,
-          message: `Quantity must be between ${MIN_QUANTITY} and ${MAX_QUANTITY}`
-        })
-      } else {
-        setError({
-          error: false,
-          message: ''
-        })
-      }
+      verifyQuantity(quantity, maxQuantity)
+
+      setError({
+        error: false,
+        message: ''
+      })
+
+      setTotalPrice(calculateTotalPrice(product.pricePerKilo, quantity, size.bagSize))
     } catch (err) {
       setError({
         error: true,
         message: (err as Error).message
       })
     }
-
-    setTotalPrice(calculateTotalPrice(product.pricePerKilo, quantity, size.bagSize))
-  }, [size, quantity, product.pricePerKilo])
+  }, [size, quantity, product.pricePerKilo, maxQuantity])
 
   const handleAddToCart = () => {
     try {
-      verifyQuantity(quantity)
+      verifyQuantity(quantity, maxQuantity)
+
+      const basketItem: BasketItem[] = [
+        {
+          item: {
+            bagSizeId: size.bagSize.id,
+            productId: product.id
+          },
+          quantity: quantity
+        }
+      ]
+
+      cartContext.addItem(basketItem)
+      onShowToast()
     } catch (err) {
       setError({
         error: true,
         message: (err as Error).message
       })
     }
-
-    const basketItems: BasketItem[] = [
-      {
-        item: {
-          bagSizeId: size.bagSize.id,
-          productId: product.id
-        },
-        quantity: quantity
-      }
-    ]
-
-    cartContext.addItem(basketItems)
-    onShowToast()
   }
-
-  const sortedBagSizes = product.coffeeBagSizes.sort(
-    (a, b) => a.bagSize.weightInGrams - b.bagSize.weightInGrams
-  )
 
   return (
     <div className={clsx('min-w-xs rounded-lg border border-zinc-200 bg-zinc-50 p-4', className)}>
-      <RadioGroup value={size} onChange={setSize}>
+      <RadioGroup
+        className='product-size-list'
+        value={size}
+        onChange={(size: CoffeeBagSize) => {
+          setSize(size)
+          setMaxQuantity(size.quantity)
+          setQuantity(1)
+        }}>
         <RadioGroup.Label className='sr-only'>Choose your product variation</RadioGroup.Label>
         <div className='grid grid-cols-2 gap-1'>
-          {sortedBagSizes.map((size, id) => (
+          {clearedAndSortedBagSizes.map(size => (
             <RadioGroup.Option
               key={size.bagSize.id}
               value={size}
-              className='hover:cursor-pointer'
-              defaultChecked={id === 0}>
+              className='product-size-option hover:cursor-pointer'>
               {({ checked }) => (
                 <div
                   className={clsx(
@@ -123,14 +127,16 @@ const ProductConfigurator = ({
           name='quantity'
           id='quantity'
           min={MIN_QUANTITY}
-          max={MAX_QUANTITY}
+          max={maxQuantity > MAX_QUANTITY ? MAX_QUANTITY : maxQuantity}
           className='mt-1 block w-full rounded-md border border-zinc-200 px-2 py-1 focus:border-amber-400 focus:ring-amber-400'
           placeholder='Quantity'
           value={quantity}
           onChange={e => setQuantity(parseInt(e.target.value))}
         />
         {error.error && (
-          <p className='pb-2 pt-1.5 text-xs text-zinc-500 underline decoration-amber-500'>
+          <p
+            className='pb-2 pt-1.5 text-xs text-zinc-500 underline decoration-amber-500'
+            id='product-configurator-error'>
             {error.message}
           </p>
         )}
@@ -140,7 +146,7 @@ const ProductConfigurator = ({
           <span className='block text-xs font-semibold uppercase tracking-tight text-zinc-400'>
             Total price
           </span>
-          <span className='font-lora text-xl font-bold text-zinc-700'>
+          <span className='font-lora text-xl font-bold text-zinc-700' id='total-price'>
             ${roundToTwoDecimals(totalPrice)} USD*
           </span>
           {quantity > 0 && (
