@@ -140,6 +140,14 @@ export type BasketItem = {
   quantity: number
 }
 
+export type CheckoutItem = {
+  itemId: {
+    productId: number
+    bagSizeId: number
+  }
+  quantity: number
+}
+
 export type Basket = {
   id: string
   userName: string
@@ -170,3 +178,29 @@ export type LoggedOutUserCheckoutState = {
 }
 
 export type CheckoutState = LoggedInUserCheckoutState | LoggedOutUserCheckoutState
+
+export type CheckoutReducerAction =
+  | { type: 'SET_SHIPPING_ADDRESS'; payload: Partial<ShippingAddressType> }
+  | { type: 'SET_SHIPPING_METHOD'; payload: ShippingMethodType }
+  | {
+      type: 'SET_PAYMENT_DETAILS'
+      payload: PaymentDetailsType
+    }
+  | {
+      type: 'SAVE_NEW_SHIPPING_ADDRESS'
+      payload: ShippingAddressType
+    }
+  | {
+      type: 'SET_PERSISTED_SHIPPING_ADDRESSES'
+      payload: ShippingAddressType[]
+    }
+  | { type: 'SET_EMAIL'; payload: EmailType }
+  | { type: 'SUBMIT_ORDER' }
+
+export type Order = {
+  id: number
+  userName: string
+  orderItems: CartItem[]
+  shippingAddress: ShippingAddressType
+  orderDateTime: Date
+}

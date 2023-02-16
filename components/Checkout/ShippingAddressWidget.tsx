@@ -57,7 +57,6 @@ const AddressForm = ({
           }))
         }
       />
-
       <TextField
         type='text'
         id='last-name'
@@ -73,41 +72,52 @@ const AddressForm = ({
           }))
         }
       />
-
       <TextField
         type='text'
-        name='address'
-        id='address'
+        name='street'
+        id='street'
         autoComplete='street-address'
-        placeholder='1234 Main St'
+        placeholder='Wilhelminenhofstraße'
         label='Address'
-        className='sm:col-span-2'
-        value={shippingAddress.address}
+        value={shippingAddress.street}
         onChange={e =>
           setEnteredAddress(state => ({
             ...state,
-            address: e.target.value
+            street: e.target.value
           }))
         }
       />
-
       <TextField
         type='text'
-        name='apartment'
-        id='apartment'
+        name=''
+        id='street-number'
+        autoComplete='street-address'
+        placeholder='34'
+        label='Street number'
+        value={shippingAddress.streetNumber}
+        onChange={e =>
+          setEnteredAddress(state => ({
+            ...state,
+            streetNumber: e.target.value
+          }))
+        }
+      />
+      <TextField
+        type='text'
+        name='additional-information'
+        id='additional-information'
         label='Apartment, suite, etc.'
         placeholder='4th floor'
         className='sm:col-span-2'
         required={false}
-        value={shippingAddress.apartment || ''}
+        value={shippingAddress.additionalInformation || ''}
         onChange={e =>
           setEnteredAddress(state => ({
             ...state,
-            apartment: e.target.value
+            additionalInformation: e.target.value
           }))
         }
       />
-
       <TextField
         type='text'
         name='city'
@@ -123,7 +133,6 @@ const AddressForm = ({
           }))
         }
       />
-
       <SelectField
         id='country'
         name='country'
@@ -138,7 +147,6 @@ const AddressForm = ({
           }))
         }
       />
-
       <TextField
         type='text'
         name='region'
@@ -155,7 +163,6 @@ const AddressForm = ({
           }))
         }
       />
-
       <TextField
         type='text'
         name='postal-code'
@@ -163,15 +170,14 @@ const AddressForm = ({
         autoComplete='postal-code'
         placeholder='1234 AB'
         label='Postal code'
-        value={shippingAddress.zip}
+        value={shippingAddress.postalCode}
         onChange={e =>
           setEnteredAddress(state => ({
             ...state,
-            zip: e.target.value
+            postalCode: e.target.value
           }))
         }
       />
-
       {isAuthenticated && (
         <CheckboxField
           name='save-address'
@@ -243,12 +249,13 @@ const ShippingAddressWidget = ({
                         <RadioGroup.Description
                           as='span'
                           className='mt-1 flex items-center text-sm text-gray-500'>
-                          {shippingAddress.address}
+                          {shippingAddress.street} {shippingAddress.streetNumber}
                         </RadioGroup.Description>
                         <RadioGroup.Description
                           as='span'
                           className='mt-1 flex items-center text-sm text-gray-500'>
-                          {shippingAddress.city}, {shippingAddress.state} {shippingAddress.zip}
+                          {shippingAddress.city}, {shippingAddress.state}{' '}
+                          {shippingAddress.postalCode}
                         </RadioGroup.Description>
                         <RadioGroup.Description
                           as='span'

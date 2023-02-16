@@ -15,22 +15,21 @@ import { CheckCircleIcon, ShoppingCartIcon } from '@heroicons/react/24/solid'
 import {
   FREE_SHIPPING_THRESHOLD,
   SHIPPING_METHODS,
-  SUPPORTED_COUNTRIES,
   DEFAULT_ADDRESS,
   DEFAULT_CREDIT_CARD_DETAILS
 } from '../constants/constants'
 import {
+  CheckoutItem,
+  CheckoutState,
+  ShippingAddressType,
+  Order,
   BankTransferDetailsType,
   CreditCardDetailsType,
-  EmailType,
-  CheckoutState,
-  PaymentDetailsType,
-  ShippingAddressType,
-  ShippingMethodType
+  PaymentDetailsType
 } from '../types'
 import EmailWidget from '../components/Checkout/EmailWidget'
+import { CheckoutReducerAction } from '../types'
 import { ShippingAddress, Email, PaymentMethodDetails, ShippingMethod } from '../constants/zod'
-import { ZodError } from 'zod'
 import {
   isLoggedInUserCheckoutState,
   isLoggedOutUserCheckoutState
@@ -48,7 +47,7 @@ const testCreditCardDetails: CreditCardDetailsType = {
 const testBankTransferDetails: BankTransferDetailsType = {
   type: 'bank-transfer',
   accountHolder: 'John Doe',
-  iban: 'DE1234567890',
+  iban: 'DE89370400440532013000',
   bic: 'DEUTDEFF'
 }
 
@@ -57,98 +56,108 @@ const storedPaymentDetailsTest: PaymentDetailsType[] = [
   testCreditCardDetails
 ]
 
-const storedShippingAddressesTest: ShippingAddressType[] = [
-  {
-    firstName: 'John',
-    lastName: 'Doe',
-    address: '123 Main St',
-    zip: '12345',
-    city: 'New York',
-    country: SUPPORTED_COUNTRIES[0],
-    apartment: '1st floor'
-  },
-  {
-    firstName: 'Jane',
-    lastName: 'Doe',
-    address: '456 Main St',
-    zip: '12345',
-    city: 'New York',
-    country: SUPPORTED_COUNTRIES[1],
-    state: 'NY'
+// const storedShippingAddressesTest: ShippingAddressType[] = [
+//   {
+//     firstName: 'John',
+//     lastName: 'Doe',
+//     street: 'Main St',
+//     streetNumber: '123',
+//     postalCode: '12345',
+//     city: 'New York',
+//     country: SUPPORTED_COUNTRIES[0],
+//     additionalInformation: '1st floor'
+//   },
+//   {
+//     firstName: 'Jane',
+//     lastName: 'Doe',
+//     street: 'Peter St',
+//     streetNumber: '456',
+//     postalCode: '12345',
+//     city: 'New York',
+//     country: SUPPORTED_COUNTRIES[1],
+//     state: 'NY'
+//   }
+// ]
+
+const isValidCheckoutState = (state: CheckoutState) => {
+  try {
+    if (isLoggedInUserCheckoutState(state)) {
+      ShippingAddress.parse(state.shippingAddress)
+      PaymentMethodDetails.parse(state.paymentDetails)
+      ShippingMethod.parse(state.selectedShippingMethod)
+    } else {
+      Email.parse(state.email)
+      ShippingAddress.parse(state.shippingAddress)
+      PaymentMethodDetails.parse(state.paymentDetails)
+      ShippingMethod.parse(state.selectedShippingMethod)
+    }
+    return true
+  } catch (err) {
+    return false
   }
-]
+}
 
-type checkoutReducerAction =
-  | { type: 'SET_SHIPPING_ADDRESS'; payload: Partial<ShippingAddressType> }
-  | { type: 'SET_SHIPPING_METHOD'; payload: ShippingMethodType }
-  | {
-      type: 'SET_PAYMENT_DETAILS'
-      payload: PaymentDetailsType
-    }
-  | {
-      type: 'SAVE_NEW_SHIPPING_ADDRESS'
-      payload: ShippingAddressType
-    }
-  | {
-      type: 'SET_PERSISTED_SHIPPING_ADDRESSES'
-      payload: ShippingAddressType[]
-    }
-  | { type: 'SET_EMAIL'; payload: EmailType }
-  | { type: 'SUBMIT_ORDER' }
-
-const checkoutReducer = (state: CheckoutState, action: checkoutReducerAction): CheckoutState => {
-  switch (action.type) {
-    case 'SET_SHIPPING_ADDRESS':
-      return {
-        ...state,
-        shippingAddress: action.payload
+const getShippingAddresses = async (
+  accessToken?: string | null
+): Promise<ShippingAddressType[] | undefined> => {
+  try {
+    const data = await fetch('/api/checkout-service/getAddresses', {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${accessToken}`
       }
-    case 'SET_SHIPPING_METHOD':
-      return {
-        ...state,
-        selectedShippingMethod: action.payload
-      }
-    case 'SET_PAYMENT_DETAILS':
-      return {
-        ...state,
-        paymentDetails: action.payload
-      }
+    })
 
-    case 'SET_EMAIL':
-      if (!isLoggedOutUserCheckoutState(state)) return state
+    const addresses = await data.json()
+    return addresses
+  } catch (error) {
+    console.log(error)
+  }
+}
 
-      return {
-        ...state,
-        email: action.payload
-      }
+const saveShippingAddress = async (
+  shippingAddress: ShippingAddressType,
+  accessToken?: string | null
+): Promise<number | undefined> => {
+  try {
+    const data = await fetch('/api/checkout-service/addAddress', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`
+      },
+      body: JSON.stringify(shippingAddress)
+    })
 
-    case 'SUBMIT_ORDER':
-      if (isLoggedInUserCheckoutState(state)) {
-        try {
-          ShippingAddress.parse(state.shippingAddress)
-          PaymentMethodDetails.parse(state.paymentDetails)
-          ShippingMethod.parse(state.selectedShippingMethod)
+    const addressId = await data.json()
+    return addressId
+  } catch (error) {
+    console.log(error)
+  }
+}
 
-          // TODO: submit order
-        } catch (error) {
-          const actualError = error as ZodError
-          console.log(actualError)
-        }
-      } else {
-        try {
-          Email.parse(state.email)
-          ShippingAddress.parse(state.shippingAddress)
-          PaymentMethodDetails.parse(state.paymentDetails)
-          ShippingMethod.parse(state.selectedShippingMethod)
+const placeOrder = async (
+  checkoutItems: CheckoutItem[],
+  addressId: number,
+  accessToken?: string
+): Promise<Order | undefined> => {
+  try {
+    const data = await fetch('/api/checkout-service/placeOrder', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`
+      },
+      body: JSON.stringify({
+        items: checkoutItems,
+        addressId
+      })
+    })
 
-          // TODO: submit order
-        } catch (error) {
-          const actualError = error as ZodError
-          console.log(actualError)
-        }
-      }
-    default:
-      return state
+    const order = await data.json()
+    return order
+  } catch (error) {
+    console.log(error)
   }
 }
 
@@ -157,13 +166,89 @@ const Checkout = () => {
   const session = useSession()
   const [csrfToken, setCsrfToken] = useState('')
 
+  const checkoutReducer = (state: CheckoutState, action: CheckoutReducerAction): CheckoutState => {
+    switch (action.type) {
+      case 'SET_PERSISTED_SHIPPING_ADDRESSES':
+        if (!isLoggedInUserCheckoutState(state)) return state
+        return {
+          ...state,
+          persistedShippingAddresses: action.payload
+        }
+
+      case 'SET_SHIPPING_ADDRESS':
+        return {
+          ...state,
+          shippingAddress: action.payload
+        }
+      case 'SET_SHIPPING_METHOD':
+        return {
+          ...state,
+          selectedShippingMethod: action.payload
+        }
+      case 'SET_PAYMENT_DETAILS':
+        return {
+          ...state,
+          paymentDetails: action.payload
+        }
+
+      case 'SET_EMAIL':
+        if (!isLoggedOutUserCheckoutState(state)) return state
+
+        return {
+          ...state,
+          email: action.payload
+        }
+
+      case 'SUBMIT_ORDER':
+        // in the case that the checkout isn't in a valid state, show an error message
+        if (!isValidCheckoutState(state)) return state
+
+        if (isLoggedInUserCheckoutState(state)) {
+          try {
+          } catch (error) {
+            console.log(error)
+          }
+        } else {
+          try {
+          } catch (error) {
+            console.log(error)
+          }
+        }
+
+        console.log('valid checkout state')
+
+        saveShippingAddress(state.shippingAddress, session?.data?.accessToken).then(addressId => {
+          console.log(typeof addressId, addressId)
+          if (!addressId) return
+          const checkoutItems: CheckoutItem[] = cartContext.cart.map(item => {
+            return {
+              itemId: {
+                productId: item.product.id,
+                bagSizeId: item.size.bagSize.id
+              },
+              quantity: item.size.quantity
+            }
+          })
+
+          placeOrder(checkoutItems, addressId, session?.data?.accessToken).then(order => {
+            console.log(order)
+          })
+        })
+
+        return state
+
+      default:
+        return state
+    }
+  }
+
   const initialCheckoutState: CheckoutState =
     session.status === 'authenticated'
       ? {
           selectedShippingMethod: SHIPPING_METHODS[0],
-          persistedShippingAddresses: [...storedShippingAddressesTest],
+          persistedShippingAddresses: [],
           shippingAddress: DEFAULT_ADDRESS,
-          persistedPaymentDetails: storedPaymentDetailsTest,
+          persistedPaymentDetails: [...storedPaymentDetailsTest],
           paymentDetails: DEFAULT_CREDIT_CARD_DETAILS
         }
       : {
@@ -175,6 +260,8 @@ const Checkout = () => {
 
   const [checkoutState, dispatch] = useReducer(checkoutReducer, initialCheckoutState)
 
+  console.log(checkoutState)
+
   useEffect(() => {
     async function getAuth() {
       const crsfToken = await getCsrfToken()
@@ -185,7 +272,15 @@ const Checkout = () => {
 
   useEffect(() => {
     if (session.status === 'authenticated') {
-      // fetch user data from database
+      getShippingAddresses(session?.data?.accessToken).then(addresses => {
+        console.log(addresses)
+        if (addresses) {
+          dispatch({
+            type: 'SET_PERSISTED_SHIPPING_ADDRESSES',
+            payload: addresses
+          })
+        }
+      })
     }
   }, [session])
 
@@ -205,6 +300,17 @@ const Checkout = () => {
 
   const tax = (subtotal + shippingCost) * 0.19
   const total = subtotal + shippingCost + tax
+
+  // fetch('/api/checkout-service/getAddresses', {
+  //   method: 'GET',
+  //   headers: {
+  //     'Content-Type': 'application/json',
+  //     'X-CSRF-TOKEN': csrfToken,
+  //     Authorization: `Bearer ${session?.data?.accessToken}`
+  //   }
+  // })
+  //   .then(res => res.json())
+  //   .then(data => console.log('addresses :', data))
 
   const orderSummary = [
     {
@@ -236,8 +342,6 @@ const Checkout = () => {
       return -1
     }
   })
-
-  console.log(cartContext.cart)
 
   return (
     <Layout>

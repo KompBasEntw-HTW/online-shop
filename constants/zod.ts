@@ -100,9 +100,10 @@ export const PaymentMethodDetails = z.union([CreditCardDetails, BankTransferDeta
 export const ShippingAddress = z.object({
   firstName: z.string().min(1),
   lastName: z.string().min(1),
-  address: z.string().min(1),
-  apartment: z.string().optional(),
-  zip: z.string().min(1),
+  street: z.string().min(1),
+  streetNumber: z.string().min(1),
+  additionalInformation: z.string().optional(),
+  postalCode: z.string().min(1),
   state: z.string().optional(),
   city: z.string().min(1),
   country: z.enum(SUPPORTED_COUNTRIES),
