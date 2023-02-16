@@ -1,16 +1,15 @@
 module.exports = {
-  parser: '@typescript-eslint/parser',
-  plugins: ['@typescript-eslint'],
   extends: [
-    'next/core-web-vitals',
     'plugin:@typescript-eslint/recommended',
+    'next/core-web-vitals',
     'plugin:prettier/recommended'
   ],
   env: {
     browser: true,
     node: true,
-    es6: true
+    es2021: true
   },
+  parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',
@@ -19,5 +18,6 @@ module.exports = {
       impliedStrict: true,
       jsx: true
     }
-  }
+  },
+  plugins: ['@typescript-eslint']
 }

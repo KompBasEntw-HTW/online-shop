@@ -1,7 +1,7 @@
 import { BankTransferDetailsType } from '../../types'
 import clsx from 'clsx'
-import { TextField, CheckboxField } from '../General/FormFields'
-import { useEffect, useRef, useState, useCallback } from 'react'
+import { CheckboxField, TextField } from '../General/FormFields'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { DEFAULT_BANK_TRANSFER_DETAILS } from '../../constants/constants'
 import { BankTransferDetails } from '../../constants/zod'
 import { ZodError } from 'zod'
@@ -43,8 +43,9 @@ const BankTransferForm = ({
     if (
       !enteredTransferDetails ||
       Object.values(enteredTransferDetails).some(value => value === '')
-    )
+    ) {
       return
+    }
 
     try {
       BankTransferDetails.parse(enteredTransferDetails)
@@ -71,7 +72,10 @@ const BankTransferForm = ({
           name='account-holder'
           autoComplete='name'
           onChange={e =>
-            setEnteredTransferDetails(state => ({ ...state, accountHolder: e.target.value }))
+            setEnteredTransferDetails(state => ({
+              ...state,
+              accountHolder: e.target.value
+            }))
           }
           label='Account holder'
           value={transferDetails?.accountHolder || ''}
@@ -85,7 +89,12 @@ const BankTransferForm = ({
           id='iban'
           name='iban'
           autoComplete='iban'
-          onChange={e => setEnteredTransferDetails(state => ({ ...state, iban: e.target.value }))}
+          onChange={e =>
+            setEnteredTransferDetails(state => ({
+              ...state,
+              iban: e.target.value
+            }))
+          }
           label='IBAN'
           value={transferDetails?.iban || ''}
           placeholder='DE12345678901234567890'
@@ -98,7 +107,12 @@ const BankTransferForm = ({
           name='bic'
           id='bic'
           autoComplete='bic'
-          onChange={e => setEnteredTransferDetails(state => ({ ...state, bic: e.target.value }))}
+          onChange={e =>
+            setEnteredTransferDetails(state => ({
+              ...state,
+              bic: e.target.value
+            }))
+          }
           label='BIC'
           value={transferDetails?.bic || ''}
           placeholder='DEUTDEFF'
