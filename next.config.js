@@ -4,9 +4,14 @@ const nextConfig = {
   swcMinify: true,
   images: {
     dangerouslyAllowSVG: true,
-    domains: ['images.unsplash.com', 'tailwindui.com', 'res.cloudinary.com', 'exe.dlugoschvincent.de']
+    domains: [
+      'images.unsplash.com',
+      'tailwindui.com',
+      'res.cloudinary.com',
+      'exe.dlugoschvincent.de'
+    ]
   },
-  output: 'standalone',
+  output: 'standalone'
 }
 
 module.exports = nextConfig
