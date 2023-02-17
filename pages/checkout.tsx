@@ -2,7 +2,6 @@ import { useEffect, useReducer } from 'react'
 import { useRouter } from 'next/router'
 import { Layout } from '../components/General'
 import { useCartContext } from '../context/CartContext'
-import { useCurrentOrderContext } from '../context/CurrentOrderContext'
 import { calculateTotalPrice, roundToTwoDecimals } from '../helpers/price-calculation'
 import { useSession, getCsrfToken } from 'next-auth/react'
 import { UserIcon } from '@heroicons/react/20/solid'
@@ -182,8 +181,6 @@ const placeOrder = async (
     }
   } else if (userEmail) {
     try {
-      console.log(checkoutItems, addressId, userEmail)
-
       const data = await fetch('/api/checkout-service/orders/place', {
         method: 'POST',
         headers: {
@@ -207,7 +204,6 @@ const Checkout = () => {
   const router = useRouter()
   const cartContext = useCartContext()
   const session = useSession()
-  const currentOrderContext = useCurrentOrderContext()
   const [csrfToken, setCsrfToken] = useState('')
 
   const checkoutReducer = (state: CheckoutState, action: CheckoutReducerAction): CheckoutState => {
@@ -273,7 +269,6 @@ const Checkout = () => {
         } else {
           try {
             saveShippingAddress(state.shippingAddress, null, state.email).then(addressId => {
-              console.log(typeof addressId, addressId)
               if (!addressId) return
               const checkoutItems: CheckoutItem[] = cartContext.cart.map(item => {
                 return {
@@ -288,8 +283,6 @@ const Checkout = () => {
               placeOrder(checkoutItems, addressId, null, state.email).then(order => {
                 // If order didn't go through, show an error message
                 if (!order) return
-                console.log(order)
-                currentOrderContext.setCurrentOrder(order)
                 router.push('/order-confirmation')
               })
             })

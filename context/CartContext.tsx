@@ -82,6 +82,8 @@ async function updateItems(basketItems: BasketItem[]): Promise<CartItem[] | unde
     if (updatedBasketRes.ok) {
       const updatedBasket: Basket = await updatedBasketRes.json()
       return assembleCartFromBasketItems(updatedBasket.basketItems)
+    } else {
+      return undefined
     }
   }
   const localBasket = getLocalBasket()
