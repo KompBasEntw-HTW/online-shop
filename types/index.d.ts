@@ -180,6 +180,10 @@ export type LoggedOutUserCheckoutState = {
 export type CheckoutState = LoggedInUserCheckoutState | LoggedOutUserCheckoutState
 
 export type CheckoutReducerAction =
+  | {
+      type: 'RESET_CHECKOUT'
+      payload: LoggedInUserCheckoutState | LoggedOutUserCheckoutState
+    }
   | { type: 'SET_SHIPPING_ADDRESS'; payload: Partial<ShippingAddressType> }
   | { type: 'SET_SHIPPING_METHOD'; payload: ShippingMethodType }
   | {

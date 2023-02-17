@@ -36,6 +36,7 @@ import {
   isLoggedOutUserCheckoutState
 } from '../helpers/type-predicates'
 import { useState } from 'react'
+import { SUPPORTED_COUNTRIES } from '../constants/constants'
 
 const testCreditCardDetails: CreditCardDetailsType = {
   type: 'credit-card',
@@ -57,28 +58,28 @@ const storedPaymentDetailsTest: PaymentDetailsType[] = [
   testCreditCardDetails
 ]
 
-// const storedShippingAddressesTest: ShippingAddressType[] = [
-//   {
-//     firstName: 'John',
-//     lastName: 'Doe',
-//     street: 'Main St',
-//     streetNumber: '123',
-//     postalCode: '12345',
-//     city: 'New York',
-//     country: SUPPORTED_COUNTRIES[0],
-//     additionalInformation: '1st floor'
-//   },
-//   {
-//     firstName: 'Jane',
-//     lastName: 'Doe',
-//     street: 'Peter St',
-//     streetNumber: '456',
-//     postalCode: '12345',
-//     city: 'New York',
-//     country: SUPPORTED_COUNTRIES[1],
-//     state: 'NY'
-//   }
-// ]
+const storedShippingAddressesTest: ShippingAddressType[] = [
+  {
+    firstName: 'John',
+    lastName: 'Doe',
+    street: 'Main St',
+    streetNumber: '123',
+    postalCode: '12345',
+    city: 'New York',
+    country: SUPPORTED_COUNTRIES[0],
+    additionalInformation: '1st floor'
+  },
+  {
+    firstName: 'Jane',
+    lastName: 'Doe',
+    street: 'Peter St',
+    streetNumber: '456',
+    postalCode: '12345',
+    city: 'New York',
+    country: SUPPORTED_COUNTRIES[1],
+    state: 'NY'
+  }
+]
 
 const isValidCheckoutState = (state: CheckoutState) => {
   try {
@@ -103,7 +104,7 @@ const getShippingAddresses = async (
   accessToken?: string | null
 ): Promise<ShippingAddressType[] | undefined> => {
   try {
-    const data = await fetch('/api/checkout-service/getAddresses', {
+    const data = await fetch('/api/checkout-service/addresses', {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${accessToken}`
@@ -208,6 +209,10 @@ const Checkout = () => {
 
   const checkoutReducer = (state: CheckoutState, action: CheckoutReducerAction): CheckoutState => {
     switch (action.type) {
+      case 'RESET_CHECKOUT':
+        return {
+          ...action.payload
+        }
       case 'SET_PERSISTED_SHIPPING_ADDRESSES':
         if (!isLoggedInUserCheckoutState(state)) return state
         return {
@@ -298,25 +303,16 @@ const Checkout = () => {
     }
   }
 
-  const initialCheckoutState: CheckoutState =
-    session.status === 'authenticated'
-      ? {
-          selectedShippingMethod: SHIPPING_METHODS[0],
-          persistedShippingAddresses: [],
-          shippingAddress: DEFAULT_ADDRESS,
-          persistedPaymentDetails: [...storedPaymentDetailsTest],
-          paymentDetails: DEFAULT_CREDIT_CARD_DETAILS
-        }
-      : {
-          selectedShippingMethod: SHIPPING_METHODS[0],
-          email: '',
-          shippingAddress: DEFAULT_ADDRESS,
-          paymentDetails: DEFAULT_CREDIT_CARD_DETAILS
-        }
+  const initialCheckoutState: CheckoutState = {
+    selectedShippingMethod: SHIPPING_METHODS[0],
+    email: '',
+    shippingAddress: DEFAULT_ADDRESS,
+    paymentDetails: DEFAULT_CREDIT_CARD_DETAILS
+  }
 
   const [checkoutState, dispatch] = useReducer(checkoutReducer, initialCheckoutState)
 
-  console.log(checkoutState)
+  console.log(session.status)
 
   useEffect(() => {
     async function getAuth() {
@@ -325,6 +321,31 @@ const Checkout = () => {
     }
     getAuth()
   }, [])
+
+  useEffect(() => {
+    if (session.status === 'authenticated') {
+      dispatch({
+        type: 'RESET_CHECKOUT',
+        payload: {
+          selectedShippingMethod: SHIPPING_METHODS[0],
+          persistedShippingAddresses: [...storedShippingAddressesTest],
+          shippingAddress: DEFAULT_ADDRESS,
+          persistedPaymentDetails: [...storedPaymentDetailsTest],
+          paymentDetails: DEFAULT_CREDIT_CARD_DETAILS
+        }
+      })
+    } else {
+      dispatch({
+        type: 'RESET_CHECKOUT',
+        payload: {
+          selectedShippingMethod: SHIPPING_METHODS[0],
+          email: '',
+          shippingAddress: DEFAULT_ADDRESS,
+          paymentDetails: DEFAULT_CREDIT_CARD_DETAILS
+        }
+      })
+    }
+  }, [session.status])
 
   useEffect(() => {
     if (session.status === 'authenticated') {
@@ -355,17 +376,6 @@ const Checkout = () => {
 
   const tax = (subtotal + shippingCost) * 0.19
   const total = subtotal + shippingCost + tax
-
-  // fetch('/api/checkout-service/getAddresses', {
-  //   method: 'GET',
-  //   headers: {
-  //     'Content-Type': 'application/json',
-  //     'X-CSRF-TOKEN': csrfToken,
-  //     Authorization: `Bearer ${session?.data?.accessToken}`
-  //   }
-  // })
-  //   .then(res => res.json())
-  //   .then(data => console.log('addresses :', data))
 
   const orderSummary = [
     {
@@ -405,68 +415,76 @@ const Checkout = () => {
 
         <div className='lg:grid lg:grid-cols-2 lg:gap-x-12 xl:gap-x-16'>
           <div>
-            {!isAuthenticated && isLoggedOutUserCheckoutState(checkoutState) && (
-              <>
-                <div className='col mb-10 flex flex-col place-items-center justify-center rounded-lg border border-zinc-100 bg-gray-50 p-4 md:p-8'>
-                  <div className='flex place-content-center place-items-center rounded-full bg-amber-50'>
-                    <UserIcon className='h-8 w-8 text-amber-600' />
-                  </div>
-                  <h2 className='pt-3 text-xl'>Not logged in</h2>
-                  <p className='pt-2 text-sm text-gray-600'>
-                    Sign in or create an account to continue the checkout process
-                  </p>
-                  <div className='flex justify-center gap-x-2 pt-4'>
-                    <form action='/api/auth/signin/keycloak' method='POST' className='pt-4'>
-                      <input type='hidden' name='csrfToken' value={csrfToken} />
-                      <input type='hidden' name='callbackUrl' value='/checkout' />
-                      <button
-                        type='submit'
-                        className='rounded-md border border-amber-100 bg-amber-100 px-4 py-1 font-semibold text-amber-600 hover:border-amber-600'>
-                        <span>Sign in</span>
-                      </button>
-                    </form>
-                  </div>
-                </div>
-
-                <p className='text-center text-xs font-semibold uppercase tracking-tight'>
-                  Or continue as a guest
-                </p>
-
-                <div className='mt-2 border-t border-dotted border-gray-200 pt-10'></div>
-                <EmailWidget
-                  value={checkoutState.email}
-                  onChangeEmail={value => {
-                    dispatch({ type: 'SET_EMAIL', payload: value })
-                  }}
-                />
-                <ShippingAddressWidget
-                  shippingAddress={checkoutState.shippingAddress}
-                  onChangeShippingAddress={value => {
-                    dispatch({ type: 'SET_SHIPPING_ADDRESS', payload: value })
-                  }}
-                  isAuthenticated={false}
-                />
-                <ShippingMethodWidget
-                  shippingMethods={SHIPPING_METHODS}
-                  selectedMethod={checkoutState.selectedShippingMethod}
-                  setSelected={value => {
-                    dispatch({ type: 'SET_SHIPPING_METHOD', payload: value })
-                  }}
-                  hasDiscountedShippingCost={hasDiscountedShippingCost}
-                />
-
-                <PaymentMethodWidget
-                  paymentDetails={checkoutState.paymentDetails}
-                  onChangePaymentDetails={value =>
-                    dispatch({
-                      type: 'SET_PAYMENT_DETAILS',
-                      payload: value
-                    })
-                  }
-                  isAuthenticated={false}
-                />
-              </>
+            {session.status === 'loading' && (
+              <div className='flex items-center justify-center'>
+                <div className='h-16 w-16 animate-spin rounded-full border-b-2 border-amber-500'></div>
+              </div>
             )}
+
+            {!isAuthenticated &&
+              isLoggedOutUserCheckoutState(checkoutState) &&
+              session.status !== 'loading' && (
+                <>
+                  <div className='col mb-10 flex flex-col place-items-center justify-center rounded-lg border border-zinc-100 bg-gray-50 p-4 md:p-8'>
+                    <div className='flex place-content-center place-items-center rounded-full bg-amber-50'>
+                      <UserIcon className='h-8 w-8 text-amber-600' />
+                    </div>
+                    <h2 className='pt-3 text-xl'>Not logged in</h2>
+                    <p className='pt-2 text-sm text-gray-600'>
+                      Sign in or create an account to continue the checkout process
+                    </p>
+                    <div className='flex justify-center gap-x-2 pt-4'>
+                      <form action='/api/auth/signin/keycloak' method='POST' className='pt-4'>
+                        <input type='hidden' name='csrfToken' value={csrfToken} />
+                        <input type='hidden' name='callbackUrl' value='/checkout' />
+                        <button
+                          type='submit'
+                          className='rounded-md border border-amber-100 bg-amber-100 px-4 py-1 font-semibold text-amber-600 hover:border-amber-600'>
+                          <span>Sign in</span>
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+
+                  <p className='text-center text-xs font-semibold uppercase tracking-tight'>
+                    Or continue as a guest
+                  </p>
+
+                  <div className='mt-2 border-t border-dotted border-gray-200 pt-10'></div>
+                  <EmailWidget
+                    value={checkoutState.email}
+                    onChangeEmail={value => {
+                      dispatch({ type: 'SET_EMAIL', payload: value })
+                    }}
+                  />
+                  <ShippingAddressWidget
+                    shippingAddress={checkoutState.shippingAddress}
+                    onChangeShippingAddress={value => {
+                      dispatch({ type: 'SET_SHIPPING_ADDRESS', payload: value })
+                    }}
+                    isAuthenticated={false}
+                  />
+                  <ShippingMethodWidget
+                    shippingMethods={SHIPPING_METHODS}
+                    selectedMethod={checkoutState.selectedShippingMethod}
+                    setSelected={value => {
+                      dispatch({ type: 'SET_SHIPPING_METHOD', payload: value })
+                    }}
+                    hasDiscountedShippingCost={hasDiscountedShippingCost}
+                  />
+
+                  <PaymentMethodWidget
+                    paymentDetails={checkoutState.paymentDetails}
+                    onChangePaymentDetails={value =>
+                      dispatch({
+                        type: 'SET_PAYMENT_DETAILS',
+                        payload: value
+                      })
+                    }
+                    isAuthenticated={false}
+                  />
+                </>
+              )}
 
             {isAuthenticated && isLoggedInUserCheckoutState(checkoutState) && (
               <>
