@@ -20,6 +20,10 @@ type Order = {
   items: CartItem[]
 }
 
+type OrderItem = {
+  orderId: string
+}
+
 const Account = () => {
   const { data: session, status } = useSession()
   const [csrfToken, setCsrfToken] = useState('')
@@ -29,7 +33,7 @@ const Account = () => {
   console.log(orders)
 
   useEffect(() => {
-    async function getAuth() {
+    const getAuth = async () => {
       const crsfToken = await getCsrfToken()
       setCsrfToken(crsfToken || '')
 
@@ -37,8 +41,10 @@ const Account = () => {
     }
     getAuth()
 
-    if (status === 'authenticated') {
-      fetch('/api/checkout-service/orders', {
+    const fetchOrders = async () => {
+      if (status !== 'authenticated') return
+
+      const response = await fetch('/api/checkout-service/orders', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -46,12 +52,22 @@ const Account = () => {
           Authorization: 'Bearer ' + session?.accessToken
         }
       })
-        .then(response => response.json())
-        .then(data => {
-          console.log(data)
-          setOrders(data)
-        })
+
+      if (!response.ok) {
+        console.log('Error fetching orders')
+        return
+      }
+
+      const data = await response.json()
+
+      if (!data) return
+
+      // const productPromises = data.map(async (order: Order) => {})
+
+      setOrders(data)
     }
+
+    fetchOrders()
   }, [session, status, csrfToken])
 
   if (status === 'authenticated') {

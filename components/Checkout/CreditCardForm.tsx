@@ -1,6 +1,6 @@
 import { CreditCardDetailsType } from '../../types'
 import clsx from 'clsx'
-import { TextField, CheckboxField } from '../General/FormFields'
+import { TextField } from '../General/FormFields'
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { DEFAULT_CREDIT_CARD_DETAILS } from '../../constants/constants'
 import { CreditCardDetails } from '../../constants/zod'
@@ -10,12 +10,10 @@ import { ZodError } from 'zod'
 const CreditCardForm = ({
   cardDetails,
   onChangeDetails,
-  isAuthenticated,
   className
 }: {
   cardDetails?: CreditCardDetailsType
   onChangeDetails: (details: CreditCardDetailsType) => void
-  isAuthenticated: boolean
   className?: string
 }) => {
   const formStyles = clsx('mt-6 grid grid-cols-4 gap-y-6 gap-x-4', className)
@@ -115,24 +113,6 @@ const CreditCardForm = ({
         />
       </div>
 
-      {isAuthenticated && (
-        <div className='col-span-4'>
-          <CheckboxField
-            name='save-address'
-            id='save-address'
-            autoComplete='save-address'
-            label='Save this address for next time'
-            required={false}
-            checked={cardDetails?.saveToDatabase || false}
-            onChange={e =>
-              setEnteredCardDetails(state => ({
-                ...state,
-                saveToDatabase: e.target.checked
-              }))
-            }
-          />
-        </div>
-      )}
       {errorToast.show && (
         <Toast
           title={errorToast.title}

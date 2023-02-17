@@ -2,12 +2,11 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { ShippingAddressType } from '../../types'
 import { DEFAULT_ADDRESS, SUPPORTED_COUNTRIES } from '../../constants/constants'
 import { ShippingAddress } from '../../constants/zod'
-import { TextField, SelectField, CheckboxField } from '../General/FormFields'
+import { TextField, SelectField } from '../General/FormFields'
 
 const AddressForm = ({
   shippingAddress,
-  onChangeShippingAddress,
-  isAuthenticated
+  onChangeShippingAddress
 }: {
   shippingAddress: ShippingAddressType
   onChangeShippingAddress: (address: ShippingAddressType) => void
@@ -175,22 +174,6 @@ const AddressForm = ({
           }))
         }
       />
-      {isAuthenticated && (
-        <CheckboxField
-          name='save-address'
-          id='save-address'
-          autoComplete='save-address'
-          label='Save this address for next time'
-          required={false}
-          checked={shippingAddress?.saveToDatabase || false}
-          onChange={e =>
-            setEnteredAddress(state => ({
-              ...state,
-              saveToDatabase: e.target.checked
-            }))
-          }
-        />
-      )}
     </div>
   )
 }

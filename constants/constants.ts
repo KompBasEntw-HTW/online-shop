@@ -50,7 +50,6 @@ export const DEFAULT_ADDRESS: ShippingAddressType = {
   additionalInformation: '',
   postalCode: '',
   state: '',
-  saveToDatabase: false,
   city: '',
   country: SUPPORTED_COUNTRIES[0]
 }

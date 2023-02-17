@@ -57,8 +57,7 @@ export const CreditCardDetails = z.object({
       {
         message: 'Card holder name must only contain letters and spaces. Example: John Doe'
       }
-    ),
-  saveToDatabase: z.boolean().optional()
+    )
 })
 
 export const BankTransferDetails = z.object({
@@ -91,8 +90,7 @@ export const BankTransferDetails = z.object({
         message: 'BIC is not valid. Example: DEUTDEDBBER'
       }
     ),
-  accountHolder: z.string().min(1).trim(),
-  saveToDatabase: z.boolean().optional()
+  accountHolder: z.string().min(1).trim()
 })
 
 export const PaymentMethodDetails = z.union([CreditCardDetails, BankTransferDetails])
@@ -106,8 +104,7 @@ export const ShippingAddress = z.object({
   postalCode: z.string().min(1),
   state: z.string().optional(),
   city: z.string().min(1),
-  country: z.enum(SUPPORTED_COUNTRIES),
-  saveToDatabase: z.boolean().optional()
+  country: z.enum(SUPPORTED_COUNTRIES)
 })
 
 export const Email = z.string().email({
