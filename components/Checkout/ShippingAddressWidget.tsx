@@ -30,7 +30,7 @@ const AddressForm = ({
       return
     }
 
-    if (!enteredAddress || Object.values(enteredAddress).some(value => value === '')) return
+    if (!enteredAddress) return
 
     try {
       ShippingAddress.parse(enteredAddress)

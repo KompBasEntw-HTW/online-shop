@@ -203,4 +203,6 @@ export type Order = {
   orderItems: CartItem[]
   shippingAddress: ShippingAddressType
   orderDateTime: Date
+  valid: boolean
+  cancelled: boolean
 }

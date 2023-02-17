@@ -1,6 +1,8 @@
 import { useEffect, useReducer } from 'react'
+import { useRouter } from 'next/router'
 import { Layout } from '../components/General'
 import { useCartContext } from '../context/CartContext'
+import { useCurrentOrderContext } from '../context/CurrentOrderContext'
 import { calculateTotalPrice, roundToTwoDecimals } from '../helpers/price-calculation'
 import { useSession, getCsrfToken } from 'next-auth/react'
 import { UserIcon } from '@heroicons/react/20/solid'
@@ -93,6 +95,7 @@ const isValidCheckoutState = (state: CheckoutState) => {
     }
     return true
   } catch (err) {
+    console.log(err)
     return false
   }
 }
@@ -117,53 +120,94 @@ const getShippingAddresses = async (
 
 const saveShippingAddress = async (
   shippingAddress: ShippingAddressType,
-  accessToken?: string | null
+  accessToken?: string | null,
+  userEmail?: string
 ): Promise<number | undefined> => {
-  try {
-    const data = await fetch('/api/checkout-service/addAddress', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`
-      },
-      body: JSON.stringify(shippingAddress)
-    })
+  if (accessToken) {
+    try {
+      const data = await fetch('/api/checkout-service/addresses/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`
+        },
+        body: JSON.stringify(shippingAddress)
+      })
 
-    const addressId = await data.json()
-    return addressId
-  } catch (error) {
-    console.log(error)
+      return await data.json()
+    } catch (error) {
+      console.log(error)
+    }
+  } else {
+    try {
+      const data = await fetch('/api/checkout-service/addresses/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ ...shippingAddress, userName: userEmail })
+      })
+
+      return await data.json()
+    } catch (error) {
+      console.log(error)
+    }
   }
 }
 
 const placeOrder = async (
   checkoutItems: CheckoutItem[],
   addressId: number,
-  accessToken?: string
+  accessToken?: string | null,
+  userEmail?: string
 ): Promise<Order | undefined> => {
-  try {
-    const data = await fetch('/api/checkout-service/placeOrder', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`
-      },
-      body: JSON.stringify({
-        items: checkoutItems,
-        addressId
+  if (accessToken) {
+    try {
+      const data = await fetch('/api/checkout-service/orders/place', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`
+        },
+        body: JSON.stringify({
+          items: checkoutItems,
+          addressId,
+          userEmail
+        })
       })
-    })
 
-    const order = await data.json()
-    return order
-  } catch (error) {
-    console.log(error)
+      return await data.json()
+    } catch (error) {
+      console.log(error)
+    }
+  } else if (userEmail) {
+    try {
+      console.log(checkoutItems, addressId, userEmail)
+
+      const data = await fetch('/api/checkout-service/orders/place', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          items: checkoutItems,
+          addressId,
+          userEmail
+        })
+      })
+
+      return await data.json()
+    } catch (error) {
+      console.log(error)
+    }
   }
 }
 
 const Checkout = () => {
+  const router = useRouter()
   const cartContext = useCartContext()
   const session = useSession()
+  const currentOrderContext = useCurrentOrderContext()
   const [csrfToken, setCsrfToken] = useState('')
 
   const checkoutReducer = (state: CheckoutState, action: CheckoutReducerAction): CheckoutState => {
@@ -207,33 +251,52 @@ const Checkout = () => {
           try {
           } catch (error) {
             console.log(error)
+            saveShippingAddress(state.shippingAddress, session?.data?.accessToken).then(
+              addressId => {
+                if (!addressId) return
+                const checkoutItems: CheckoutItem[] = cartContext.cart.map(item => {
+                  return {
+                    itemId: {
+                      productId: item.product.id,
+                      bagSizeId: item.size.bagSize.id
+                    },
+                    quantity: item.size.quantity
+                  }
+                })
+
+                placeOrder(checkoutItems, addressId, session?.data?.accessToken).then(order => {
+                  console.log(order)
+                })
+              }
+            )
           }
         } else {
           try {
+            saveShippingAddress(state.shippingAddress, null, state.email).then(addressId => {
+              console.log(typeof addressId, addressId)
+              if (!addressId) return
+              const checkoutItems: CheckoutItem[] = cartContext.cart.map(item => {
+                return {
+                  itemId: {
+                    productId: item.product.id,
+                    bagSizeId: item.size.bagSize.id
+                  },
+                  quantity: item.size.quantity
+                }
+              })
+
+              placeOrder(checkoutItems, addressId, null, state.email).then(order => {
+                // If order didn't go through, show an error message
+                if (!order) return
+                console.log(order)
+                currentOrderContext.setCurrentOrder(order)
+                router.push('/order-confirmation')
+              })
+            })
           } catch (error) {
             console.log(error)
           }
         }
-
-        console.log('valid checkout state')
-
-        saveShippingAddress(state.shippingAddress, session?.data?.accessToken).then(addressId => {
-          console.log(typeof addressId, addressId)
-          if (!addressId) return
-          const checkoutItems: CheckoutItem[] = cartContext.cart.map(item => {
-            return {
-              itemId: {
-                productId: item.product.id,
-                bagSizeId: item.size.bagSize.id
-              },
-              quantity: item.size.quantity
-            }
-          })
-
-          placeOrder(checkoutItems, addressId, session?.data?.accessToken).then(order => {
-            console.log(order)
-          })
-        })
 
         return state
 
@@ -273,7 +336,6 @@ const Checkout = () => {
   useEffect(() => {
     if (session.status === 'authenticated') {
       getShippingAddresses(session?.data?.accessToken).then(addresses => {
-        console.log(addresses)
         if (addresses) {
           dispatch({
             type: 'SET_PERSISTED_SHIPPING_ADDRESSES',
