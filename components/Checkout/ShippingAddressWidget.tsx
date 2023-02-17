@@ -1,196 +1,9 @@
-import { SUPPORTED_COUNTRIES, DEFAULT_ADDRESS } from '../../constants/constants'
 import { ShippingAddressType } from '../../types'
-import { CheckboxField, SelectField, TextField } from '../General/FormFields'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import { RadioGroup } from '@headlessui/react'
 import clsx from 'clsx'
 import { CheckCircleIcon, PlusCircleIcon } from '@heroicons/react/20/solid'
-import { ShippingAddress } from '../../constants/zod'
-
-const AddressForm = ({
-  shippingAddress,
-  onChangeShippingAddress,
-  isAuthenticated
-}: {
-  shippingAddress: ShippingAddressType
-  onChangeShippingAddress: (address: ShippingAddressType) => void
-  isAuthenticated: boolean
-}) => {
-  const [enteredAddress, setEnteredAddress] = useState<ShippingAddressType>(
-    shippingAddress || DEFAULT_ADDRESS
-  )
-
-  const firstRun = useRef(true)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const cachedChangeFunction = useCallback(onChangeShippingAddress, [])
-
-  useEffect(() => {
-    if (firstRun.current) {
-      firstRun.current = false
-      return
-    }
-
-    if (!enteredAddress || Object.values(enteredAddress).some(value => value === '')) return
-
-    try {
-      ShippingAddress.parse(enteredAddress)
-      cachedChangeFunction(enteredAddress)
-    } catch (error) {
-      console.log(error)
-    }
-  }, [enteredAddress, cachedChangeFunction])
-
-  return (
-    <div className='mt-4 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4'>
-      <TextField
-        type='text'
-        id='first-name'
-        name='first-name'
-        autoComplete='given-name'
-        placeholder='John'
-        label='First name'
-        value={enteredAddress.firstName}
-        onChange={e =>
-          setEnteredAddress(state => ({
-            ...state,
-            firstName: e.target.value
-          }))
-        }
-      />
-
-      <TextField
-        type='text'
-        id='last-name'
-        name='last-name'
-        autoComplete='family-name'
-        label='Last name'
-        placeholder='Doe'
-        value={shippingAddress.lastName}
-        onChange={e =>
-          setEnteredAddress(state => ({
-            ...state,
-            lastName: e.target.value
-          }))
-        }
-      />
-
-      <TextField
-        type='text'
-        name='address'
-        id='address'
-        autoComplete='street-address'
-        placeholder='1234 Main St'
-        label='Address'
-        className='sm:col-span-2'
-        value={shippingAddress.address}
-        onChange={e =>
-          setEnteredAddress(state => ({
-            ...state,
-            address: e.target.value
-          }))
-        }
-      />
-
-      <TextField
-        type='text'
-        name='apartment'
-        id='apartment'
-        label='Apartment, suite, etc.'
-        placeholder='4th floor'
-        className='sm:col-span-2'
-        required={false}
-        value={shippingAddress.apartment || ''}
-        onChange={e =>
-          setEnteredAddress(state => ({
-            ...state,
-            apartment: e.target.value
-          }))
-        }
-      />
-
-      <TextField
-        type='text'
-        name='city'
-        id='city'
-        autoComplete='address-level2'
-        placeholder='Amsterdam'
-        label='City'
-        value={shippingAddress.city}
-        onChange={e =>
-          setEnteredAddress(state => ({
-            ...state,
-            city: e.target.value
-          }))
-        }
-      />
-
-      <SelectField
-        id='country'
-        name='country'
-        autoComplete='country-name'
-        options={SUPPORTED_COUNTRIES}
-        label='Country'
-        value={shippingAddress.country}
-        onChange={e =>
-          setEnteredAddress(state => ({
-            ...state,
-            country: e.target.value as ShippingAddressType['country']
-          }))
-        }
-      />
-
-      <TextField
-        type='text'
-        name='region'
-        id='region'
-        autoComplete='address-level1'
-        label='State / Province'
-        placeholder='North Holland'
-        required={false}
-        value={shippingAddress.state || ''}
-        onChange={e =>
-          setEnteredAddress(state => ({
-            ...state,
-            state: e.target.value
-          }))
-        }
-      />
-
-      <TextField
-        type='text'
-        name='postal-code'
-        id='postal-code'
-        autoComplete='postal-code'
-        placeholder='1234 AB'
-        label='Postal code'
-        value={shippingAddress.zip}
-        onChange={e =>
-          setEnteredAddress(state => ({
-            ...state,
-            zip: e.target.value
-          }))
-        }
-      />
-
-      {isAuthenticated && (
-        <CheckboxField
-          name='save-address'
-          id='save-address'
-          autoComplete='save-address'
-          label='Save this address for next time'
-          required={false}
-          checked={shippingAddress?.saveToDatabase || false}
-          onChange={e =>
-            setEnteredAddress(state => ({
-              ...state,
-              saveToDatabase: e.target.checked
-            }))
-          }
-        />
-      )}
-    </div>
-  )
-}
+import AddressForm from './AddressForm'
 
 type ConditionalAddressFormProps<T> = T extends true
   ? {
@@ -243,12 +56,13 @@ const ShippingAddressWidget = ({
                         <RadioGroup.Description
                           as='span'
                           className='mt-1 flex items-center text-sm text-gray-500'>
-                          {shippingAddress.address}
+                          {shippingAddress.street} {shippingAddress.streetNumber}
                         </RadioGroup.Description>
                         <RadioGroup.Description
                           as='span'
                           className='mt-1 flex items-center text-sm text-gray-500'>
-                          {shippingAddress.city}, {shippingAddress.state} {shippingAddress.zip}
+                          {shippingAddress.city}, {shippingAddress.state}{' '}
+                          {shippingAddress.postalCode}
                         </RadioGroup.Description>
                         <RadioGroup.Description
                           as='span'

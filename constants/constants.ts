@@ -45,8 +45,12 @@ export const SUPPORTED_COUNTRIES = ['Germany', 'Switzerland', 'Austria'] as cons
 export const DEFAULT_ADDRESS: ShippingAddressType = {
   firstName: '',
   lastName: '',
-  address: '',
-  zip: '',
+  street: '',
+  streetNumber: '',
+  additionalInformation: '',
+  postalCode: '',
+  state: '',
+  saveToDatabase: false,
   city: '',
   country: SUPPORTED_COUNTRIES[0]
 }
