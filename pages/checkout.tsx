@@ -19,15 +19,7 @@ import {
   DEFAULT_ADDRESS,
   DEFAULT_CREDIT_CARD_DETAILS
 } from '../constants/constants'
-import {
-  CheckoutItem,
-  CheckoutState,
-  ShippingAddressType,
-  Order,
-  BankTransferDetailsType,
-  CreditCardDetailsType,
-  PaymentDetailsType
-} from '../types'
+import { CheckoutItem, CheckoutState, ShippingAddressType, Order } from '../types'
 import EmailWidget from '../components/Checkout/EmailWidget'
 import { CheckoutReducerAction } from '../types'
 import { ShippingAddress, Email, PaymentMethodDetails, ShippingMethod } from '../constants/zod'
@@ -36,50 +28,49 @@ import {
   isLoggedOutUserCheckoutState
 } from '../helpers/type-predicates'
 import { useState } from 'react'
-import { SUPPORTED_COUNTRIES } from '../constants/constants'
 
-const testCreditCardDetails: CreditCardDetailsType = {
-  type: 'credit-card',
-  cardNumber: '1234 5678 9012 3456',
-  expirationDate: '12/24',
-  cvv: '123',
-  cardHolder: 'John Doe'
-}
+// const testCreditCardDetails: CreditCardDetailsType = {
+//   type: 'credit-card',
+//   cardNumber: '1234 5678 9012 3456',
+//   expirationDate: '12/24',
+//   cvv: '123',
+//   cardHolder: 'John Doe'
+// }
 
-const testBankTransferDetails: BankTransferDetailsType = {
-  type: 'bank-transfer',
-  accountHolder: 'John Doe',
-  iban: 'DE89370400440532013000',
-  bic: 'DEUTDEFF'
-}
+// const testBankTransferDetails: BankTransferDetailsType = {
+//   type: 'bank-transfer',
+//   accountHolder: 'John Doe',
+//   iban: 'DE89370400440532013000',
+//   bic: 'DEUTDEFF'
+// }
 
-const storedPaymentDetailsTest: PaymentDetailsType[] = [
-  testBankTransferDetails,
-  testCreditCardDetails
-]
+// const storedPaymentDetailsTest: PaymentDetailsType[] = [
+//   testBankTransferDetails,
+//   testCreditCardDetails
+// ]
 
-const storedShippingAddressesTest: ShippingAddressType[] = [
-  {
-    firstName: 'John',
-    lastName: 'Doe',
-    street: 'Main St',
-    streetNumber: '123',
-    postalCode: '12345',
-    city: 'New York',
-    country: SUPPORTED_COUNTRIES[0],
-    additionalInformation: '1st floor'
-  },
-  {
-    firstName: 'Jane',
-    lastName: 'Doe',
-    street: 'Peter St',
-    streetNumber: '456',
-    postalCode: '12345',
-    city: 'New York',
-    country: SUPPORTED_COUNTRIES[1],
-    state: 'NY'
-  }
-]
+// const storedShippingAddressesTest: ShippingAddressType[] = [
+//   {
+//     firstName: 'John',
+//     lastName: 'Doe',
+//     street: 'Main St',
+//     streetNumber: '123',
+//     postalCode: '12345',
+//     city: 'New York',
+//     country: SUPPORTED_COUNTRIES[0],
+//     additionalInformation: '1st floor'
+//   },
+//   {
+//     firstName: 'Jane',
+//     lastName: 'Doe',
+//     street: 'Peter St',
+//     streetNumber: '456',
+//     postalCode: '12345',
+//     city: 'New York',
+//     country: SUPPORTED_COUNTRIES[1],
+//     state: 'NY'
+//   }
+// ]
 
 const isValidCheckoutState = (state: CheckoutState) => {
   try {
@@ -250,8 +241,6 @@ const Checkout = () => {
 
         if (isLoggedInUserCheckoutState(state)) {
           try {
-          } catch (error) {
-            console.log(error)
             saveShippingAddress(state.shippingAddress, session?.data?.accessToken).then(
               addressId => {
                 if (!addressId) return
@@ -266,10 +255,13 @@ const Checkout = () => {
                 })
 
                 placeOrder(checkoutItems, addressId, session?.data?.accessToken).then(order => {
-                  console.log(order)
+                  if (!order) return
+                  router.push('/order-confirmation')
                 })
               }
             )
+          } catch (error) {
+            console.log(error)
           }
         } else {
           try {
@@ -312,8 +304,6 @@ const Checkout = () => {
 
   const [checkoutState, dispatch] = useReducer(checkoutReducer, initialCheckoutState)
 
-  console.log(session.status)
-
   useEffect(() => {
     async function getAuth() {
       const crsfToken = await getCsrfToken()
@@ -328,9 +318,9 @@ const Checkout = () => {
         type: 'RESET_CHECKOUT',
         payload: {
           selectedShippingMethod: SHIPPING_METHODS[0],
-          persistedShippingAddresses: [...storedShippingAddressesTest],
+          persistedShippingAddresses: [],
           shippingAddress: DEFAULT_ADDRESS,
-          persistedPaymentDetails: [...storedPaymentDetailsTest],
+          persistedPaymentDetails: [],
           paymentDetails: DEFAULT_CREDIT_CARD_DETAILS
         }
       })
