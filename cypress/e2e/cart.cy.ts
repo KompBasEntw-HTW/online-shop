@@ -51,3 +51,4 @@ describe('cart page', () => {
     cy.url().should('include', '/checkout')
   })
 })
+export {}
