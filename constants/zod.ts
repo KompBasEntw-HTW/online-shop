@@ -1,3 +1,4 @@
+import exp from 'constants'
 import z from 'zod'
 import { SUPPORTED_COUNTRIES } from './constants'
 
@@ -108,6 +109,10 @@ export const ShippingAddress = z.object({
   city: z.string().min(1),
   country: z.enum(SUPPORTED_COUNTRIES),
   saveToDatabase: z.boolean().optional()
+})
+
+export const PersistedShippingAddress = ShippingAddress.extend({
+  id: z.number()
 })
 
 export const Email = z.string().email({

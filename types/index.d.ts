@@ -4,7 +4,8 @@ import {
   ShippingMethod,
   CreditCardDetails,
   BankTransferDetails,
-  Email
+  Email,
+  PersistedShippingAddress
 } from '../constants/zod'
 
 export type CoffeeSize = {
@@ -157,6 +158,7 @@ export type Basket = {
 export type CreditCardDetailsType = z.infer<typeof CreditCardDetails>
 export type BankTransferDetailsType = z.infer<typeof BankTransferDetails>
 export type PaymentDetailsType = CreditCardDetailsType | BankTransferDetailsType
+export type PersistedShippingAddressType = z.infer<typeof PersistedShippingAddress>
 
 export type ShippingMethodType = z.infer<typeof ShippingMethod>
 export type ShippingAddressType = z.infer<typeof ShippingAddress>
@@ -164,8 +166,8 @@ export type EmailType = z.infer<typeof Email>
 
 export type LoggedInUserCheckoutState = {
   selectedShippingMethod: ShippingMethod
-  persistedShippingAddresses: AddressType[] | []
-  shippingAddress: AddressType
+  persistedShippingAddresses: PersistedShippingAddressType[] | []
+  shippingAddress: ShippingAddressType | PersistedShippingAddressType
   persistedPaymentDetails: PaymentDetailsType[] | []
   paymentDetails: PaymentDetailsType
 }
@@ -173,7 +175,7 @@ export type LoggedInUserCheckoutState = {
 export type LoggedOutUserCheckoutState = {
   selectedShippingMethod: ShippingMethod
   email: EmailType
-  shippingAddress: AddressType
+  shippingAddress: ShippingAddressType
   paymentDetails: PaymentDetailsType
 }
 
@@ -184,7 +186,7 @@ export type CheckoutReducerAction =
       type: 'RESET_CHECKOUT'
       payload: LoggedInUserCheckoutState | LoggedOutUserCheckoutState
     }
-  | { type: 'SET_SHIPPING_ADDRESS'; payload: Partial<ShippingAddressType> }
+  | { type: 'SET_SHIPPING_ADDRESS'; payload: ShippingAddressType }
   | { type: 'SET_SHIPPING_METHOD'; payload: ShippingMethodType }
   | {
       type: 'SET_PAYMENT_DETAILS'
@@ -196,7 +198,7 @@ export type CheckoutReducerAction =
     }
   | {
       type: 'SET_PERSISTED_SHIPPING_ADDRESSES'
-      payload: ShippingAddressType[]
+      payload: PersistedShippingAddressType[]
     }
   | { type: 'SET_EMAIL'; payload: EmailType }
   | { type: 'SUBMIT_ORDER' }
