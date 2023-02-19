@@ -116,6 +116,9 @@ const Checkout = () => {
                   const checkoutItems = basketItemsToCheckoutItems(cartContext.cart)
                   placeOrder(checkoutItems, addressId, session?.data?.accessToken).then(order => {
                     if (!order) return
+                    checkoutItems.forEach(item => {
+                      cartContext.removeItem(item.itemId.productId, item.itemId.bagSizeId)
+                    })
                     router.push('/order-confirmation')
                   })
                 }
@@ -133,6 +136,9 @@ const Checkout = () => {
               placeOrder(checkoutItems, addressId, null, state.email).then(order => {
                 // If order didn't go through, show an error message
                 if (!order) return
+                checkoutItems.forEach(item => {
+                  cartContext.removeItem(item.itemId.productId, item.itemId.bagSizeId)
+                })
                 router.push('/order-confirmation')
               })
             })
