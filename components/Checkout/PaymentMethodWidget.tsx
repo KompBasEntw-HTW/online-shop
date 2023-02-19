@@ -9,7 +9,7 @@ import { AVAILABLE_PAYMENT_METHODS } from '../../constants/constants'
 import CreditCardForm from './CreditCardForm'
 import BankTransferForm from './BankTransferForm'
 import PaymentMethodCard from './PaymentMethodCard'
-import { isBankTransferDetails, isCreditCardDetails } from '../../helpers/type-predicates'
+import { isBankTransferDetails, isCreditCardDetails } from '../../helpers/type-helpers'
 
 type ConditonalUserProps =
   | {

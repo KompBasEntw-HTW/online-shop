@@ -21,57 +21,12 @@ import {
   filterProducts,
   searchProducts,
   sortProducts
-} from '../helpers/shop-helpers'
+} from '../helpers/shop'
 
-import { Coffee, SortingsOptionsType, ShopPageState, ShopPageAction, ProductFilter } from '../types'
+import { Coffee, ShopState, ShopAction } from '../types'
+import { FILTER_OPTIONS, INITIAL_SHOP_STATE, SORTING_OPTIONS } from '../constants/shop'
 
-const sortingOptions: SortingsOptionsType[] = [
-  { name: 'Name (Alphabetical)', value: 'name-alpha' },
-  { name: 'Name (Reverse Alphabetical)', value: 'name-reverse-alpha' },
-  { name: 'Price (Descending)', value: 'price-desc' },
-  { name: 'Price (Ascending)', value: 'price-asc' }
-]
-
-const filterOptions: ProductFilter[] = [
-  {
-    id: 'roastLevel',
-    name: 'Roast level',
-    type: 'checkbox',
-    values: []
-  },
-  {
-    id: 'flavor',
-    name: 'Flavor',
-    type: 'checkbox',
-    values: []
-  },
-  {
-    id: 'flavorNotes',
-    name: 'Flavor notes',
-    type: 'checkbox',
-    values: []
-  },
-  {
-    id: 'price',
-    name: 'Price',
-    type: 'range',
-    min: 0,
-    max: 20
-  }
-]
-
-const initialShopPageState: ShopPageState = {
-  mobileFiltersOpen: false,
-  availableFilters: [],
-  queryState: {
-    searchQuery: '',
-    filters: [],
-    sorting: sortingOptions[0]
-  },
-  filteredProducts: []
-}
-
-const shopPageReducer = (state: ShopPageState, action: ShopPageAction): ShopPageState => {
+const shopPageReducer = (state: ShopState, action: ShopAction): ShopState => {
   switch (action.type) {
     case 'SET_MOBILE_FILTERS_OPEN':
       return { ...state, mobileFiltersOpen: action.payload }
@@ -113,7 +68,7 @@ const shopPageReducer = (state: ShopPageState, action: ShopPageAction): ShopPage
         queryState: {
           filters: [],
           searchQuery: '',
-          sorting: sortingOptions[0]
+          sorting: SORTING_OPTIONS[0]
         }
       }
 
@@ -254,8 +209,7 @@ const productFetcher = async (): Promise<Coffee[]> =>
   fetch(`/api/product-service/coffee`).then(res => res.json())
 
 const ShopHome = () => {
-  const [shopPageState, dispatch] = useReducer(shopPageReducer, initialShopPageState)
-
+  const [shopState, dispatch] = useReducer(shopPageReducer, INITIAL_SHOP_STATE)
   const { data: products, isLoading, isError, isSuccess } = useQuery(['products'], productFetcher)
 
   useEffect(() => {
@@ -263,7 +217,7 @@ const ShopHome = () => {
       return
     }
 
-    const availableFilters = filterOptions.map(filter => {
+    const availableFilters = FILTER_OPTIONS.map(filter => {
       switch (filter.type) {
         case 'checkbox':
           return {
@@ -300,21 +254,22 @@ const ShopHome = () => {
       type: 'SET_FILTERED_PRODUCTS',
       payload: products
     })
-  }, [shopPageState.queryState, products])
+  }, [shopState.queryState, products])
 
+  // Since 'name-alpha' is the default sorting value, we can check if the sorting value is different from 'name-alpha' to determine if filters are applied
   const hasFiltersApplied =
-    shopPageState.queryState.filters.length > 0 ||
-    shopPageState.queryState.searchQuery !== '' ||
-    shopPageState.queryState.sorting.value !== 'name-alpha'
+    shopState.queryState.filters.length > 0 ||
+    shopState.queryState.searchQuery !== '' ||
+    shopState.queryState.sorting.value !== 'name-alpha'
 
   return (
     <Layout>
       <MobileFilterMenu
-        filters={shopPageState.availableFilters}
-        currentFilters={shopPageState.queryState.filters}
-        mobileFiltersOpen={shopPageState.mobileFiltersOpen}
+        filters={shopState.availableFilters}
+        currentFilters={shopState.queryState.filters}
+        mobileFiltersOpen={shopState.mobileFiltersOpen}
         setMobileFiltersOpen={() => {
-          dispatch({ type: 'SET_MOBILE_FILTERS_OPEN', payload: !shopPageState.mobileFiltersOpen })
+          dispatch({ type: 'SET_MOBILE_FILTERS_OPEN', payload: !shopState.mobileFiltersOpen })
         }}
         onFilterChangeFuncs={{
           onCheckboxFilterChange: (e, id) =>
@@ -340,11 +295,11 @@ const ShopHome = () => {
       <div className='flex flex-col justify-between gap-2 pt-8 sm:flex-row'>
         <Searchbar
           onChange={e => dispatch({ type: 'UPDATE_SEARCH_QUERY', payload: e.target.value })}
-          value={shopPageState.queryState.searchQuery}
+          value={shopState.queryState.searchQuery}
         />
         <SortingDropdown
-          selectedOption={shopPageState.queryState.sorting}
-          sortingOptions={sortingOptions}
+          selectedOption={shopState.queryState.sorting}
+          sortingOptions={SORTING_OPTIONS}
           onSelectOption={option => dispatch({ type: 'UPDATE_APPLIED_SORTING', payload: option })}
         />
         {hasFiltersApplied && (
@@ -359,8 +314,8 @@ const ShopHome = () => {
       </div>
       <div className='pt-6 pb-24 lg:grid lg:grid-cols-3 lg:gap-x-8 xl:grid-cols-4'>
         <FilterMenu
-          filters={shopPageState.availableFilters}
-          currentFilters={shopPageState.queryState.filters}
+          filters={shopState.availableFilters}
+          currentFilters={shopState.queryState.filters}
           onFilterChangeFuncs={{
             onCheckboxFilterChange: (e, id) =>
               dispatch({
@@ -382,7 +337,7 @@ const ShopHome = () => {
               })
           }}
           setMobileFiltersOpen={() =>
-            dispatch({ type: 'SET_MOBILE_FILTERS_OPEN', payload: !shopPageState.mobileFiltersOpen })
+            dispatch({ type: 'SET_MOBILE_FILTERS_OPEN', payload: !shopState.mobileFiltersOpen })
           }
         />
         <section
@@ -405,7 +360,7 @@ const ShopHome = () => {
               }}
             />
           )}
-          {isSuccess && shopPageState.filteredProducts?.length === 0 && (
+          {isSuccess && shopState.filteredProducts?.length === 0 && (
             <EmptyStatePlaceholder
               content={{
                 title: 'No products found',
@@ -413,11 +368,11 @@ const ShopHome = () => {
               }}
             />
           )}
-          {isSuccess && shopPageState.filteredProducts && (
+          {isSuccess && shopState.filteredProducts && (
             <ul
               className='grid grid-cols-1 gap-y-4 sm:grid-cols-2 sm:gap-x-6 sm:gap-y-10 lg:gap-x-8 xl:grid-cols-3'
               id='product-gallery'>
-              {shopPageState.filteredProducts.map(product => (
+              {shopState.filteredProducts.map(product => (
                 <SingleProduct product={product} key={product.id} />
               ))}
             </ul>

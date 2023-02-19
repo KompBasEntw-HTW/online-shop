@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import { CartItem } from '../../types'
 import { ChangeEvent } from 'react'
-import { roundToTwoDecimals, calculateTotalPrice } from '../../helpers/price-calculation'
+import { roundToTwoDecimals, calculateTotalCoffeePrice } from '../../helpers/price-calculation'
 import { MAX_QUANTITY } from '../../constants/constants'
 import { TrashIcon } from '@heroicons/react/24/solid'
 
@@ -54,7 +54,7 @@ const SingleCheckoutItem = ({
           <p className='font-lora text-base font-semibold text-gray-900'>
             $
             {roundToTwoDecimals(
-              calculateTotalPrice(
+              calculateTotalCoffeePrice(
                 cartItem.product.pricePerKilo,
                 cartItem.quantity,
                 cartItem.size.bagSize

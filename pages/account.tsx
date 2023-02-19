@@ -20,21 +20,20 @@ type Order = {
   items: CartItem[]
 }
 
-type OrderItem = {
+type Order = {
   orderId: string
-  canceled: true
-  id: 4
-  orderDateTime: '2023-02-17T20:02:24.777005Z[GMT]'
+  canceled: boolean
+  id: number
+  orderDateTime: Date
   orderItems: []
-  subTotal: 0
-  userName: 'janosch.hrm@gmail.com'
+  subTotal: number
+  userName: string
   valid: false
 }
 
 const Account = () => {
   const { data: session, status } = useSession()
   const [csrfToken, setCsrfToken] = useState('')
-
   const [orders, setOrders] = useState<Order[]>([])
 
   console.log(orders)

@@ -7,7 +7,8 @@ import {
 
 export const MAX_QUANTITY = 25
 export const MIN_QUANTITY = 1
-export const FREE_SHIPPING_THRESHOLD = 100
+export const DISCOUNTED_SHIPPING_THRESHOLD = 100
+export const TAX_RATE = 0.19
 export const STANDARD_SHIPPING_COST = 5
 export const EXPRESS_SHIPPING_COST = 10
 export const DISCOUNTED_STANDARD_SHIPPING_COST = 0

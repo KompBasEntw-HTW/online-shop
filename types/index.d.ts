@@ -80,7 +80,7 @@ export type SortingsOptionsType = {
 
 export type SelectedFilterOptions = SelectedRangeOptions | SelectedCheckboxOptions
 
-export type ShopPageState = {
+export type ShopState = {
   mobileFiltersOpen: boolean
   availableFilters: ProductFilter[]
   queryState: {
@@ -102,7 +102,7 @@ export type RangeFilterUpdatePayload = {
   max: number
 }
 
-export type ShopPageAction =
+export type ShopAction =
   | { type: 'SET_MOBILE_FILTERS_OPEN'; payload: boolean }
   | { type: 'SET_AVAILABLE_FILTERS'; payload: ProductFilter[] }
   | { type: 'SET_FILTERED_PRODUCTS'; payload: Coffee[] }
@@ -165,7 +165,7 @@ export type ShippingAddressType = z.infer<typeof ShippingAddress>
 export type EmailType = z.infer<typeof Email>
 
 export type LoggedInUserCheckoutState = {
-  selectedShippingMethod: ShippingMethod
+  selectedShippingMethod: ShippingMethodType
   persistedShippingAddresses: PersistedShippingAddressType[] | []
   shippingAddress: ShippingAddressType | PersistedShippingAddressType
   persistedPaymentDetails: PaymentDetailsType[] | []
@@ -173,7 +173,7 @@ export type LoggedInUserCheckoutState = {
 }
 
 export type LoggedOutUserCheckoutState = {
-  selectedShippingMethod: ShippingMethod
+  selectedShippingMethod: ShippingMethodType
   email: EmailType
   shippingAddress: ShippingAddressType
   paymentDetails: PaymentDetailsType

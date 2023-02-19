@@ -1,8 +1,15 @@
-import { useEffect, useReducer } from 'react'
+import { useEffect, useReducer, useState } from 'react'
 import { useRouter } from 'next/router'
 import { Layout } from '../components/General'
 import { useCartContext } from '../context/CartContext'
-import { calculateTotalPrice, roundToTwoDecimals } from '../helpers/price-calculation'
+import {
+  calculateSubtotal,
+  roundToTwoDecimals,
+  calculateTax,
+  calculateTotal,
+  calculateHasDiscountedShipping,
+  calculateShippingCost
+} from '../helpers/price-calculation'
 import { useSession, getCsrfToken } from 'next-auth/react'
 import { UserIcon } from '@heroicons/react/20/solid'
 import {
@@ -14,32 +21,24 @@ import {
 } from '../components/Checkout/'
 import { CheckCircleIcon, ShoppingCartIcon } from '@heroicons/react/24/solid'
 import {
-  FREE_SHIPPING_THRESHOLD,
+  DISCOUNTED_SHIPPING_THRESHOLD,
   SHIPPING_METHODS,
   DEFAULT_ADDRESS,
-  DEFAULT_CREDIT_CARD_DETAILS
+  DEFAULT_CREDIT_CARD_DETAILS,
+  TAX_RATE
 } from '../constants/constants'
-import {
-  CheckoutItem,
-  CheckoutState,
-  ShippingAddressType,
-  Order,
-  PersistedShippingAddressType
-} from '../types'
+import { CheckoutItem, CheckoutState, CheckoutReducerAction } from '../types'
 import EmailWidget from '../components/Checkout/EmailWidget'
-import { CheckoutReducerAction } from '../types'
+
+import { isLoggedInUserCheckoutState, isLoggedOutUserCheckoutState } from '../helpers/type-helpers'
+import { sortCartItems } from '../helpers/cart'
 import {
-  ShippingAddress,
-  Email,
-  PaymentMethodDetails,
-  ShippingMethod,
-  PersistedShippingAddress
-} from '../constants/zod'
-import {
-  isLoggedInUserCheckoutState,
-  isLoggedOutUserCheckoutState
-} from '../helpers/type-predicates'
-import { useState } from 'react'
+  isValidCheckoutState,
+  basketItemsToCheckoutItems,
+  getShippingAddresses,
+  placeOrder,
+  saveShippingAddress
+} from '../helpers/checkout'
 
 // const testCreditCardDetails: CreditCardDetailsType = {
 //   type: 'credit-card',
@@ -83,126 +82,6 @@ import { useState } from 'react'
 //     state: 'NY'
 //   }
 // ]
-
-const isValidCheckoutState = (state: CheckoutState) => {
-  try {
-    if (isLoggedInUserCheckoutState(state)) {
-      ShippingAddress.parse(state.shippingAddress)
-      PaymentMethodDetails.parse(state.paymentDetails)
-      ShippingMethod.parse(state.selectedShippingMethod)
-    } else {
-      Email.parse(state.email)
-      ShippingAddress.parse(state.shippingAddress)
-      PaymentMethodDetails.parse(state.paymentDetails)
-      ShippingMethod.parse(state.selectedShippingMethod)
-    }
-    return true
-  } catch (err) {
-    console.log(err)
-    return false
-  }
-}
-
-const getShippingAddresses = async (
-  accessToken?: string | null
-): Promise<PersistedShippingAddressType[] | undefined> => {
-  try {
-    const data = await fetch('/api/checkout-service/addresses', {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${accessToken}`
-      }
-    })
-
-    const addresses: PersistedShippingAddressType[] = await data.json()
-    return addresses
-  } catch (error) {
-    console.log(error)
-  }
-}
-
-const saveShippingAddress = async (
-  shippingAddress: ShippingAddressType,
-  accessToken?: string | null,
-  userEmail?: string
-): Promise<number | undefined> => {
-  if (accessToken) {
-    try {
-      const response = await fetch('/api/checkout-service/addresses/add', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`
-        },
-        body: JSON.stringify(shippingAddress)
-      })
-
-      return await response.json()
-    } catch (error) {
-      console.log(error)
-    }
-  } else {
-    try {
-      const response = await fetch('/api/checkout-service/addresses/add', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ ...shippingAddress, userName: userEmail })
-      })
-
-      return await response.json()
-    } catch (error) {
-      console.log(error)
-    }
-  }
-}
-
-const placeOrder = async (
-  checkoutItems: CheckoutItem[],
-  addressId: number,
-  accessToken?: string | null,
-  userEmail?: string
-): Promise<Order | undefined> => {
-  if (accessToken) {
-    try {
-      const data = await fetch('/api/checkout-service/orders/place', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`
-        },
-        body: JSON.stringify({
-          items: checkoutItems,
-          addressId,
-          userEmail
-        })
-      })
-
-      return await data.json()
-    } catch (error) {
-      console.log(error)
-    }
-  } else if (userEmail) {
-    try {
-      const data = await fetch('/api/checkout-service/orders/place', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          items: checkoutItems,
-          addressId,
-          userEmail
-        })
-      })
-
-      return await data.json()
-    } catch (error) {
-      console.log(error)
-    }
-  }
-}
 
 const Checkout = () => {
   const router = useRouter()
@@ -273,15 +152,7 @@ const Checkout = () => {
               saveShippingAddress(state.shippingAddress, session?.data?.accessToken).then(
                 addressId => {
                   if (!addressId) return
-                  const checkoutItems: CheckoutItem[] = cartContext.cart.map(item => {
-                    return {
-                      itemId: {
-                        productId: item.product.id,
-                        bagSizeId: item.size.bagSize.id
-                      },
-                      quantity: item.size.quantity
-                    }
-                  })
+                  const checkoutItems = basketItemsToCheckoutItems(cartContext.cart)
                   placeOrder(checkoutItems, addressId, session?.data?.accessToken).then(order => {
                     if (!order) return
                     router.push('/order-confirmation')
@@ -296,15 +167,7 @@ const Checkout = () => {
           try {
             saveShippingAddress(state.shippingAddress, null, state.email).then(addressId => {
               if (!addressId) return
-              const checkoutItems: CheckoutItem[] = cartContext.cart.map(item => {
-                return {
-                  itemId: {
-                    productId: item.product.id,
-                    bagSizeId: item.size.bagSize.id
-                  },
-                  quantity: item.size.quantity
-                }
-              })
+              const checkoutItems = basketItemsToCheckoutItems(cartContext.cart)
 
               placeOrder(checkoutItems, addressId, null, state.email).then(order => {
                 // If order didn't go through, show an error message
@@ -343,6 +206,16 @@ const Checkout = () => {
 
   useEffect(() => {
     if (session.status === 'authenticated') {
+      getShippingAddresses(session?.data?.accessToken).then(addresses => {
+        if (addresses) {
+          dispatch({
+            type: 'SET_PERSISTED_SHIPPING_ADDRESSES',
+            payload: addresses
+          })
+        }
+      })
+
+      // If the user is logged in, reset the checkout state to the initial state for logged in users
       dispatch({
         type: 'RESET_CHECKOUT',
         payload: {
@@ -364,37 +237,22 @@ const Checkout = () => {
         }
       })
     }
-  }, [session.status])
+  }, [session.status, session.data?.accessToken])
 
-  useEffect(() => {
-    if (session.status === 'authenticated') {
-      getShippingAddresses(session?.data?.accessToken).then(addresses => {
-        if (addresses) {
-          dispatch({
-            type: 'SET_PERSISTED_SHIPPING_ADDRESSES',
-            payload: addresses
-          })
-        }
-      })
-    }
-  }, [session])
+  const subtotal = calculateSubtotal(cartContext.cart)
 
-  const subtotal = cartContext.cart.reduce(
-    (total, cartItem) =>
-      total +
-      calculateTotalPrice(cartItem.product.pricePerKilo, cartItem.quantity, cartItem.size.bagSize),
-    0
+  const hasDiscountedShipping = calculateHasDiscountedShipping(
+    subtotal,
+    DISCOUNTED_SHIPPING_THRESHOLD
+  )
+  const shippingCost = calculateShippingCost(
+    hasDiscountedShipping,
+    checkoutState.selectedShippingMethod.reducedPrice,
+    checkoutState.selectedShippingMethod.basePrice
   )
 
-  const isAuthenticated = session.status === 'authenticated'
-
-  const hasDiscountedShippingCost = subtotal >= FREE_SHIPPING_THRESHOLD
-  const shippingCost = hasDiscountedShippingCost
-    ? checkoutState.selectedShippingMethod.reducedPrice
-    : checkoutState.selectedShippingMethod.basePrice
-
-  const tax = (subtotal + shippingCost) * 0.19
-  const total = subtotal + shippingCost + tax
+  const tax = calculateTax(subtotal, shippingCost, TAX_RATE)
+  const total = calculateTotal(subtotal, shippingCost, tax)
 
   const orderSummary = [
     {
@@ -415,17 +273,7 @@ const Checkout = () => {
     }
   ]
 
-  const sortedCart = cartContext.cart.sort((a, b) => {
-    if (a.product.name < b.product.name) {
-      return -1
-    } else if (a.product.name > b.product.name) {
-      return 1
-    } else if (a.size.bagSize.weightInGrams < b.size.bagSize.weightInGrams) {
-      return 1
-    } else {
-      return -1
-    }
-  })
+  const sortedCart = sortCartItems(cartContext.cart)
 
   return (
     <Layout>
@@ -440,9 +288,40 @@ const Checkout = () => {
               </div>
             )}
 
-            {!isAuthenticated &&
-              isLoggedOutUserCheckoutState(checkoutState) &&
-              session.status !== 'loading' && (
+            {session.status === 'authenticated' && isLoggedInUserCheckoutState(checkoutState) && (
+              <>
+                <ShippingAddressWidget
+                  shippingAddress={checkoutState.shippingAddress}
+                  onChangeShippingAddress={value => {
+                    dispatch({ type: 'SET_SHIPPING_ADDRESS', payload: value })
+                  }}
+                  persistedShippingAddresses={checkoutState.persistedShippingAddresses}
+                  isAuthenticated
+                />
+                <ShippingMethodWidget
+                  shippingMethods={SHIPPING_METHODS}
+                  selectedMethod={checkoutState.selectedShippingMethod}
+                  setSelected={value => {
+                    dispatch({ type: 'SET_SHIPPING_METHOD', payload: value })
+                  }}
+                  hasDiscountedShippingCost={hasDiscountedShipping}
+                />
+                <PaymentMethodWidget
+                  paymentDetails={checkoutState.paymentDetails}
+                  onChangePaymentDetails={value =>
+                    dispatch({
+                      type: 'SET_PAYMENT_DETAILS',
+                      payload: value
+                    })
+                  }
+                  persistedPaymentMethods={checkoutState.persistedPaymentDetails}
+                  isAuthenticated
+                />
+              </>
+            )}
+
+            {session.status === 'unauthenticated' &&
+              isLoggedOutUserCheckoutState(checkoutState) && (
                 <>
                   <div className='col mb-10 flex flex-col place-items-center justify-center rounded-lg border border-zinc-100 bg-gray-50 p-4 md:p-8'>
                     <div className='flex place-content-center place-items-center rounded-full bg-amber-50'>
@@ -489,7 +368,7 @@ const Checkout = () => {
                     setSelected={value => {
                       dispatch({ type: 'SET_SHIPPING_METHOD', payload: value })
                     }}
-                    hasDiscountedShippingCost={hasDiscountedShippingCost}
+                    hasDiscountedShippingCost={hasDiscountedShipping}
                   />
 
                   <PaymentMethodWidget
@@ -504,38 +383,6 @@ const Checkout = () => {
                   />
                 </>
               )}
-
-            {isAuthenticated && isLoggedInUserCheckoutState(checkoutState) && (
-              <>
-                <ShippingAddressWidget
-                  shippingAddress={checkoutState.shippingAddress}
-                  onChangeShippingAddress={value => {
-                    dispatch({ type: 'SET_SHIPPING_ADDRESS', payload: value })
-                  }}
-                  persistedShippingAddresses={checkoutState.persistedShippingAddresses}
-                  isAuthenticated
-                />
-                <ShippingMethodWidget
-                  shippingMethods={SHIPPING_METHODS}
-                  selectedMethod={checkoutState.selectedShippingMethod}
-                  setSelected={value => {
-                    dispatch({ type: 'SET_SHIPPING_METHOD', payload: value })
-                  }}
-                  hasDiscountedShippingCost={hasDiscountedShippingCost}
-                />
-                <PaymentMethodWidget
-                  paymentDetails={checkoutState.paymentDetails}
-                  onChangePaymentDetails={value =>
-                    dispatch({
-                      type: 'SET_PAYMENT_DETAILS',
-                      payload: value
-                    })
-                  }
-                  persistedPaymentMethods={checkoutState.persistedPaymentDetails}
-                  isAuthenticated
-                />
-              </>
-            )}
           </div>
 
           {/* Order summary */}
@@ -567,7 +414,7 @@ const Checkout = () => {
                 ))}
               </ul>
               <dl className='space-y-6 border-t border-gray-200 py-6 px-4 sm:px-6'>
-                {hasDiscountedShippingCost && (
+                {hasDiscountedShipping && (
                   <div className='flex items-center gap-x-2 rounded-md border border-amber-200 bg-amber-50 px-4 py-2'>
                     <CheckCircleIcon className='h-6 w-6 shrink-0 text-amber-600' />
                     <div>
@@ -580,7 +427,7 @@ const Checkout = () => {
                     </div>
                   </div>
                 )}
-                {!hasDiscountedShippingCost && (
+                {!hasDiscountedShipping && (
                   <div className='flex items-center gap-x-2 rounded-md border border-amber-200 bg-amber-50 px-4 py-2'>
                     <ShoppingCartIcon className='h-6 w-6 shrink-0 text-amber-600' />
                     <div>
@@ -588,8 +435,8 @@ const Checkout = () => {
                         You&#39;re almost there!
                       </p>
                       <p className='text-xs text-gray-600'>
-                        Spend ${roundToTwoDecimals(FREE_SHIPPING_THRESHOLD - subtotal)} more to get
-                        free standard shipping.
+                        Spend ${roundToTwoDecimals(DISCOUNTED_SHIPPING_THRESHOLD - subtotal)} more
+                        to get free standard shipping.
                       </p>
                     </div>
                   </div>
