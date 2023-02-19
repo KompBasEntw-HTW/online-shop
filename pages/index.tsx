@@ -1,5 +1,4 @@
 import { useEffect, useReducer } from 'react'
-import { useQuery } from '@tanstack/react-query'
 
 import { Layout, PageLoader } from '../components/General'
 import { SingleProduct } from '../components/Product'
@@ -23,8 +22,9 @@ import {
   sortProducts
 } from '../helpers/shop'
 
-import { Coffee, ShopState, ShopAction } from '../types'
+import { ShopState, ShopAction } from '../types'
 import { FILTER_OPTIONS, INITIAL_SHOP_STATE, SORTING_OPTIONS } from '../constants/shop'
+import useProductsData from '../hooks/useProductsData'
 
 const shopPageReducer = (state: ShopState, action: ShopAction): ShopState => {
   switch (action.type) {
@@ -205,15 +205,12 @@ const shopPageReducer = (state: ShopState, action: ShopAction): ShopState => {
   }
 }
 
-const productFetcher = async (): Promise<Coffee[]> =>
-  fetch(`/api/product-service/coffee`).then(res => res.json())
-
 const ShopHome = () => {
   const [shopState, dispatch] = useReducer(shopPageReducer, INITIAL_SHOP_STATE)
-  const { data: products, isLoading, isError, isSuccess } = useQuery(['products'], productFetcher)
+  const { products, isLoading, isError, isSuccess } = useProductsData()
 
   useEffect(() => {
-    if (isLoading || isError) {
+    if (isLoading || isError || !products) {
       return
     }
 
@@ -236,14 +233,6 @@ const ShopHome = () => {
     // Set the filters state variable to the updated filters array
     dispatch({ type: 'SET_AVAILABLE_FILTERS', payload: availableFilters })
   }, [products, isError, isLoading])
-
-  useEffect(() => {
-    if (!products) {
-      return
-    }
-    // Set the filtered products state variable to the products array => this is done to have a copy of the original products array which then can be filtered
-    dispatch({ type: 'SET_FILTERED_PRODUCTS', payload: products })
-  }, [products])
 
   useEffect(() => {
     if (!products) {
