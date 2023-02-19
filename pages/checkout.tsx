@@ -1,17 +1,9 @@
 import { useEffect, useReducer, useState } from 'react'
 import { useRouter } from 'next/router'
+import { useSession, getCsrfToken } from 'next-auth/react'
+
 import { Layout } from '../components/General'
 import { useCartContext } from '../context/CartContext'
-import {
-  calculateSubtotal,
-  roundToTwoDecimals,
-  calculateTax,
-  calculateTotal,
-  calculateHasDiscountedShipping,
-  calculateShippingCost
-} from '../helpers/price-calculation'
-import { useSession, getCsrfToken } from 'next-auth/react'
-import { UserIcon } from '@heroicons/react/20/solid'
 import {
   DescriptionListItem,
   SingleCheckoutItem,
@@ -19,15 +11,8 @@ import {
   PaymentMethodWidget,
   ShippingAddressWidget
 } from '../components/Checkout/'
-import { CheckCircleIcon, ShoppingCartIcon } from '@heroicons/react/24/solid'
-import {
-  DISCOUNTED_SHIPPING_THRESHOLD,
-  SHIPPING_METHODS,
-  DEFAULT_ADDRESS,
-  DEFAULT_CREDIT_CARD_DETAILS,
-  TAX_RATE
-} from '../constants/constants'
-import { CheckoutItem, CheckoutState, CheckoutReducerAction } from '../types'
+import { CheckCircleIcon, ShoppingCartIcon, UserIcon } from '@heroicons/react/24/solid'
+
 import EmailWidget from '../components/Checkout/EmailWidget'
 
 import { isLoggedInUserCheckoutState, isLoggedOutUserCheckoutState } from '../helpers/type-helpers'
@@ -39,49 +24,25 @@ import {
   placeOrder,
   saveShippingAddress
 } from '../helpers/checkout'
+import {
+  calculateSubtotal,
+  roundToTwoDecimals,
+  calculateTax,
+  calculateTotal,
+  calculateHasDiscountedShipping,
+  calculateShippingCost
+} from '../helpers/price-calculation'
 
-// const testCreditCardDetails: CreditCardDetailsType = {
-//   type: 'credit-card',
-//   cardNumber: '1234 5678 9012 3456',
-//   expirationDate: '12/24',
-//   cvv: '123',
-//   cardHolder: 'John Doe'
-// }
+import { INITIAL_CHECKOUT_STATE } from '../constants/checkout'
+import {
+  DISCOUNTED_SHIPPING_THRESHOLD,
+  SHIPPING_METHODS,
+  DEFAULT_ADDRESS,
+  DEFAULT_CREDIT_CARD_DETAILS,
+  TAX_RATE
+} from '../constants/constants'
 
-// const testBankTransferDetails: BankTransferDetailsType = {
-//   type: 'bank-transfer',
-//   accountHolder: 'John Doe',
-//   iban: 'DE89370400440532013000',
-//   bic: 'DEUTDEFF'
-// }
-
-// const storedPaymentDetailsTest: PaymentDetailsType[] = [
-//   testBankTransferDetails,
-//   testCreditCardDetails
-// ]
-
-// const storedShippingAddressesTest: ShippingAddressType[] = [
-//   {
-//     firstName: 'John',
-//     lastName: 'Doe',
-//     street: 'Main St',
-//     streetNumber: '123',
-//     postalCode: '12345',
-//     city: 'New York',
-//     country: SUPPORTED_COUNTRIES[0],
-//     additionalInformation: '1st floor'
-//   },
-//   {
-//     firstName: 'Jane',
-//     lastName: 'Doe',
-//     street: 'Peter St',
-//     streetNumber: '456',
-//     postalCode: '12345',
-//     city: 'New York',
-//     country: SUPPORTED_COUNTRIES[1],
-//     state: 'NY'
-//   }
-// ]
+import { CheckoutItem, CheckoutState, CheckoutReducerAction } from '../types'
 
 const Checkout = () => {
   const router = useRouter()
@@ -187,14 +148,7 @@ const Checkout = () => {
     }
   }
 
-  const initialCheckoutState: CheckoutState = {
-    selectedShippingMethod: SHIPPING_METHODS[0],
-    email: '',
-    shippingAddress: DEFAULT_ADDRESS,
-    paymentDetails: DEFAULT_CREDIT_CARD_DETAILS
-  }
-
-  const [checkoutState, dispatch] = useReducer(checkoutReducer, initialCheckoutState)
+  const [checkoutState, dispatch] = useReducer(checkoutReducer, INITIAL_CHECKOUT_STATE)
 
   useEffect(() => {
     async function getAuth() {

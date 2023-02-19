@@ -7,14 +7,7 @@ import { Layout, Tag, Toast } from '../../components/General'
 import { SingleProduct, ProductConfigurator } from '../../components/Product'
 import { Map } from '../../components/Map'
 
-import { Coffee } from '../../types'
-
-type PositionStackAPIResponse = {
-  data: {
-    latitude: number
-    longitude: number
-  }[]
-}
+import { Coffee, PositionStackAPIResponse } from '../../types'
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const { id } = params as { id: string }

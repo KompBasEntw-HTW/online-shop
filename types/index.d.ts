@@ -212,3 +212,10 @@ export type Order = {
   valid: boolean
   cancelled: boolean
 }
+
+export type PositionStackAPIResponse = {
+  data: {
+    latitude: number
+    longitude: number
+  }[]
+}

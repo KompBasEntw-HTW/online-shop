@@ -1,7 +1,6 @@
 import { useSession, signOut, getCsrfToken } from 'next-auth/react'
 import Image from 'next/image'
-import { useState } from 'react'
-import { useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { Layout } from '../components/General'
 import { EmptyStatePlaceholder } from '../components/Shop'
 import { CartItem } from '../types'
