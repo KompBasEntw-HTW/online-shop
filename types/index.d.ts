@@ -204,13 +204,18 @@ export type CheckoutReducerAction =
   | { type: 'SUBMIT_ORDER' }
 
 export type Order = {
+  canceled: boolean
   id: number
+  orderDateTime: string
+  orderItems: CheckoutItem[]
+  orderDetails: {
+    subtotal: number
+    shipping: number
+    tax: number
+    total: number
+  }
   userName: string
-  orderItems: CartItem[]
-  shippingAddress: ShippingAddressType
-  orderDateTime: Date
-  valid: boolean
-  cancelled: boolean
+  valid: false
 }
 
 export type PositionStackAPIResponse = {
