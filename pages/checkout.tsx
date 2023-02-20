@@ -103,21 +103,29 @@ const Checkout = () => {
                   quantity: item.size.quantity
                 }
               })
-              placeOrder(checkoutItems, state.shippingAddress.id, session?.data?.accessToken).then(
-                order => {
-                  if (!order) return
-                  cartContext.cart.forEach(cartItem => {
-                    cartContext.removeItem(cartItem.product.id, cartItem.size.bagSize.id)
-                  })
-                  router.push('/order-confirmation')
-                }
-              )
+              placeOrder(
+                checkoutItems,
+                state.selectedShippingMethod,
+                state.shippingAddress.id,
+                session?.data?.accessToken
+              ).then(order => {
+                if (!order) return
+                cartContext.cart.forEach(cartItem => {
+                  cartContext.removeItem(cartItem.product.id, cartItem.size.bagSize.id)
+                })
+                router.push('/order-confirmation')
+              })
             } else {
               saveShippingAddress(state.shippingAddress, session?.data?.accessToken).then(
                 addressId => {
                   if (!addressId) return
                   const checkoutItems = basketItemsToCheckoutItems(cartContext.cart)
-                  placeOrder(checkoutItems, addressId, session?.data?.accessToken).then(order => {
+                  placeOrder(
+                    checkoutItems,
+                    state.selectedShippingMethod,
+                    addressId,
+                    session?.data?.accessToken
+                  ).then(order => {
                     if (!order) return
                     cartContext.cart.forEach(cartItem => {
                       cartContext.removeItem(cartItem.product.id, cartItem.size.bagSize.id)
@@ -136,7 +144,13 @@ const Checkout = () => {
               if (!addressId) return
               const checkoutItems = basketItemsToCheckoutItems(cartContext.cart)
 
-              placeOrder(checkoutItems, addressId, null, state.email).then(order => {
+              placeOrder(
+                checkoutItems,
+                state.selectedShippingMethod,
+                addressId,
+                null,
+                state.email
+              ).then(order => {
                 // If order didn't go through, show an error message
                 if (!order) return
                 cartContext.cart.forEach(cartItem => {

@@ -26,14 +26,14 @@ export const AVAILABLE_PAYMENT_METHODS = [
 
 export const SHIPPING_METHODS: ShippingMethodType[] = [
   {
-    id: 'standard',
+    id: 'STANDARD_SHIPPING',
     title: 'Standard',
     turnaround: '4–10 business days',
     basePrice: STANDARD_SHIPPING_COST,
     reducedPrice: DISCOUNTED_STANDARD_SHIPPING_COST
   },
   {
-    id: 'express',
+    id: 'EXPRESS_SHIPPING',
     title: 'Express',
     turnaround: '2–5 business days',
     basePrice: EXPRESS_SHIPPING_COST,

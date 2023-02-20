@@ -4,7 +4,8 @@ import {
   CheckoutItem,
   PersistedShippingAddressType,
   ShippingAddressType,
-  Order
+  Order,
+  ShippingMethodType
 } from '../types'
 import { ShippingAddress, PaymentMethodDetails, ShippingMethod, Email } from '../constants/zod'
 import { isLoggedInUserCheckoutState } from './type-helpers'
@@ -96,6 +97,7 @@ export const saveShippingAddress = async (
 
 export const placeOrder = async (
   checkoutItems: CheckoutItem[],
+  shippingMethod: ShippingMethodType,
   addressId: number,
   accessToken?: string | null,
   userEmail?: string
@@ -111,7 +113,8 @@ export const placeOrder = async (
         body: JSON.stringify({
           items: checkoutItems,
           addressId,
-          userEmail
+          userEmail,
+          shippingMethod: shippingMethod.id
         })
       })
 

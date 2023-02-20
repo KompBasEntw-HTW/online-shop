@@ -1,4 +1,3 @@
-import exp from 'constants'
 import z from 'zod'
 import { SUPPORTED_COUNTRIES } from './constants'
 
@@ -117,7 +116,7 @@ export const Email = z.string().email({
 })
 
 export const ShippingMethod = z.object({
-  id: z.string().min(1),
+  id: z.union([z.literal('STANDARD_SHIPPING'), z.literal('EXPRESS_SHIPPING')]),
   title: z.string().min(1),
   turnaround: z.string().min(1),
   basePrice: z.number(),
