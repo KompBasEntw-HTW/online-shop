@@ -1,60 +1,70 @@
 import { useSession, signOut, getCsrfToken } from 'next-auth/react'
-import Image from 'next/image'
-import { useState } from 'react'
-import { useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { Layout } from '../components/General'
 import { EmptyStatePlaceholder } from '../components/Shop'
-import { CartItem } from '../types'
-import { formatDate, addToDate } from '../helpers/utilities'
-import Link from 'next/link'
+import { useQuery } from '@tanstack/react-query'
+import { Session } from 'next-auth'
+import { Order, OrderWithProductsData } from '../types'
+import SingleOrder from '../components/Account/SingleOrder'
+import useProductsData from '../hooks/useProductsData'
 
-type Order = {
-  orderId: string
-  orderDate: Date
-  orderDetails: {
-    subtotal: number
-    shipping: number
-    tax: number
-    total: number
-  }
-  items: CartItem[]
-}
+const getOrders = async (session: Session | null) =>
+  fetch('/api/checkout-service/orders', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + session?.accessToken
+    }
+  }).then(res => res.json())
 
 const Account = () => {
-  const { data: session, status } = useSession()
+  const session = useSession()
   const [csrfToken, setCsrfToken] = useState('')
-
-  const [orders, setOrders] = useState<Order[]>([])
-
-  console.log(orders)
+  const { data: orders, refetch } = useQuery<Order[]>(['orders', session], () =>
+    getOrders(session.data)
+  )
+  const { products } = useProductsData()
 
   useEffect(() => {
-    async function getAuth() {
+    const getAuth = async () => {
       const crsfToken = await getCsrfToken()
       setCsrfToken(crsfToken || '')
-
-      if (!session) return
     }
     getAuth()
+    refetch()
+  }, [refetch])
 
-    if (status === 'authenticated') {
-      fetch('/api/checkout-service/orders', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-Token': csrfToken,
-          Authorization: 'Bearer ' + session?.accessToken
+  useEffect(() => {
+    refetch()
+  }, [session, refetch])
+
+  let transformedOrders: OrderWithProductsData[] | undefined
+
+  if (orders && products) {
+    transformedOrders = orders?.map(order => {
+      const associatedProducts = order.orderItems?.map(orderItem => {
+        const associatedProduct = products?.find(product => product.id === orderItem.item.productId)
+        const selectedBagSize = associatedProduct?.coffeeBagSizes?.find(
+          bagSize =>
+            orderItem.item.productId === associatedProduct.id &&
+            bagSize.bagSize.id === orderItem.item.bagSizeId
+        )
+        return {
+          id: orderItem.id,
+          quantity: orderItem.quantity,
+          ...associatedProduct,
+          selectedBagSize: selectedBagSize
         }
       })
-        .then(response => response.json())
-        .then(data => {
-          console.log(data)
-          setOrders(data)
-        })
-    }
-  }, [session, status, csrfToken])
 
-  if (status === 'authenticated') {
+      return {
+        ...order,
+        orderItems: associatedProducts
+      }
+    }) as OrderWithProductsData[]
+  }
+
+  if (session.status === 'authenticated') {
     return (
       <Layout>
         <section className='py-12'>
@@ -67,8 +77,8 @@ const Account = () => {
             </button>
           </div>
           <div className='flex flex-col pt-4'>
-            <span className='text-lg font-semibold'>{session?.user?.name}</span>
-            <span className='text-sm text-gray-500'>{session?.user?.email}</span>
+            <span className='text-lg font-semibold'>{session?.data.user?.name}</span>
+            <span className='text-sm text-gray-500'>{session?.data?.user?.email}</span>
           </div>
         </section>
         <section className='py-12'>
@@ -83,45 +93,9 @@ const Account = () => {
             />
           ) : (
             <div className='flex flex-col gap-y-2 pt-4'>
-              {orders?.map(order => (
-                <div key={order.orderId} className='rounded-md border border-zinc-200 p-8'>
-                  <div className='flex items-center justify-between'>
-                    <div className='flex items-center gap-x-4'>
-                      <h3 className='text-xl'>Order from {formatDate(order.orderDate)}</h3>
-                      <span className='rounded-md bg-amber-50 px-2 py-0.5 text-sm  text-amber-600'>
-                        Delivered on {formatDate(addToDate(order.orderDate, 3))}
-                      </span>
-                    </div>
-                    <span className='text-gray-500'>Order id: {order.orderId}</span>
-                  </div>
-
-                  <div className='grid grid-cols-3 gap-4 pt-4'>
-                    {order?.items?.map(item => (
-                      <Link
-                        key={item.product.id + item.size.bagSize.id}
-                        href={`/products/${item.product.id}`}>
-                        <div className='flex gap-x-4 rounded-md border border-zinc-200 bg-zinc-50 hover:cursor-pointer hover:border-zinc-300'>
-                          <div className='shrink-0 rounded-xl bg-amber-50'>
-                            <Image
-                              src={item.product.imageUrl}
-                              alt={item.product.name}
-                              width={80}
-                              height={80}
-                            />
-                          </div>
-                          <div className='flex flex-col justify-center'>
-                            <h4 className='text-base'>{item.product.name}</h4>
-                            <p className='text-sm text-gray-500'>
-                              {item.size.bagSize.weightInGrams}g
-                            </p>
-                            <p className='text-sm text-gray-500'>Quantity: {item.quantity}</p>
-                          </div>
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              ))}
+              {transformedOrders?.map((order, idx) => {
+                if (order) return <SingleOrder order={order} key={idx} />
+              })}
             </div>
           )}
         </section>
@@ -129,7 +103,7 @@ const Account = () => {
     )
   }
 
-  if (status === 'loading') {
+  if (session.status === 'loading') {
     return (
       <Layout>
         <div className='flex min-h-[85vh] items-center justify-center'>

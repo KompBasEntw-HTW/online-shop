@@ -9,7 +9,7 @@ import { AVAILABLE_PAYMENT_METHODS } from '../../constants/constants'
 import CreditCardForm from './CreditCardForm'
 import BankTransferForm from './BankTransferForm'
 import PaymentMethodCard from './PaymentMethodCard'
-import { isBankTransferDetails, isCreditCardDetails } from '../../helpers/type-predicates'
+import { isBankTransferDetails, isCreditCardDetails } from '../../helpers/type-helpers'
 
 type ConditonalUserProps =
   | {
@@ -36,12 +36,10 @@ type ConditonalUserProps =
 
 const PaymentForm = ({
   paymentDetails,
-  onChangePaymentDetails,
-  isAuthenticated
+  onChangePaymentDetails
 }: {
   paymentDetails: PaymentDetailsType | null
   onChangePaymentDetails: (paymentDetails: PaymentDetailsType) => void
-  isAuthenticated: boolean
 }) => {
   return (
     <Tab.Group as='div' className='pt-4'>
@@ -70,7 +68,6 @@ const PaymentForm = ({
                   <CreditCardForm
                     cardDetails={isCreditCardDetails(paymentDetails) ? paymentDetails : undefined}
                     onChangeDetails={onChangePaymentDetails}
-                    isAuthenticated={isAuthenticated}
                   />
                 </Tab.Panel>
               )
@@ -81,7 +78,6 @@ const PaymentForm = ({
                     transferDetails={
                       isBankTransferDetails(paymentDetails) ? paymentDetails : undefined
                     }
-                    isAuthenticated={isAuthenticated}
                     onChangeDetails={onChangePaymentDetails}
                   />
                 </Tab.Panel>
@@ -148,7 +144,6 @@ const PaymentMethodWidget = ({
           <PaymentForm
             paymentDetails={paymentDetails}
             onChangePaymentDetails={onChangePaymentDetails}
-            isAuthenticated={isAuthenticated}
           />
         )}
       </div>
@@ -163,7 +158,6 @@ const PaymentMethodWidget = ({
       <PaymentForm
         paymentDetails={paymentDetails}
         onChangePaymentDetails={onChangePaymentDetails}
-        isAuthenticated={isAuthenticated}
       />
     </div>
   )

@@ -1,6 +1,6 @@
 import { BankTransferDetailsType } from '../../types'
 import clsx from 'clsx'
-import { CheckboxField, TextField } from '../General/FormFields'
+import { TextField } from '../General/FormFields'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { DEFAULT_BANK_TRANSFER_DETAILS } from '../../constants/constants'
 import { BankTransferDetails } from '../../constants/zod'
@@ -10,12 +10,10 @@ import { Toast } from '../General'
 const BankTransferForm = ({
   transferDetails,
   onChangeDetails,
-  isAuthenticated,
   className
 }: {
   transferDetails?: BankTransferDetailsType
   onChangeDetails: (details: BankTransferDetailsType) => void
-  isAuthenticated: boolean
   className?: string
 }) => {
   const formStyles = clsx('mt-6 grid grid-cols-4 gap-y-6 gap-x-4', className)
@@ -118,24 +116,7 @@ const BankTransferForm = ({
           placeholder='DEUTDEFF'
         />
       </div>
-      {isAuthenticated && (
-        <div className='col-span-4'>
-          <CheckboxField
-            name='save-address'
-            id='save-address'
-            autoComplete='save-address'
-            label='Save this address for next time'
-            required={false}
-            checked={transferDetails?.saveToDatabase || false}
-            onChange={e =>
-              setEnteredTransferDetails(state => ({
-                ...state,
-                saveToDatabase: e.target.checked
-              }))
-            }
-          />
-        </div>
-      )}
+
       {errorToast.show && (
         <Toast
           title={errorToast.title}

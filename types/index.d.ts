@@ -80,7 +80,7 @@ export type SortingsOptionsType = {
 
 export type SelectedFilterOptions = SelectedRangeOptions | SelectedCheckboxOptions
 
-export type ShopPageState = {
+export type ShopState = {
   mobileFiltersOpen: boolean
   availableFilters: ProductFilter[]
   queryState: {
@@ -102,7 +102,7 @@ export type RangeFilterUpdatePayload = {
   max: number
 }
 
-export type ShopPageAction =
+export type ShopAction =
   | { type: 'SET_MOBILE_FILTERS_OPEN'; payload: boolean }
   | { type: 'SET_AVAILABLE_FILTERS'; payload: ProductFilter[] }
   | { type: 'SET_FILTERED_PRODUCTS'; payload: Coffee[] }
@@ -165,7 +165,7 @@ export type ShippingAddressType = z.infer<typeof ShippingAddress>
 export type EmailType = z.infer<typeof Email>
 
 export type LoggedInUserCheckoutState = {
-  selectedShippingMethod: ShippingMethod
+  selectedShippingMethod: ShippingMethodType
   persistedShippingAddresses: PersistedShippingAddressType[] | []
   shippingAddress: ShippingAddressType | PersistedShippingAddressType
   persistedPaymentDetails: PaymentDetailsType[] | []
@@ -173,7 +173,7 @@ export type LoggedInUserCheckoutState = {
 }
 
 export type LoggedOutUserCheckoutState = {
-  selectedShippingMethod: ShippingMethod
+  selectedShippingMethod: ShippingMethodType
   email: EmailType
   shippingAddress: ShippingAddressType
   paymentDetails: PaymentDetailsType
@@ -203,12 +203,49 @@ export type CheckoutReducerAction =
   | { type: 'SET_EMAIL'; payload: EmailType }
   | { type: 'SUBMIT_ORDER' }
 
-export type Order = {
+export type PositionStackAPIResponse = {
+  data: {
+    latitude: number
+    longitude: number
+  }[]
+}
+
+export type Item = {
+  productId: number
+  bagSizeId: number
+}
+
+export type ItemId = {
+  productId: number
+  bagSizeId: number
+}
+
+export type OrderItem = {
   id: number
+  quantity: number
+  item: Item
+}
+
+export type Order = {
+  canceled: boolean
+  id: number
+  orderDateTime: string
+  orderItems: OrderItem[]
+  orderDetails: {
+    subtotal: number
+    shipping: number
+    tax: number
+    total: number
+  }
   userName: string
-  orderItems: CartItem[]
-  shippingAddress: ShippingAddressType
-  orderDateTime: Date
-  valid: boolean
-  cancelled: boolean
+  valid: false
+}
+
+export type CoffeeWithSelectedSize = Coffee &
+  Omit<OrderItem, 'item'> & {
+    selectedBagSize: CoffeeBagSize
+  }
+
+export type OrderWithProductsData = Omit<Order, 'orderItems'> & {
+  orderItems: (CoffeeWithSelectedSize | undefined)[]
 }

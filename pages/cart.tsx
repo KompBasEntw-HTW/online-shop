@@ -2,44 +2,65 @@ import { XCircleIcon, ShoppingCartIcon, CheckCircleIcon } from '@heroicons/react
 import Image from 'next/image'
 import { useCartContext } from '../context/CartContext'
 import { Layout } from '../components/General'
-import { calculateTotalPrice, roundToTwoDecimals } from '../helpers/price-calculation'
+import {
+  calculateHasDiscountedShipping,
+  calculateShippingCost,
+  calculateSubtotal,
+  calculateTax,
+  calculateTotal,
+  roundToTwoDecimals
+} from '../helpers/price-calculation'
 import {
   MAX_QUANTITY,
-  FREE_SHIPPING_THRESHOLD,
+  DISCOUNTED_SHIPPING_THRESHOLD,
   STANDARD_SHIPPING_COST,
-  DISCOUNTED_STANDARD_SHIPPING_COST
+  DISCOUNTED_STANDARD_SHIPPING_COST,
+  TAX_RATE
 } from '../constants/constants'
 import Link from 'next/link'
+import { sortCartItems } from '../helpers/cart'
+import clsx from 'clsx'
 
 const Cart = () => {
   const cartContext = useCartContext()
 
-  const subtotal = cartContext.cart.reduce(
-    (total, cartItem) =>
-      total +
-      calculateTotalPrice(cartItem.product.pricePerKilo, cartItem.quantity, cartItem.size.bagSize),
-    0
+  const subtotal = calculateSubtotal(cartContext.cart)
+
+  const hasDiscountedShipping = calculateHasDiscountedShipping(
+    subtotal,
+    DISCOUNTED_SHIPPING_THRESHOLD
   )
 
-  const hasDiscountedShippingCost = subtotal >= FREE_SHIPPING_THRESHOLD
-  const shippingCost = hasDiscountedShippingCost
-    ? DISCOUNTED_STANDARD_SHIPPING_COST
-    : STANDARD_SHIPPING_COST
+  const shippingCost = calculateShippingCost(
+    hasDiscountedShipping,
+    DISCOUNTED_STANDARD_SHIPPING_COST,
+    STANDARD_SHIPPING_COST
+  )
 
-  const tax = (subtotal + shippingCost) * 0.19
-  const total = subtotal + shippingCost + tax
+  const tax = calculateTax(subtotal, shippingCost, TAX_RATE)
+  const total = calculateTotal(subtotal, shippingCost, tax)
 
-  const sortedCart = cartContext.cart.sort((a, b) => {
-    if (a.product.name < b.product.name) {
-      return -1
-    } else if (a.product.name > b.product.name) {
-      return 1
-    } else if (a.size.bagSize.weightInGrams < b.size.bagSize.weightInGrams) {
-      return 1
-    } else {
-      return -1
+  const sortedCart = sortCartItems(cartContext.cart)
+
+  const cartSummary = [
+    {
+      label: 'Subtotal',
+      value: `$${roundToTwoDecimals(subtotal)}`
+    },
+    {
+      label: 'Shipping estimate',
+      value: `$${roundToTwoDecimals(shippingCost)}`
+    },
+    {
+      label: 'Tax estimate',
+      value: `$${roundToTwoDecimals(tax)}`
+    },
+    {
+      label: 'Order total',
+      value: `$${roundToTwoDecimals(total)} USD`,
+      highlight: true
     }
-  })
+  ]
 
   return (
     <Layout>
@@ -137,7 +158,7 @@ const Cart = () => {
                 </h2>
 
                 <dl className='mt-4 space-y-4'>
-                  {hasDiscountedShippingCost && (
+                  {hasDiscountedShipping && (
                     <div className='flex items-center gap-x-2 rounded-md border border-amber-200 bg-amber-50 px-4 py-2'>
                       <CheckCircleIcon className='h-6 w-6 shrink-0 text-amber-600' />
                       <div>
@@ -151,7 +172,7 @@ const Cart = () => {
                       </div>
                     </div>
                   )}
-                  {!hasDiscountedShippingCost && (
+                  {!hasDiscountedShipping && (
                     <div className='flex items-center gap-x-2 rounded-md border border-amber-200 bg-amber-50 px-4 py-2'>
                       <ShoppingCartIcon className='h-6 w-6 shrink-0 text-amber-600' />
                       <div>
@@ -159,36 +180,37 @@ const Cart = () => {
                           You&#39;re almost there!
                         </p>
                         <p className='text-xs text-gray-600'>
-                          Spend ${roundToTwoDecimals(FREE_SHIPPING_THRESHOLD - subtotal)} more to
-                          get free standard shipping.
+                          Spend ${roundToTwoDecimals(DISCOUNTED_SHIPPING_THRESHOLD - subtotal)} more
+                          to get free standard shipping.
                         </p>
                       </div>
                     </div>
                   )}
-                  <div className='flex items-center justify-between pt-2'>
-                    <dt className='text-sm text-gray-600'>Subtotal</dt>
-                    <dd className='text-sm font-medium text-gray-900' id='subtotal'>
-                      ${roundToTwoDecimals(subtotal)}
-                    </dd>
-                  </div>
-                  <div className='flex items-center justify-between border-t border-gray-200 pt-4'>
-                    <dt className='flex items-center text-sm text-gray-600'>Shipping estimate</dt>
-                    <dd className='text-sm font-medium text-gray-900' id='shipping-cost-estimate'>
-                      ${roundToTwoDecimals(shippingCost)}
-                    </dd>
-                  </div>
-                  <div className='flex items-center justify-between border-t border-gray-200 pt-4'>
-                    <dt className='flex text-sm text-gray-600'>Tax estimate</dt>
-                    <dd className='text-sm font-medium text-gray-900' id='tax-estimate'>
-                      ${roundToTwoDecimals(tax)}
-                    </dd>
-                  </div>
-                  <div className='flex items-center justify-between border-t border-gray-200 pt-4'>
-                    <dt className='text-base font-medium text-gray-900'>Order total</dt>
-                    <dd className='text-base font-medium text-gray-900' id='order-total'>
-                      ${roundToTwoDecimals(total)}
-                    </dd>
-                  </div>
+                  {cartSummary.map(summaryItem => (
+                    <div
+                      className={clsx(
+                        summaryItem?.highlight ? ' border-t border-gray-200 pt-4' : ' pt-2',
+                        'flex items-center justify-between'
+                      )}
+                      key={summaryItem.label}>
+                      <dt
+                        className={clsx(
+                          summaryItem?.highlight
+                            ? 'text-base font-medium text-gray-900'
+                            : 'text-sm text-gray-600'
+                        )}>
+                        {summaryItem.label}
+                      </dt>
+                      <dd
+                        className={clsx(
+                          summaryItem?.highlight ? 'text-base' : 'text-sm',
+                          'font-medium text-gray-900'
+                        )}
+                        id={summaryItem.label}>
+                        {summaryItem.value}
+                      </dd>
+                    </div>
+                  ))}
                 </dl>
 
                 <div className='mt-6'>

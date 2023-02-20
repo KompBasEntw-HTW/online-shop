@@ -10,10 +10,11 @@ import { MAX_QUANTITY, MIN_QUANTITY } from '../../constants/constants'
 
 import {
   calculatePricePerKilo,
-  calculateTotalPrice,
-  roundToTwoDecimals,
-  verifyQuantity
+  calculateTotalCoffeePrice,
+  roundToTwoDecimals
 } from '../../helpers/price-calculation'
+
+import { verifyQuantity } from '../../helpers/cart'
 
 const clearAndSortBagSizes = (bagSizes: CoffeeBagSize[]) => {
   const sortedBagSizes = bagSizes.sort((a, b) => a.bagSize.weightInGrams - b.bagSize.weightInGrams)
@@ -52,7 +53,7 @@ const ProductConfigurator = ({
         message: ''
       })
 
-      setTotalPrice(calculateTotalPrice(product.pricePerKilo, quantity, size.bagSize))
+      setTotalPrice(calculateTotalCoffeePrice(product.pricePerKilo, quantity, size.bagSize))
     } catch (err) {
       setError({
         error: true,

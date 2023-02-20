@@ -1,20 +1,13 @@
-import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { GetServerSideProps } from 'next'
 import Image from 'next/image'
+import useProductData from '../../hooks/useProductsData'
 
 import { Layout, Tag, Toast } from '../../components/General'
 import { SingleProduct, ProductConfigurator } from '../../components/Product'
 import { Map } from '../../components/Map'
 
-import { Coffee } from '../../types'
-
-type PositionStackAPIResponse = {
-  data: {
-    latitude: number
-    longitude: number
-  }[]
-}
+import { Coffee, PositionStackAPIResponse } from '../../types'
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const { id } = params as { id: string }
@@ -46,16 +39,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 }
 
 const ProductPage = ({ latLng, product }: { latLng?: [number, number]; product: Coffee }) => {
-  const relatedProductsQueryFunction = async (): Promise<Coffee[]> => {
-    return fetch(`/api/product-service/coffee`)
-      .then(res => res.json())
-      .catch(err => Promise.reject(err))
-  }
-
-  const { data: relatedProducts } = useQuery({
-    queryKey: ['relatedProducts'],
-    queryFn: relatedProductsQueryFunction
-  })
+  const { products: relatedProducts } = useProductData(3, [product.id])
 
   const [showToast, setShowToast] = useState(false)
 
@@ -120,12 +104,9 @@ const ProductPage = ({ latLng, product }: { latLng?: [number, number]; product: 
               <h2 className='pb-4'>Related products</h2>
               <hr />
               <div className='grid grid-cols-1 gap-4 pt-8 sm:grid-cols-2 lg:grid-cols-3'>
-                {relatedProducts
-                  .filter(relatedProduct => relatedProduct.id !== product.id)
-                  .slice(0, 3)
-                  .map((product: Coffee) => (
-                    <SingleProduct key={product.id} product={product} />
-                  ))}
+                {relatedProducts.map((product: Coffee) => (
+                  <SingleProduct key={product.id} product={product} />
+                ))}
               </div>
             </section>
           )}
