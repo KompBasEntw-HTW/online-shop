@@ -4,25 +4,26 @@ import { Layout } from '../components/General'
 import { EmptyStatePlaceholder } from '../components/Shop'
 import { useQuery } from '@tanstack/react-query'
 import { Session } from 'next-auth'
-import { Order } from '../types'
+import { Order, OrderWithProductsData, Coffee } from '../types'
 import SingleOrder from '../components/Account/SingleOrder'
+import useProductsData from '../hooks/useProductsData'
 
-const getOrders = async (csrfToken: string, session: Session | null) =>
+const getOrders = async (session: Session | null) =>
   fetch('/api/checkout-service/orders', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      'X-CSRF-Token': csrfToken,
       Authorization: 'Bearer ' + session?.accessToken
     }
   }).then(res => res.json())
 
 const Account = () => {
-  const { data: session, status } = useSession()
+  const session = useSession()
   const [csrfToken, setCsrfToken] = useState('')
-  const { data: orders, refetch } = useQuery<Order[]>(['orders'], () =>
-    getOrders(csrfToken, session)
+  const { data: orders, refetch } = useQuery<Order[]>(['orders', session], () =>
+    getOrders(session.data)
   )
+  const { products } = useProductsData()
 
   console.log(orders)
 
@@ -37,9 +38,36 @@ const Account = () => {
 
   useEffect(() => {
     refetch()
-  }, [session, status, csrfToken, refetch])
+  }, [session, refetch])
 
-  if (status === 'authenticated') {
+  let transformedOrders: OrderWithProductsData[] = []
+
+  console.log(orders, products)
+
+  if (orders && products) {
+    transformedOrders = orders?.map(order => {
+      const associatedProducts = order.orderItems?.map(orderItem => {
+        const associatedProduct: Coffee | undefined = products?.find(
+          product => product.id === orderItem.item.productId
+        )
+        const selectedBagSize = associatedProduct?.coffeeBagSizes?.find(
+          bagSize =>
+            orderItem.item.productId === associatedProduct.id &&
+            bagSize.bagSize.id === orderItem.item.bagSizeId
+        )
+        return associatedProduct
+      })
+
+      return {
+        ...order,
+        orderItems: associatedProducts
+      }
+    })
+  }
+
+  console.log(transformedOrders)
+
+  if (session.status === 'authenticated') {
     return (
       <Layout>
         <section className='py-12'>
@@ -52,8 +80,8 @@ const Account = () => {
             </button>
           </div>
           <div className='flex flex-col pt-4'>
-            <span className='text-lg font-semibold'>{session?.user?.name}</span>
-            <span className='text-sm text-gray-500'>{session?.user?.email}</span>
+            <span className='text-lg font-semibold'>{session?.data.user?.name}</span>
+            <span className='text-sm text-gray-500'>{session?.data?.user?.email}</span>
           </div>
         </section>
         <section className='py-12'>
@@ -78,7 +106,7 @@ const Account = () => {
     )
   }
 
-  if (status === 'loading') {
+  if (session.status === 'loading') {
     return (
       <Layout>
         <div className='flex min-h-[85vh] items-center justify-center'>

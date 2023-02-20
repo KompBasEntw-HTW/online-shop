@@ -106,6 +106,9 @@ const Checkout = () => {
               placeOrder(checkoutItems, state.shippingAddress.id, session?.data?.accessToken).then(
                 order => {
                   if (!order) return
+                  cartContext.cart.forEach(cartItem => {
+                    cartContext.removeItem(cartItem.product.id, cartItem.size.bagSize.id)
+                  })
                   router.push('/order-confirmation')
                 }
               )

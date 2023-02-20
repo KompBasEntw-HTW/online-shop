@@ -203,11 +203,34 @@ export type CheckoutReducerAction =
   | { type: 'SET_EMAIL'; payload: EmailType }
   | { type: 'SUBMIT_ORDER' }
 
+export type PositionStackAPIResponse = {
+  data: {
+    latitude: number
+    longitude: number
+  }[]
+}
+
+export type Item = {
+  productId: number
+  bagSizeId: number
+}
+
+export type ItemId = {
+  productId: number
+  bagSizeId: number
+}
+
+export type OrderItem = {
+  id: number
+  quantity: number
+  item: Item
+}
+
 export type Order = {
   canceled: boolean
   id: number
   orderDateTime: string
-  orderItems: CheckoutItem[]
+  orderItems: OrderItem[]
   orderDetails: {
     subtotal: number
     shipping: number
@@ -218,9 +241,6 @@ export type Order = {
   valid: false
 }
 
-export type PositionStackAPIResponse = {
-  data: {
-    latitude: number
-    longitude: number
-  }[]
+export type OrderWithProductsData = Omit<Order, 'orderItems'> & {
+  orderItems: (Coffee | undefined)[]
 }

@@ -1,23 +1,10 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import useProductsData from '../../hooks/useProductsData'
 import { formatDate, addToDate } from '../../helpers/utilities'
-import { Order } from '../../types'
+import { OrderWithProductsData } from '../../types'
 
-const SingleOrder = ({ order }: { order: Order }) => {
-  const productIds = [20, 35]
-
-  const { products } = useProductsData(undefined, undefined, productIds)
-
-  const mergedProducts = products?.map(product => {
-    const orderItem = order.orderItems.find(item => item.itemId.productId === product.id)
-
-    return { ...product, orderItem }
-  })
-
-  console.log(mergedProducts)
-
-  console.log(products)
+const SingleOrder = ({ order }: { order: OrderWithProductsData }) => {
+  console.log(order)
 
   return (
     <div key={order.id} className='rounded-md border border-zinc-200 p-8'>
@@ -35,7 +22,7 @@ const SingleOrder = ({ order }: { order: Order }) => {
       </div>
 
       <div className='grid grid-cols-3 gap-4 pt-4'>
-        {mergedProducts?.map(item => (
+        {order.orderItems?.map(item => (
           <Link key={item.id + item.orderItem?.itemId.bagSizeId} href={`/products/${item.id}`}>
             <div className='flex gap-x-4 rounded-md border border-zinc-200 bg-zinc-50 hover:cursor-pointer hover:border-zinc-300'>
               <div className='shrink-0 rounded-xl bg-amber-50'>
@@ -43,14 +30,7 @@ const SingleOrder = ({ order }: { order: Order }) => {
               </div>
               <div className='flex flex-col justify-center'>
                 <h4 className='text-base'>{item.name}</h4>
-                <p className='text-sm text-gray-500'>
-                  {
-                    item.coffeeBagSizes.find(
-                      bagSize => bagSize.bagSize.id === item.orderItem?.itemId.bagSizeId
-                    )?.bagSize.weightInGrams
-                  }
-                  g
-                </p>
+                <p className='text-sm text-gray-500'>g</p>
                 <p className='text-sm text-gray-500'>Quantity: {}</p>
               </div>
             </div>
