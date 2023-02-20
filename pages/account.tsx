@@ -4,7 +4,7 @@ import { Layout } from '../components/General'
 import { EmptyStatePlaceholder } from '../components/Shop'
 import { useQuery } from '@tanstack/react-query'
 import { Session } from 'next-auth'
-import { Order, OrderWithProductsData, Coffee } from '../types'
+import { Order, OrderWithProductsData } from '../types'
 import SingleOrder from '../components/Account/SingleOrder'
 import useProductsData from '../hooks/useProductsData'
 
@@ -25,8 +25,6 @@ const Account = () => {
   )
   const { products } = useProductsData()
 
-  console.log(orders)
-
   useEffect(() => {
     const getAuth = async () => {
       const crsfToken = await getCsrfToken()
@@ -40,32 +38,31 @@ const Account = () => {
     refetch()
   }, [session, refetch])
 
-  let transformedOrders: OrderWithProductsData[] = []
-
-  console.log(orders, products)
+  let transformedOrders: OrderWithProductsData[] | undefined
 
   if (orders && products) {
     transformedOrders = orders?.map(order => {
       const associatedProducts = order.orderItems?.map(orderItem => {
-        const associatedProduct: Coffee | undefined = products?.find(
-          product => product.id === orderItem.item.productId
-        )
+        const associatedProduct = products?.find(product => product.id === orderItem.item.productId)
         const selectedBagSize = associatedProduct?.coffeeBagSizes?.find(
           bagSize =>
             orderItem.item.productId === associatedProduct.id &&
             bagSize.bagSize.id === orderItem.item.bagSizeId
         )
-        return associatedProduct
+        return {
+          id: orderItem.id,
+          quantity: orderItem.quantity,
+          ...associatedProduct,
+          selectedBagSize: selectedBagSize
+        }
       })
 
       return {
         ...order,
         orderItems: associatedProducts
       }
-    })
+    }) as OrderWithProductsData[]
   }
-
-  console.log(transformedOrders)
 
   if (session.status === 'authenticated') {
     return (
@@ -96,9 +93,9 @@ const Account = () => {
             />
           ) : (
             <div className='flex flex-col gap-y-2 pt-4'>
-              {orders?.map(order => (
-                <SingleOrder order={order} key={order.id} />
-              ))}
+              {transformedOrders?.map((order, idx) => {
+                if (order) return <SingleOrder order={order} key={idx} />
+              })}
             </div>
           )}
         </section>

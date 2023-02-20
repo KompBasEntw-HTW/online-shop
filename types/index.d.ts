@@ -241,6 +241,11 @@ export type Order = {
   valid: false
 }
 
+export type CoffeeWithSelectedSize = Coffee &
+  Omit<OrderItem, 'item'> & {
+    selectedBagSize: CoffeeBagSize
+  }
+
 export type OrderWithProductsData = Omit<Order, 'orderItems'> & {
-  orderItems: (Coffee | undefined)[]
+  orderItems: (CoffeeWithSelectedSize | undefined)[]
 }

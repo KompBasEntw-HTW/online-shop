@@ -4,8 +4,6 @@ import { formatDate, addToDate } from '../../helpers/utilities'
 import { OrderWithProductsData } from '../../types'
 
 const SingleOrder = ({ order }: { order: OrderWithProductsData }) => {
-  console.log(order)
-
   return (
     <div key={order.id} className='rounded-md border border-zinc-200 p-8'>
       <div className='flex items-center justify-between'>
@@ -22,16 +20,18 @@ const SingleOrder = ({ order }: { order: OrderWithProductsData }) => {
       </div>
 
       <div className='grid grid-cols-3 gap-4 pt-4'>
-        {order.orderItems?.map(item => (
-          <Link key={item.id + item.orderItem?.itemId.bagSizeId} href={`/products/${item.id}`}>
+        {order.orderItems?.map((item, idx) => (
+          <Link key={idx} href={`/products/${item?.id}`}>
             <div className='flex gap-x-4 rounded-md border border-zinc-200 bg-zinc-50 hover:cursor-pointer hover:border-zinc-300'>
               <div className='shrink-0 rounded-xl bg-amber-50'>
-                <Image src={item.imageUrl} alt={item.name} width={80} height={80} />
+                <Image src={item?.imageUrl || ''} alt={item?.name || ''} width={80} height={80} />
               </div>
-              <div className='flex flex-col justify-center'>
-                <h4 className='text-base'>{item.name}</h4>
-                <p className='text-sm text-gray-500'>g</p>
-                <p className='text-sm text-gray-500'>Quantity: {}</p>
+              <div className='flex flex-col justify-center px-1'>
+                <h4 className='text-base line-clamp-1'>{item?.name}</h4>
+                <p className='text-sm text-gray-500'>
+                  {item?.selectedBagSize.bagSize.weightInGrams}g
+                </p>
+                <p className='text-sm text-gray-500'>{item?.quantity}x</p>
               </div>
             </div>
           </Link>

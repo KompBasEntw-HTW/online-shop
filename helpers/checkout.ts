@@ -36,7 +36,7 @@ export const basketItemsToCheckoutItems = (items: CartItem[]): CheckoutItem[] =>
         productId: item.product.id,
         bagSizeId: item.size.bagSize.id
       },
-      quantity: item.size.quantity
+      quantity: item.quantity
     }
   })
 

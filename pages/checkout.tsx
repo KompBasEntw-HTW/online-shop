@@ -94,15 +94,8 @@ const Checkout = () => {
         if (isLoggedInUserCheckoutState(state)) {
           try {
             if ('id' in state.shippingAddress) {
-              const checkoutItems: CheckoutItem[] = cartContext.cart.map(item => {
-                return {
-                  itemId: {
-                    productId: item.product.id,
-                    bagSizeId: item.size.bagSize.id
-                  },
-                  quantity: item.size.quantity
-                }
-              })
+              const checkoutItems: CheckoutItem[] = basketItemsToCheckoutItems(cartContext.cart)
+
               placeOrder(
                 checkoutItems,
                 state.selectedShippingMethod,
@@ -119,6 +112,7 @@ const Checkout = () => {
               saveShippingAddress(state.shippingAddress, session?.data?.accessToken).then(
                 addressId => {
                   if (!addressId) return
+
                   const checkoutItems = basketItemsToCheckoutItems(cartContext.cart)
                   placeOrder(
                     checkoutItems,
