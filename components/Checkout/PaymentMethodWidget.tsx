@@ -52,7 +52,7 @@ const PaymentForm = ({
                 selected
                   ? ' border-amber-400 bg-amber-50 text-amber-600'
                   : 'border-zinc-200 text-gray-500',
-                'm-1 rounded-md border border-transparent py-2 px-4 text-center text-sm font-medium hover:border-amber-400  hover:bg-amber-50 hover:text-amber-600 focus:outline-none '
+                'm-1 rounded-md border border-transparent px-4 py-2 text-center text-sm font-medium hover:border-amber-400  hover:bg-amber-50 hover:text-amber-600 focus:outline-none '
               )
             }>
             {paymentMethod.title}
@@ -135,7 +135,7 @@ const PaymentMethodWidget = ({
           </div>
         </RadioGroup>
         <button
-          className='mt-6 flex w-full items-center justify-center gap-x-2 rounded-md border border-transparent bg-zinc-50 py-2 px-4 text-sm font-medium text-zinc-500 shadow-sm hover:border-zinc-200 focus:outline-none'
+          className='mt-6 flex w-full items-center justify-center gap-x-2 rounded-md border border-transparent bg-zinc-50 px-4 py-2 text-sm font-medium text-zinc-500 shadow-sm hover:border-zinc-200 focus:outline-none'
           onClick={() => setOpenForm(!openForm)}>
           <span>Add a new payment method</span>
           <PlusCircleIcon className='h-6 w-6' />

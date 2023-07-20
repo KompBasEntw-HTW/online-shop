@@ -27,7 +27,7 @@ const SingleOrder = ({ order }: { order: OrderWithProductsData }) => {
                 <Image src={item?.imageUrl || ''} alt={item?.name || ''} width={80} height={80} />
               </div>
               <div className='flex flex-col justify-center px-1'>
-                <h4 className='text-base line-clamp-1'>{item?.name}</h4>
+                <h4 className='line-clamp-1 text-base'>{item?.name}</h4>
                 <p className='text-sm text-gray-500'>
                   {item?.selectedBagSize.bagSize.weightInGrams}g
                 </p>

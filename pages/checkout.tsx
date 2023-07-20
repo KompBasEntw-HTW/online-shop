@@ -384,7 +384,7 @@ const Checkout = () => {
                   />
                 ))}
               </ul>
-              <dl className='space-y-6 border-t border-gray-200 py-6 px-4 sm:px-6'>
+              <dl className='space-y-6 border-t border-gray-200 px-4 py-6 sm:px-6'>
                 {hasDiscountedShipping && (
                   <div className='flex items-center gap-x-2 rounded-md border border-amber-200 bg-amber-50 px-4 py-2'>
                     <CheckCircleIcon className='h-6 w-6 shrink-0 text-amber-600' />
@@ -421,11 +421,11 @@ const Checkout = () => {
                 ))}
               </dl>
 
-              <div className='border-t border-gray-200 py-6 px-4 sm:px-6'>
+              <div className='border-t border-gray-200 px-4 py-6 sm:px-6'>
                 <button
                   type='button'
                   onClick={() => dispatch({ type: 'SUBMIT_ORDER' })}
-                  className='w-full rounded-md border border-transparent bg-amber-500 py-3 px-4 text-base font-medium text-white shadow-sm hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 focus:ring-offset-gray-50'>
+                  className='w-full rounded-md border border-transparent bg-amber-500 px-4 py-3 text-base font-medium text-white shadow-sm hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 focus:ring-offset-gray-50'>
                   Order now
                 </button>
               </div>

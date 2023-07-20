@@ -92,7 +92,7 @@ const ShippingAddressWidget = ({
         )}
 
         <button
-          className='mt-6 flex w-full items-center justify-center gap-x-2 rounded-md border border-transparent bg-zinc-50 py-2 px-4 text-sm font-medium text-zinc-500 shadow-sm hover:border-zinc-200 focus:outline-none'
+          className='mt-6 flex w-full items-center justify-center gap-x-2 rounded-md border border-transparent bg-zinc-50 px-4 py-2 text-sm font-medium text-zinc-500 shadow-sm hover:border-zinc-200 focus:outline-none'
           onClick={() => setOpenForm(state => !state)}>
           <span>Add a new address</span>
           <PlusCircleIcon className='h-6 w-6' />

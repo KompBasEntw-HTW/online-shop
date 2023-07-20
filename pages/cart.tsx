@@ -99,7 +99,7 @@ const Cart = () => {
                         />
                       </div>
                       <div className='flex flex-1 flex-col justify-center pr-8'>
-                        <h3 className='text-lg line-clamp-1'>{cartItem.product.name}</h3>
+                        <h3 className='line-clamp-1 text-lg'>{cartItem.product.name}</h3>
                         <p className='text-sm'>{cartItem.size.bagSize.weightInGrams}g</p>
                         <label
                           htmlFor={`quantity-${cartItem.product.id + cartItem.size.bagSize.id}`}
@@ -137,7 +137,7 @@ const Cart = () => {
                         </select>
                       </div>
                       <button
-                        className='absolute top-2 right-2'
+                        className='absolute right-2 top-2'
                         type='button'
                         onClick={() =>
                           cartContext?.removeItem(cartItem.product.id, cartItem.size.bagSize.id)
@@ -218,7 +218,7 @@ const Cart = () => {
                     <button
                       id='checkout-button'
                       type='submit'
-                      className='w-full rounded-md border border-transparent bg-amber-500 py-3 px-4 text-base font-medium text-white shadow-sm hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 focus:ring-offset-gray-50'>
+                      className='w-full rounded-md border border-transparent bg-amber-500 px-4 py-3 text-base font-medium text-white shadow-sm hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 focus:ring-offset-gray-50'>
                       Checkout
                     </button>
                   </Link>

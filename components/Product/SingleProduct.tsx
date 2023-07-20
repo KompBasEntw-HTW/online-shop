@@ -41,7 +41,7 @@ const SingleProduct = ({ product }: { product: Coffee }) => {
               </span>
             ))}
         </div>
-        <p className='text-sm text-gray-500 line-clamp-3' id='product-description'>
+        <p className='line-clamp-3 text-sm text-gray-500' id='product-description'>
           {product.description}
         </p>
         <div className='flex gap-x-1'>

@@ -15,7 +15,7 @@ const SingleCheckoutItem = ({
   onRemoveItem: () => void
 }) => {
   return (
-    <li key={cartItem.product.id} className='flex py-6 px-4 sm:px-6'>
+    <li key={cartItem.product.id} className='flex px-4 py-6 sm:px-6'>
       <div className='flex flex-shrink-0 items-center rounded-md bg-amber-50'>
         <Image
           src={cartItem.product.imageUrl}

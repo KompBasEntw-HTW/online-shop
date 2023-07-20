@@ -21,7 +21,7 @@ const HeaderCart = () => {
             <span
               id='header-cart-count'
               className={clsx(
-                'absolute -top-1.5 -right-1.5 ml-2 h-4 w-4 text-xs font-medium',
+                'absolute -right-1.5 -top-1.5 ml-2 h-4 w-4 text-xs font-medium',
                 cartContext?.cart?.length === 0
                   ? 'flex items-center justify-center rounded-full bg-gray-100 p-1 text-gray-700 group-hover:bg-gray-200 group-hover:text-gray-800'
                   : 'flex  items-center justify-center rounded-full bg-amber-500 p-1 text-white group-hover:bg-amber-600'
@@ -65,12 +65,12 @@ const HeaderCart = () => {
                       />
                     </div>
                     <div className='flex flex-col justify-center pr-3'>
-                      <h3 className='text-base line-clamp-1'>{item.product.name}</h3>
+                      <h3 className='line-clamp-1 text-base'>{item.product.name}</h3>
                       <p className='text-xs'>{item.size.bagSize.weightInGrams}g</p>
                       <p className='text-xs'>Quantity: {item.quantity}</p>
                     </div>
                     <button
-                      className='remove-cart-item-button absolute top-1 right-1'
+                      className='remove-cart-item-button absolute right-1 top-1'
                       type='button'
                       onClick={() =>
                         cartContext?.removeItem(item.product.id, item.size.bagSize.id)
@@ -84,7 +84,7 @@ const HeaderCart = () => {
             <Link href='/cart'>
               <button
                 type='button'
-                className='inline-flex w-full justify-center rounded-md border border-transparent bg-amber-500  py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2'>
+                className='inline-flex w-full justify-center rounded-md border border-transparent bg-amber-500  px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2'>
                 <span className='sr-only'>View full cart</span>
                 View full cart
               </button>
