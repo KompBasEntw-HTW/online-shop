@@ -20,9 +20,10 @@ const getOrders = async (session: Session | null) =>
 const Account = () => {
   const session = useSession()
   const [csrfToken, setCsrfToken] = useState('')
-  const { data: orders, refetch } = useQuery<Order[]>(['orders', session], () =>
-    getOrders(session.data)
-  )
+  const { data: orders, refetch } = useQuery<Order[]>({
+    queryKey: ['orders', session],
+    queryFn: () => getOrders(session.data)
+  })
   const { products } = useProductsData()
 
   useEffect(() => {
