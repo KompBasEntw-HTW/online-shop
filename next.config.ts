@@ -1,14 +1,27 @@
 import type { NextConfig } from 'next'
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
   images: {
     dangerouslyAllowSVG: true,
-    domains: [
-      'images.unsplash.com',
-      'tailwindui.com',
-      'res.cloudinary.com',
-      'exe.dlugoschvincent.de'
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com'
+      },
+      {
+        protocol: 'https',
+        hostname: 'tailwindui.com'
+      },
+
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com'
+      },
+
+      {
+        protocol: 'https',
+        hostname: 'exe.dlugoschvincent.de'
+      }
     ]
   },
   output: 'standalone'
