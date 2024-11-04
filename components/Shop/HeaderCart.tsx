@@ -24,7 +24,7 @@ const HeaderCart = () => {
                 'absolute -right-1.5 -top-1.5 ml-2 h-4 w-4 text-xs font-medium',
                 cartContext?.cart?.length === 0
                   ? 'flex items-center justify-center rounded-full bg-gray-100 p-1 text-gray-700 group-hover:bg-gray-200 group-hover:text-gray-800'
-                  : 'flex  items-center justify-center rounded-full bg-amber-500 p-1 text-white group-hover:bg-amber-600'
+                  : 'flex items-center justify-center rounded-full bg-amber-500 p-1 text-white group-hover:bg-amber-600'
               )}>
               {cartContext.cart.length}
             </span>
@@ -84,7 +84,7 @@ const HeaderCart = () => {
             <Link href='/cart'>
               <button
                 type='button'
-                className='inline-flex w-full justify-center rounded-md border border-transparent bg-amber-500  px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2'>
+                className='inline-flex w-full justify-center rounded-md border border-transparent bg-amber-500 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2'>
                 <span className='sr-only'>View full cart</span>
                 View full cart
               </button>

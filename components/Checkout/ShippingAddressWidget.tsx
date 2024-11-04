@@ -42,7 +42,7 @@ const ShippingAddressWidget = ({
                     clsx(
                       checked ? 'border-transparent bg-amber-50' : 'border-gray-300',
                       active ? 'bg-amber-50 ring-2 ring-amber-500' : '',
-                      'relative flex cursor-pointer rounded-lg border  p-4 shadow-sm focus:outline-none'
+                      'relative flex cursor-pointer rounded-lg border p-4 shadow-sm focus:outline-none'
                     )
                   }>
                   {({ checked, active }) => (

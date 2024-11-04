@@ -40,7 +40,7 @@ const SortingDropdown = ({
               {({ active }) => (
                 <button
                   className={clsx(
-                    active ? ' bg-amber-600 text-white' : 'text-zinc-500',
+                    active ? 'bg-amber-600 text-white' : 'text-zinc-500',
                     'block w-full px-4 py-2 text-left text-sm'
                   )}
                   onClick={() => onSelectOption(option)}>

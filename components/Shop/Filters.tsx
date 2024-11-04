@@ -44,7 +44,7 @@ export const CheckboxFilter = ({
       </fieldset>
       {!showFullList && (
         <button
-          className=' inline-flex gap-x-1 pt-4 text-sm text-gray-500'
+          className='inline-flex gap-x-1 pt-4 text-sm text-gray-500'
           onClick={e => {
             e.preventDefault()
             setShowFullList(true)

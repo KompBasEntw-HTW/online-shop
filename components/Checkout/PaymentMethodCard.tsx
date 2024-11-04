@@ -34,7 +34,7 @@ const PaymentMethodCard = ({
           <div className='flex items-center justify-between'>
             <RadioGroup.Description
               className={clsx(
-                checked ? ' bg-amber-100  text-amber-600' : 'bg-zinc-100 text-gray-500',
+                checked ? 'bg-amber-100 text-amber-600' : 'bg-zinc-100 text-gray-500',
                 'mt-2 rounded-md px-1 py-0.5 text-xs font-medium'
               )}>
               {paymentDetails.expirationDate}
@@ -75,7 +75,7 @@ const PaymentMethodCard = ({
           <div className='flex items-center justify-between'>
             <RadioGroup.Description
               className={clsx(
-                checked ? ' bg-amber-100  text-amber-600' : 'bg-zinc-100 text-gray-500',
+                checked ? 'bg-amber-100 text-amber-600' : 'bg-zinc-100 text-gray-500',
                 'mt-2 rounded-md px-1 py-0.5 text-xs font-medium'
               )}>
               {paymentDetails.bic}

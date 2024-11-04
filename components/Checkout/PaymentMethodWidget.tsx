@@ -43,16 +43,16 @@ const PaymentForm = ({
 }) => {
   return (
     <Tab.Group as='div' className='pt-4'>
-      <Tab.List className='flex '>
+      <Tab.List className='flex'>
         {AVAILABLE_PAYMENT_METHODS.map(paymentMethod => (
           <Tab
             key={paymentMethod.id}
             className={({ selected }) =>
               clsx(
                 selected
-                  ? ' border-amber-400 bg-amber-50 text-amber-600'
+                  ? 'border-amber-400 bg-amber-50 text-amber-600'
                   : 'border-zinc-200 text-gray-500',
-                'm-1 rounded-md border border-transparent px-4 py-2 text-center text-sm font-medium hover:border-amber-400  hover:bg-amber-50 hover:text-amber-600 focus:outline-none '
+                'm-1 rounded-md border border-transparent px-4 py-2 text-center text-sm font-medium hover:border-amber-400 hover:bg-amber-50 hover:text-amber-600 focus:outline-none'
               )
             }>
             {paymentMethod.title}
@@ -120,7 +120,7 @@ const PaymentMethodWidget = ({
                   clsx(
                     checked ? 'border-transparent bg-amber-50' : 'border-gray-300',
                     active ? 'bg-amber-50 ring-2 ring-amber-500' : '',
-                    'relative cursor-pointer rounded-lg border  p-4 shadow-sm focus:outline-none'
+                    'relative cursor-pointer rounded-lg border p-4 shadow-sm focus:outline-none'
                   )
                 }>
                 {({ checked, active }) => (

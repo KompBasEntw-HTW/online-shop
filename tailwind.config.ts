@@ -1,5 +1,6 @@
 import { Config } from 'tailwindcss'
-export default {
+
+const config: Config = {
   content: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
@@ -24,4 +25,6 @@ export default {
     }
   },
   plugins: [require('@tailwindcss/forms'), require('@tailwindcss/aspect-ratio')]
-} satisfies Config
+}
+
+export default config

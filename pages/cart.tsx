@@ -189,7 +189,7 @@ const Cart = () => {
                   {cartSummary.map(summaryItem => (
                     <div
                       className={clsx(
-                        summaryItem?.highlight ? ' border-t border-gray-200 pt-4' : ' pt-2',
+                        summaryItem?.highlight ? 'border-t border-gray-200 pt-4' : 'pt-2',
                         'flex items-center justify-between'
                       )}
                       key={summaryItem.label}>

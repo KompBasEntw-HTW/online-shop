@@ -11,7 +11,7 @@ const SingleOrder = ({ order }: { order: OrderWithProductsData }) => {
           <h3 className='text-xl'>
             Order from {formatDate(new Date(order.orderDateTime.replace('[GMT]', '')))}
           </h3>
-          <span className='rounded-md bg-amber-50 px-2 py-0.5 text-sm  text-amber-600'>
+          <span className='rounded-md bg-amber-50 px-2 py-0.5 text-sm text-amber-600'>
             Delivered on{' '}
             {formatDate(addToDate(new Date(order.orderDateTime.replace('[GMT]', '')), 3))}
           </span>

@@ -26,7 +26,7 @@ const Header = () => {
                   </Link>
                 </div>
 
-                <div className='ml-8 hidden h-full gap-x-2 lg:flex '></div>
+                <div className='ml-8 hidden h-full gap-x-2 lg:flex'></div>
 
                 {/* Logo (lg-) */}
                 <Link href='/' className='lg:hidden'>
