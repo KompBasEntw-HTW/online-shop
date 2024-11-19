@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+	h1 {
+		@apply font-lora text-3xl font-bold md:text-4xl;
+	}
+
+	h2 {
+		@apply font-lora text-2xl font-bold md:text-3xl;
+	}
+
+	h3 {
+		@apply font-lora text-xl font-bold md:text-2xl;
+	}
+
+	h4 {
+		@apply font-lora text-lg font-bold md:text-xl;
+	}
+
+	p {
+		@apply text-sm text-gray-500 md:text-base;
+	}
+}
+
+@layer components {
+	.link {
+		@apply font-semibold text-amber-700 underline decoration-amber-200 hover:decoration-amber-300;
+	}
+
+	.large-text {
+		@apply text-base md:text-lg;
+	}
+
+	.small-text {
+		@apply text-sm;
+	}
+
+	.really-small-text {
+		@apply text-xs;
+	}
+}
+
+@layer utilities {
+	.react-slider-two-thumb {
+		@apply m-0 flex h-12 w-full items-center justify-between p-0;
+	}
+
+	.react-slider-track {
+		@apply h-1 rounded-full bg-amber-200;
+	}
+
+	.react-slider-thumb {
+		@apply rounded-full bg-amber-500 px-1 py-0.5 text-sm text-white hover:cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-opacity-50;
+	}
+}
