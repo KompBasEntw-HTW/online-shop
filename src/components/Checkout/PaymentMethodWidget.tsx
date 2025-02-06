@@ -49,7 +49,7 @@ const PaymentForm = ({
 				{AVAILABLE_PAYMENT_METHODS.map((paymentMethod) => (
 					<Tab
 						key={paymentMethod.id}
-						className='m-1 rounded-md border border-transparent border-zinc-200 px-4 py-2 text-center text-sm font-medium text-gray-500 hover:border-amber-400 hover:bg-amber-50 hover:text-amber-600 focus:outline-none data-[selected]:border-amber-400 data-[selected]:bg-amber-50 data-[selected]:text-amber-600'>
+						className='m-1 rounded-md border border-transparent border-zinc-200 px-4 py-2 text-center text-sm font-medium text-gray-500 hover:border-amber-400 hover:bg-amber-50 hover:text-amber-600 focus:outline-hidden data-selected:border-amber-400 data-selected:bg-amber-50 data-selected:text-amber-600'>
 						{paymentMethod.title}
 					</Tab>
 				))}
@@ -117,7 +117,7 @@ const PaymentMethodWidget = ({
 									clsx(
 										checked ? 'border-transparent bg-amber-50' : 'border-gray-300',
 										active ? 'bg-amber-50 ring-2 ring-amber-500' : '',
-										'relative cursor-pointer rounded-lg border p-4 shadow-sm focus:outline-none'
+										'relative cursor-pointer rounded-lg border p-4 shadow-xs focus:outline-hidden'
 									)
 								}>
 								{({ checked, active }) => (
@@ -132,7 +132,7 @@ const PaymentMethodWidget = ({
 					</div>
 				</RadioGroup>
 				<button
-					className='mt-6 flex w-full items-center justify-center gap-x-2 rounded-md border border-transparent bg-zinc-50 px-4 py-2 text-sm font-medium text-zinc-500 shadow-sm hover:border-zinc-200 focus:outline-none'
+					className='mt-6 flex w-full items-center justify-center gap-x-2 rounded-md border border-transparent bg-zinc-50 px-4 py-2 text-sm font-medium text-zinc-500 shadow-xs hover:border-zinc-200 focus:outline-hidden'
 					onClick={() => setOpenForm(!openForm)}>
 					<span>Add a new payment method</span>
 					<PlusCircleIcon className='h-6 w-6' />

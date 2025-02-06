@@ -34,7 +34,7 @@ const PaymentMethodCard = ({
 							/>
 						)}
 					</div>
-					<RadioGroup.Description className='mt-1 flex items-center text-xs text-gray-600 blur-sm'>
+					<RadioGroup.Description className='mt-1 flex items-center text-xs text-gray-600 blur-xs'>
 						{paymentDetails.cardNumber}
 					</RadioGroup.Description>
 					<div className='flex items-center justify-between'>
@@ -81,7 +81,7 @@ const PaymentMethodCard = ({
 							/>
 						)}
 					</div>
-					<RadioGroup.Description className='mt-1 flex items-center text-xs text-gray-600 blur-sm'>
+					<RadioGroup.Description className='mt-1 flex items-center text-xs text-gray-600 blur-xs'>
 						{paymentDetails.iban}
 					</RadioGroup.Description>
 					<div className='flex items-center justify-between'>

@@ -13,7 +13,7 @@ const Searchbar = ({
 		<input
 			placeholder={placeholder}
 			value={value}
-			className='flex-1 rounded-lg border px-4 py-2 text-zinc-500 placeholder:text-zinc-500 focus:border focus:border-zinc-500 focus:outline-none'
+			className='flex-1 rounded-lg border px-4 py-2 text-zinc-500 placeholder:text-zinc-500 focus:border focus:border-zinc-500 focus:outline-hidden'
 			onChange={onChange}
 			id='product-search'
 		/>

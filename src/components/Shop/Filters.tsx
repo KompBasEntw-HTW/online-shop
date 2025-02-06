@@ -35,7 +35,7 @@ export const CheckboxFilter = ({
 								defaultValue={option.value}
 								checked={currentValues?.includes(option.value) || false}
 								type='checkbox'
-								className='h-4 w-4 rounded border-gray-300 text-amber-600 focus:ring-amber-500'
+								className='h-4 w-4 rounded-sm border-gray-300 text-amber-600 focus:ring-amber-500'
 								onChange={(e) => onFilterChange(e, filter.id)}
 							/>
 							<label

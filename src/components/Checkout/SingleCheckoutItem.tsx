@@ -18,7 +18,7 @@ const SingleCheckoutItem = ({
 		<li
 			key={cartItem.product.id}
 			className='flex px-4 py-6 sm:px-6'>
-			<div className='flex flex-shrink-0 items-center rounded-md bg-amber-50'>
+			<div className='flex shrink-0 items-center rounded-md bg-amber-50'>
 				<Image
 					src={cartItem.product.imageUrl}
 					alt={cartItem.product.name}
@@ -41,7 +41,7 @@ const SingleCheckoutItem = ({
 						<p className='mt-1 text-sm text-gray-500'>{cartItem.size.bagSize.weightInGrams}g</p>
 					</div>
 
-					<div className='ml-4 flow-root flex-shrink-0'>
+					<div className='ml-4 flow-root shrink-0'>
 						<button
 							type='button'
 							className='-m-2.5 flex items-center justify-center bg-white p-2.5 text-gray-400 hover:text-gray-500'
@@ -78,7 +78,7 @@ const SingleCheckoutItem = ({
 							id='quantity'
 							name='quantity'
 							value={cartItem.quantity}
-							className='rounded-md border border-gray-300 text-left text-base font-medium text-gray-700 shadow-sm focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 sm:text-sm'
+							className='rounded-md border border-gray-300 text-left text-base font-medium text-gray-700 shadow-xs focus:border-amber-500 focus:outline-hidden focus:ring-1 focus:ring-amber-500 sm:text-sm'
 							onChange={onQuantityChange}>
 							{Array.from(
 								Array(

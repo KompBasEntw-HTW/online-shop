@@ -18,7 +18,7 @@ const SortingDropdown = ({
 			className='relative inline-block text-left'
 			id='sorting-dropdown'>
 			<MenuButton
-				className='inline-flex w-full basis-96 content-center items-center rounded-lg border px-4 py-2 text-base text-zinc-500 hover:border-zinc-500 focus:outline-none'
+				className='inline-flex w-full basis-96 content-center items-center rounded-lg border px-4 py-2 text-base text-zinc-500 hover:border-zinc-500 focus:outline-hidden'
 				id='sorting-dropdown-button'>
 				{selectedOption?.name || 'Sort by'}
 				<ChevronDownIcon
@@ -35,12 +35,12 @@ const SortingDropdown = ({
 				leaveFrom='transform opacity-100 scale-100'
 				leaveTo='transform opacity-0 scale-95'>
 				<MenuItems
-					className='absolute right-0 z-10 mt-2 w-56 origin-top-right overflow-hidden rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'
+					className='absolute right-0 z-10 mt-2 w-56 origin-top-right overflow-hidden rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-hidden'
 					id='sorting-dropdown-items'>
 					{sortingOptions.map((option) => (
 						<MenuItem
 							key={option.value}
-							className='block w-full px-4 py-2 text-left text-sm text-zinc-500 data-[focus]:bg-amber-600 data-[focus]:text-white'>
+							className='block w-full px-4 py-2 text-left text-sm text-zinc-500 data-focus:bg-amber-600 data-focus:text-white'>
 							<button onClick={() => onSelectOption(option)}>{option.name}</button>
 						</MenuItem>
 					))}

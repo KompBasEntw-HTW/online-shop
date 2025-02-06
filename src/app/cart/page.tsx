@@ -118,7 +118,7 @@ const Cart = () => {
 												<select
 													id={`quantity-${cartItem.product.id + cartItem.size.bagSize.id}`}
 													name={`quantity-${cartItem.product.id + cartItem.size.bagSize.id}`}
-													className='mt-1 w-24 rounded-md border border-gray-300 py-1 text-left text-base font-medium leading-5 text-gray-700 shadow-sm focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 sm:text-sm'
+													className='mt-1 w-24 rounded-md border border-gray-300 py-1 text-left text-base font-medium leading-5 text-gray-700 shadow-xs focus:border-amber-500 focus:outline-hidden focus:ring-1 focus:ring-amber-500 sm:text-sm'
 													value={cartItem.quantity}
 													onChange={(e) =>
 														cartContext?.updateItems([
@@ -231,7 +231,7 @@ const Cart = () => {
 										<button
 											id='checkout-button'
 											type='submit'
-											className='w-full rounded-md border border-transparent bg-amber-500 px-4 py-3 text-base font-medium text-white shadow-sm hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 focus:ring-offset-gray-50'>
+											className='w-full rounded-md border border-transparent bg-amber-500 px-4 py-3 text-base font-medium text-white shadow-xs hover:bg-amber-600 focus:outline-hidden focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 focus:ring-offset-gray-50'>
 											Checkout
 										</button>
 									</Link>

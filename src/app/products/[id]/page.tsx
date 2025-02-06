@@ -52,7 +52,7 @@ const ProductPage = async ({ params }: { params: Promise<{ id: number }> }) => {
 									width={400}
 									height={400}
 									alt={`${product.name} product photo`}
-									className='rounded-2xl bg-amber-50 shadow-sm'
+									className='rounded-2xl bg-amber-50 shadow-xs'
 								/>
 							</div>
 							<div className='flex max-w-xl flex-col justify-center px-4 xl:px-8'>

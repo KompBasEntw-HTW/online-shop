@@ -19,7 +19,7 @@ const HeaderCart = () => {
 					id='header-cart-button'>
 					<div className='group relative hover:cursor-pointer'>
 						<ShoppingCartIcon
-							className='h-6 w-6 flex-shrink-0 text-gray-400 group-hover:text-gray-500'
+							className='h-6 w-6 shrink-0 text-gray-400 group-hover:text-gray-500'
 							aria-hidden='true'
 						/>
 						<span
@@ -88,7 +88,7 @@ const HeaderCart = () => {
 						<Link href='/cart'>
 							<button
 								type='button'
-								className='inline-flex w-full justify-center rounded-md border border-transparent bg-amber-500 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2'>
+								className='inline-flex w-full justify-center rounded-md border border-transparent bg-amber-500 px-4 py-2 text-sm font-medium text-white shadow-xs hover:bg-amber-600 focus:outline-hidden focus:ring-2 focus:ring-amber-500 focus:ring-offset-2'>
 								<span className='sr-only'>View full cart</span>
 								View full cart
 							</button>

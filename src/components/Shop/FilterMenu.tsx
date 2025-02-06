@@ -28,7 +28,7 @@ const FilterMenu = ({
 				onClick={() => setMobileFiltersOpen(true)}>
 				<span className='text-sm font-medium text-gray-700'>Filters</span>
 				<PlusIcon
-					className='ml-1 h-5 w-5 flex-shrink-0 text-gray-400'
+					className='ml-1 h-5 w-5 shrink-0 text-gray-400'
 					aria-hidden='true'
 				/>
 			</button>

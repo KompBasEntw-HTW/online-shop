@@ -3,7 +3,7 @@ import clsx from 'clsx'
 import { ComponentProps, ReactNode } from 'react'
 
 const formClasses =
-	'block w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 sm:text-sm mt-1'
+	'block w-full rounded-md border-gray-300 shadow-xs focus:border-amber-500 focus:ring-amber-500 sm:text-sm mt-1'
 
 const Label = ({
 	id,

@@ -372,7 +372,7 @@ const Checkout = () => {
 					<div className='mt-10 lg:mt-0'>
 						<h2 className='sr-only'>Order summary</h2>
 
-						<div className='rounded-lg border border-gray-200 bg-white shadow-sm'>
+						<div className='rounded-lg border border-gray-200 bg-white shadow-xs'>
 							<h3 className='sr-only'>Items in your cart</h3>
 							<ul
 								role='list'
@@ -439,7 +439,7 @@ const Checkout = () => {
 								<button
 									type='button'
 									onClick={() => dispatch({ type: 'SUBMIT_ORDER' })}
-									className='w-full rounded-md border border-transparent bg-amber-500 px-4 py-3 text-base font-medium text-white shadow-sm hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 focus:ring-offset-gray-50'>
+									className='w-full rounded-md border border-transparent bg-amber-500 px-4 py-3 text-base font-medium text-white shadow-xs hover:bg-amber-600 focus:outline-hidden focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 focus:ring-offset-gray-50'>
 									Order now
 								</button>
 							</div>
