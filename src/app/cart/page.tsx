@@ -18,6 +18,7 @@ import {
 } from '@/helpers/price-calculation'
 import { CheckCircleIcon, ShoppingCartIcon, XCircleIcon } from '@heroicons/react/20/solid'
 import clsx from 'clsx'
+import { useSession } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -61,6 +62,8 @@ const Cart = () => {
 			highlight: true
 		}
 	]
+
+	const { data: session } = useSession()
 
 	return (
 		<>
@@ -126,7 +129,7 @@ const Cart = () => {
 																},
 																quantity: parseInt(e.target.value)
 															}
-														])
+														], session)
 													}>
 													{Array.from(
 														Array(
@@ -148,7 +151,7 @@ const Cart = () => {
 												className='absolute right-2 top-2'
 												type='button'
 												onClick={() =>
-													cartContext?.removeItem(cartItem.product.id, cartItem.size.bagSize.id)
+													cartContext?.removeItem(cartItem.product.id, cartItem.size.bagSize.id, session)
 												}>
 												<XCircleIcon className='h-7 w-7 text-gray-400 hover:text-gray-500' />
 											</button>

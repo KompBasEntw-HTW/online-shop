@@ -1,7 +1,7 @@
 import { UserIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
 import Link from 'next/link'
-import HeaderCart from '../Shop/HeaderCart'
+import HeaderCart from '@/components/Shop/HeaderCart'
 
 const Header = () => {
 	return (
@@ -25,9 +25,7 @@ const Header = () => {
 										/>
 									</Link>
 								</div>
-
 								<div className='ml-8 hidden h-full gap-x-2 lg:flex'></div>
-
 								{/* Logo (lg-) */}
 								<Link
 									href='/'
@@ -41,7 +39,6 @@ const Header = () => {
 										height={192}
 									/>
 								</Link>
-
 								<div className='flex flex-1 items-center justify-end'>
 									<div className='flex items-center lg:ml-8'>
 										<div className='flex space-x-8'>
@@ -57,12 +54,10 @@ const Header = () => {
 												</Link>
 											</div>
 										</div>
-
 										<span
 											className='mx-4 h-6 w-px bg-gray-200 lg:mx-6'
 											aria-hidden='true'
 										/>
-
 										<HeaderCart />
 									</div>
 								</div>

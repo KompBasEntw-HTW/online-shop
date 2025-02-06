@@ -4,6 +4,7 @@ import { ProductConfigurator, SingleProduct } from '@/components/Product'
 import Image from 'next/image'
 
 import { Coffee, PositionStackAPIResponse } from '@/types'
+import { CartContextProvider } from '@/context/CartContext'
 
 function getRandomItemsExceptId(products: Coffee[], excludeId: number, count = 3) {
 	const filteredItems = products.filter((product) => product.id !== excludeId)
@@ -76,7 +77,9 @@ const ProductPage = async ({ params }: { params: Promise<{ id: number }> }) => {
 								</div>
 							</div>
 						</div>
-						<ProductConfigurator product={product} />
+						<CartContextProvider>
+							<ProductConfigurator product={product} />
+						</CartContextProvider>
 					</section>
 
 					{product?.roasterNotes && (

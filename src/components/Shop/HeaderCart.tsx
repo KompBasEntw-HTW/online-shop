@@ -3,11 +3,13 @@ import { useCartContext } from '@/context/CartContext'
 import { Popover, PopoverButton, PopoverPanel, Transition } from '@headlessui/react'
 import { ShoppingCartIcon, XCircleIcon } from '@heroicons/react/24/solid'
 import clsx from 'clsx'
+import { useSession } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
 
 const HeaderCart = () => {
 	const cartContext = useCartContext()
+	const { data: session } = useSession()
 
 	return (
 		<>
@@ -75,7 +77,7 @@ const HeaderCart = () => {
 											className='remove-cart-item-button absolute right-1 top-1'
 											type='button'
 											onClick={() =>
-												cartContext?.removeItem(item.product.id, item.size.bagSize.id)
+												cartContext?.removeItem(item.product.id, item.size.bagSize.id, session)
 											}>
 											<XCircleIcon className='h-6 w-6 text-gray-400 hover:text-gray-500' />
 										</button>

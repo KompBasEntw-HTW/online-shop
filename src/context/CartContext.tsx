@@ -1,13 +1,14 @@
 'use client'
-import { auth } from '@/auth'
+import { useSession } from "next-auth/react"
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react'
-import { Basket, BasketItem, CartItem, Coffee } from '../types'
+import { Basket, BasketItem, CartItem, Coffee } from '@/types'
+import type { Session } from "next-auth"
 
 type CartContext = {
 	cart: CartItem[]
-	addItem: (basketItems: BasketItem[]) => void
-	updateItems: (basketItems: BasketItem[]) => void
-	removeItem: (productId: number, bagSizeId: number) => void
+	addItem: (basketItems: BasketItem[], session: Session | null) => void
+	updateItems: (basketItems: BasketItem[], session: Session | null) => void
+	removeItem: (productId: number, bagSizeId: number, session: Session | null) => void
 }
 
 function storeLocalBasket(localBasket: BasketItem[]) {
@@ -40,13 +41,11 @@ async function assembleCartFromBasketItems(
 	}
 }
 
-async function getCart(): Promise<CartItem[] | undefined> {
-	const session = await auth()
-	console.log(session)
+async function getCart(session: Session | null): Promise<CartItem[] | undefined> {
 	if (session) {
 		const localBasket = getLocalBasket()
 		if (localBasket.length > 0) {
-			await updateItems(localBasket)
+			await updateItems(localBasket, session)
 			localStorage.removeItem('basketItems')
 		}
 		const resCart = await fetch('/api/basket-service/basket', {
@@ -61,11 +60,8 @@ async function getCart(): Promise<CartItem[] | undefined> {
 	}
 }
 
-async function updateItems(basketItems: BasketItem[]): Promise<CartItem[] | undefined> {
-	const session = await auth()
-
+async function updateItems(basketItems: BasketItem[], session: Session | null): Promise<CartItem[] | undefined> {
 	if (session) {
-		console.log(session.accessToken)
 		const updatedBasketRes = await fetch('/api/basket-service/basket/update', {
 			headers: {
 				Authorization: `Bearer ${session.accessToken}`,
@@ -114,15 +110,15 @@ async function updateItems(basketItems: BasketItem[]): Promise<CartItem[] | unde
 		})
 
 		storeLocalBasket(updatedBasket)
-		return getCart()
+		return getCart(session)
 	} else {
 		storeLocalBasket([...localBasket, itemToAdd])
-		return getCart()
+		return getCart(session)
 	}
 }
 
-async function addItem(basketItems: BasketItem[]): Promise<CartItem[] | undefined> {
-	const cart = await getCart()
+async function addItem(basketItems: BasketItem[], session: Session | null): Promise<CartItem[] | undefined> {
+	const cart = await getCart(session)
 	if (cart) {
 		basketItems.map((basketItem) => {
 			return cart.map((item) => {
@@ -135,11 +131,10 @@ async function addItem(basketItems: BasketItem[]): Promise<CartItem[] | undefine
 			})
 		})
 	}
-	return updateItems(basketItems)
+	return updateItems(basketItems, session)
 }
 
-async function removeItem(productId: number, bagSizeId: number): Promise<CartItem[] | undefined> {
-	const session = await auth()
+async function removeItem(productId: number, bagSizeId: number, session: Session | null): Promise<CartItem[] | undefined> {
 	if (session) {
 		const updatedCartRes = await fetch('/api/basket-service/basket', {
 			headers: {
@@ -165,7 +160,7 @@ async function removeItem(productId: number, bagSizeId: number): Promise<CartIte
 			basketItem.item.bagSizeId !== bagSizeId || basketItem.item.productId !== productId
 	)
 	storeLocalBasket(updatedBasket)
-	return getCart()
+	return getCart(session)
 }
 
 const CartContext = createContext<CartContext>({
@@ -178,32 +173,35 @@ const CartContext = createContext<CartContext>({
 export const CartContextProvider = ({ children }: { children: ReactNode }) => {
 	const [cart, setCart] = useState<CartItem[]>([])
 
+	const { data: session } = useSession()
+
 	useEffect(() => {
-		getCart().then((remoteCart) => {
+		getCart(session).then((remoteCart) => {
 			if (remoteCart) {
 				setCart(remoteCart)
 			}
 		})
 	}, [])
 
+
 	return (
 		<CartContext.Provider
 			value={{
 				cart,
 				addItem: async (basketItems: BasketItem[]) => {
-					const updatedCart = await addItem(basketItems)
+					const updatedCart = await addItem(basketItems, session)
 					if (updatedCart) {
 						setCart(updatedCart)
 					}
 				},
 				updateItems: async (basketItems: BasketItem[]) => {
-					const updatedCart = await updateItems(basketItems)
+					const updatedCart = await updateItems(basketItems, session)
 					if (updatedCart) {
 						setCart(updatedCart)
 					}
 				},
 				removeItem: async (productId: number, bagSizeId: number) => {
-					const updatedCart = await removeItem(productId, bagSizeId)
+					const updatedCart = await removeItem(productId, bagSizeId, session)
 					if (updatedCart) {
 						setCart(updatedCart)
 					}

@@ -17,6 +17,7 @@ import {
 } from '@/helpers/price-calculation'
 
 import { verifyQuantity } from '@/helpers/cart'
+import { useSession } from 'next-auth/react'
 
 const clearAndSortBagSizes = (bagSizes: CoffeeBagSize[]) => {
 	const sortedBagSizes = bagSizes.sort((a, b) => a.bagSize.weightInGrams - b.bagSize.weightInGrams)
@@ -37,6 +38,7 @@ const ProductConfigurator = ({ product, className }: { product: Coffee; classNam
 	})
 
 	const cartContext = useCartContext()
+	const { data: session } = useSession()
 
 	useEffect(() => {
 		try {
@@ -69,8 +71,7 @@ const ProductConfigurator = ({ product, className }: { product: Coffee; classNam
 					quantity: quantity
 				}
 			]
-
-			cartContext.addItem(basketItem)
+			cartContext.addItem(basketItem, session)
 		} catch (err) {
 			setError({
 				error: true,

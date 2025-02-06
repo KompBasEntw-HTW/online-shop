@@ -20,11 +20,10 @@ import {
 	searchProducts,
 	sortFilterOptions,
 	sortProducts
-} from '../helpers/shop'
+} from '@/helpers/shop'
 
-import { FILTER_OPTIONS, INITIAL_SHOP_STATE, SORTING_OPTIONS } from '../constants/shop'
-import useProductsData from '../hooks/useProductsData'
-import { Coffee, ShopAction, ShopState } from '../types'
+import { FILTER_OPTIONS, INITIAL_SHOP_STATE, SORTING_OPTIONS } from '@/constants/shop'
+import { Coffee, ShopAction, ShopState } from '@/types'
 
 const shopPageReducer = (state: ShopState, action: ShopAction): ShopState => {
 	switch (action.type) {
@@ -204,9 +203,11 @@ const shopPageReducer = (state: ShopState, action: ShopAction): ShopState => {
 			return state
 	}
 }
+
 interface ShopHomeProps {
 	products: Coffee[]
 }
+
 const ShopHome: React.FC<ShopHomeProps> = ({ products }) => {
 	const [shopState, dispatch] = useReducer(shopPageReducer, INITIAL_SHOP_STATE)
 	const isError = false
