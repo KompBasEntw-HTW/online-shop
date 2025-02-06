@@ -19,7 +19,7 @@ const PaymentMethodCard = ({
 					<div className='flex items-center justify-between'>
 						<RadioGroup.Label
 							as='span'
-							className='block font-lora text-base font-bold text-gray-900'>
+							className='font-lora block text-base font-bold text-gray-900'>
 							Credit card
 						</RadioGroup.Label>
 						{checked ? (
@@ -66,7 +66,7 @@ const PaymentMethodCard = ({
 					<div className='flex items-center justify-between'>
 						<RadioGroup.Label
 							as='span'
-							className='block font-lora text-base font-bold text-gray-900'>
+							className='font-lora block text-base font-bold text-gray-900'>
 							Debit card
 						</RadioGroup.Label>
 						{checked ? (

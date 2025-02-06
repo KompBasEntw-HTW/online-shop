@@ -97,7 +97,7 @@ const ProductConfigurator = ({ product, className }: { product: Coffee; classNam
 							<Radio
 								value={size}
 								className='product-size-option group hover:cursor-pointer'>
-								<div className='col-span-1 rounded-lg border-2 bg-white px-3 py-2 text-zinc-700 hover:border-amber-400 hover:bg-amber-50 group-data-checked:border-amber-400 group-data-checked:bg-amber-50 group-data-checked:text-amber-700'>
+								<div className='col-span-1 rounded-lg border-2 bg-white px-3 py-2 text-zinc-700 group-data-checked:border-amber-400 group-data-checked:bg-amber-50 group-data-checked:text-amber-700 hover:border-amber-400 hover:bg-amber-50'>
 									<h3 className='text-lg'>{size.bagSize.weightInGrams}g</h3>
 								</div>
 							</Radio>
@@ -125,7 +125,7 @@ const ProductConfigurator = ({ product, className }: { product: Coffee; classNam
 				/>
 				{error.error && (
 					<p
-						className='pb-2 pt-1.5 text-xs text-zinc-500 underline decoration-amber-500'
+						className='pt-1.5 pb-2 text-xs text-zinc-500 underline decoration-amber-500'
 						id='product-configurator-error'>
 						{error.message}
 					</p>
@@ -133,7 +133,7 @@ const ProductConfigurator = ({ product, className }: { product: Coffee; classNam
 			</div>
 			<div className='my-2 rounded-md border border-zinc-200 bg-white px-3 py-2'>
 				<span>
-					<span className='block text-xs font-semibold uppercase tracking-tight text-zinc-400'>
+					<span className='block text-xs font-semibold tracking-tight text-zinc-400 uppercase'>
 						Total price
 					</span>
 					<span
@@ -154,7 +154,7 @@ const ProductConfigurator = ({ product, className }: { product: Coffee; classNam
 			</div>
 			<button
 				disabled={error.error}
-				className='mt-2 inline-flex w-full justify-center gap-x-2 rounded-md border border-transparent bg-amber-500 px-4 py-2 text-sm font-medium text-white shadow-xs hover:bg-amber-600 focus:outline-hidden focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 disabled:bg-zinc-300 disabled:hover:cursor-not-allowed'
+				className='mt-2 inline-flex w-full justify-center gap-x-2 rounded-md border border-transparent bg-amber-500 px-4 py-2 text-sm font-medium text-white shadow-xs hover:bg-amber-600 focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 focus:outline-hidden disabled:bg-zinc-300 disabled:hover:cursor-not-allowed'
 				onClick={handleAddToCart}>
 				Add to cart
 				<ShoppingCartIcon className='h-5 w-5' />

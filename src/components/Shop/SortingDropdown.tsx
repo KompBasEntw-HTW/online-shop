@@ -35,7 +35,7 @@ const SortingDropdown = ({
 				leaveFrom='transform opacity-100 scale-100'
 				leaveTo='transform opacity-0 scale-95'>
 				<MenuItems
-					className='absolute right-0 z-10 mt-2 w-56 origin-top-right overflow-hidden rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-hidden'
+					className='absolute right-0 z-10 mt-2 w-56 origin-top-right overflow-hidden rounded-md bg-white ring-1 shadow-lg ring-black/5 focus:outline-hidden'
 					id='sorting-dropdown-items'>
 					{sortingOptions.map((option) => (
 						<MenuItem

@@ -301,7 +301,7 @@ const ShopHome: React.FC<ShopHomeProps> = ({ products }) => {
 					/>
 				)}
 			</div>
-			<div className='pb-24 pt-6 lg:grid lg:grid-cols-3 lg:gap-x-8 xl:grid-cols-4'>
+			<div className='pt-6 pb-24 lg:grid lg:grid-cols-3 lg:gap-x-8 xl:grid-cols-4'>
 				<FilterMenu
 					filters={shopState.availableFilters}
 					currentFilters={shopState.queryState.filters}

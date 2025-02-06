@@ -25,7 +25,7 @@ const HeaderCart = () => {
 						<span
 							id='header-cart-count'
 							className={clsx(
-								'absolute -right-1.5 -top-1.5 ml-2 h-4 w-4 text-xs font-medium',
+								'absolute -top-1.5 -right-1.5 ml-2 h-4 w-4 text-xs font-medium',
 								cartContext?.cart?.length === 0
 									? 'flex items-center justify-center rounded-full bg-gray-100 p-1 text-gray-700 group-hover:bg-gray-200 group-hover:text-gray-800'
 									: 'flex items-center justify-center rounded-full bg-amber-500 p-1 text-white group-hover:bg-amber-600'
@@ -43,8 +43,8 @@ const HeaderCart = () => {
 					leave='transition duration-75 ease-out'
 					leaveFrom='transform scale-100 opacity-100'
 					leaveTo='transform scale-95 opacity-0'>
-					<PopoverPanel className='absolute right-0 top-2 w-screen max-w-xs rounded-md border border-zinc-100 bg-white p-4 shadow-md'>
-						<h2 className='font-sans text-xs font-semibold uppercase tracking-tight text-gray-500'>
+					<PopoverPanel className='absolute top-2 right-0 w-screen max-w-xs rounded-md border border-zinc-100 bg-white p-4 shadow-md'>
+						<h2 className='font-sans text-xs font-semibold tracking-tight text-gray-500 uppercase'>
 							Your shopping cart
 						</h2>
 						{cartContext.cart.length === 0 && (
@@ -74,7 +74,7 @@ const HeaderCart = () => {
 											<p className='text-xs'>Quantity: {item.quantity}</p>
 										</div>
 										<button
-											className='remove-cart-item-button absolute right-1 top-1'
+											className='remove-cart-item-button absolute top-1 right-1'
 											type='button'
 											onClick={() =>
 												cartContext?.removeItem(item.product.id, item.size.bagSize.id, session)
@@ -88,7 +88,7 @@ const HeaderCart = () => {
 						<Link href='/cart'>
 							<button
 								type='button'
-								className='inline-flex w-full justify-center rounded-md border border-transparent bg-amber-500 px-4 py-2 text-sm font-medium text-white shadow-xs hover:bg-amber-600 focus:outline-hidden focus:ring-2 focus:ring-amber-500 focus:ring-offset-2'>
+								className='inline-flex w-full justify-center rounded-md border border-transparent bg-amber-500 px-4 py-2 text-sm font-medium text-white shadow-xs hover:bg-amber-600 focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 focus:outline-hidden'>
 								<span className='sr-only'>View full cart</span>
 								View full cart
 							</button>

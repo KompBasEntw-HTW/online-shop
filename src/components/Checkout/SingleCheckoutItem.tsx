@@ -78,7 +78,7 @@ const SingleCheckoutItem = ({
 							id='quantity'
 							name='quantity'
 							value={cartItem.quantity}
-							className='rounded-md border border-gray-300 text-left text-base font-medium text-gray-700 shadow-xs focus:border-amber-500 focus:outline-hidden focus:ring-1 focus:ring-amber-500 sm:text-sm'
+							className='rounded-md border border-gray-300 text-left text-base font-medium text-gray-700 shadow-xs focus:border-amber-500 focus:ring-1 focus:ring-amber-500 focus:outline-hidden sm:text-sm'
 							onChange={onQuantityChange}>
 							{Array.from(
 								Array(

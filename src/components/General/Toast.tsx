@@ -26,7 +26,7 @@ const Toast = ({
 	return (
 		<div
 			id='toast'
-			className={`fixed bottom-8 right-8 m-4 flex max-w-sm items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-4 py-2 shadow-lg`}>
+			className={`fixed right-8 bottom-8 m-4 flex max-w-sm items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-4 py-2 shadow-lg`}>
 			<CheckCircleIcon className='h-8 w-8 shrink-0 text-amber-600' />
 			<div>
 				<h5 className='font-lora font-bold'>{title}</h5>

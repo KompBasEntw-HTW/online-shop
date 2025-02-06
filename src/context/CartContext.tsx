@@ -1,8 +1,8 @@
 'use client'
-import { useSession } from "next-auth/react"
-import { createContext, ReactNode, useContext, useEffect, useState } from 'react'
 import { Basket, BasketItem, CartItem, Coffee } from '@/types'
-import type { Session } from "next-auth"
+import type { Session } from 'next-auth'
+import { useSession } from 'next-auth/react'
+import { createContext, ReactNode, useContext, useEffect, useState } from 'react'
 
 type CartContext = {
 	cart: CartItem[]
@@ -60,7 +60,10 @@ async function getCart(session: Session | null): Promise<CartItem[] | undefined>
 	}
 }
 
-async function updateItems(basketItems: BasketItem[], session: Session | null): Promise<CartItem[] | undefined> {
+async function updateItems(
+	basketItems: BasketItem[],
+	session: Session | null
+): Promise<CartItem[] | undefined> {
 	if (session) {
 		const updatedBasketRes = await fetch('/api/basket-service/basket/update', {
 			headers: {
@@ -117,7 +120,10 @@ async function updateItems(basketItems: BasketItem[], session: Session | null): 
 	}
 }
 
-async function addItem(basketItems: BasketItem[], session: Session | null): Promise<CartItem[] | undefined> {
+async function addItem(
+	basketItems: BasketItem[],
+	session: Session | null
+): Promise<CartItem[] | undefined> {
 	const cart = await getCart(session)
 	if (cart) {
 		basketItems.map((basketItem) => {
@@ -134,7 +140,11 @@ async function addItem(basketItems: BasketItem[], session: Session | null): Prom
 	return updateItems(basketItems, session)
 }
 
-async function removeItem(productId: number, bagSizeId: number, session: Session | null): Promise<CartItem[] | undefined> {
+async function removeItem(
+	productId: number,
+	bagSizeId: number,
+	session: Session | null
+): Promise<CartItem[] | undefined> {
 	if (session) {
 		const updatedCartRes = await fetch('/api/basket-service/basket', {
 			headers: {
@@ -182,7 +192,6 @@ export const CartContextProvider = ({ children }: { children: ReactNode }) => {
 			}
 		})
 	}, [])
-
 
 	return (
 		<CartContext.Provider

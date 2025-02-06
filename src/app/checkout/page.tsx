@@ -327,7 +327,7 @@ const Checkout = () => {
 										</div>
 									</div>
 
-									<p className='text-center text-xs font-semibold uppercase tracking-tight'>
+									<p className='text-center text-xs font-semibold tracking-tight uppercase'>
 										Or continue as a guest
 									</p>
 
@@ -439,7 +439,7 @@ const Checkout = () => {
 								<button
 									type='button'
 									onClick={() => dispatch({ type: 'SUBMIT_ORDER' })}
-									className='w-full rounded-md border border-transparent bg-amber-500 px-4 py-3 text-base font-medium text-white shadow-xs hover:bg-amber-600 focus:outline-hidden focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 focus:ring-offset-gray-50'>
+									className='w-full rounded-md border border-transparent bg-amber-500 px-4 py-3 text-base font-medium text-white shadow-xs hover:bg-amber-600 focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 focus:ring-offset-gray-50 focus:outline-hidden'>
 									Order now
 								</button>
 							</div>

@@ -1,19 +1,19 @@
 @import 'tailwindcss';
 
 @theme {
-  --font-lora: Lora, sans-serif;
+	--font-lora: Lora, sans-serif;
 
-  --color-brand-50: #f1f9f8;
-  --color-brand-100: #e2f3f1;
-  --color-brand-200: #bfe5e1;
-  --color-brand-300: #c2fff9;
-  --color-brand-400: #99fff5;
-  --color-brand-500: #00b8a5;
-  --color-brand-600: #009687;
-  --color-brand-700: ##007a6e;
-  --color-brand-800: #00665c;
-  --color-brand-900: ##005249;
-  --color-brand: #009687;
+	--color-brand-50: #f1f9f8;
+	--color-brand-100: #e2f3f1;
+	--color-brand-200: #bfe5e1;
+	--color-brand-300: #c2fff9;
+	--color-brand-400: #99fff5;
+	--color-brand-500: #00b8a5;
+	--color-brand-600: #009687;
+	--color-brand-700: ##007a6e;
+	--color-brand-800: #00665c;
+	--color-brand-900: ##005249;
+	--color-brand: #009687;
 }
 
 /*
@@ -25,41 +25,41 @@
   color utility to any element that depends on these defaults.
 */
 @layer base {
-  *,
-  ::after,
-  ::before,
-  ::backdrop,
-  ::file-selector-button {
-    border-color: var(--color-gray-200, currentColor);
-  }
+	*,
+	::after,
+	::before,
+	::backdrop,
+	::file-selector-button {
+		border-color: var(--color-gray-200, currentColor);
+	}
 }
 
 @utility link {
-  @apply font-semibold text-amber-700 underline decoration-amber-200 hover:decoration-amber-300;
+	@apply font-semibold text-amber-700 underline decoration-amber-200 hover:decoration-amber-300;
 }
 
 @utility large-text {
-  @apply text-base md:text-lg;
+	@apply text-base md:text-lg;
 }
 
 @utility small-text {
-  @apply text-sm;
+	@apply text-sm;
 }
 
 @utility really-small-text {
-  @apply text-xs;
+	@apply text-xs;
 }
 
 @utility react-slider-two-thumb {
-  @apply m-0 flex h-12 w-full items-center justify-between p-0;
+	@apply m-0 flex h-12 w-full items-center justify-between p-0;
 }
 
 @utility react-slider-track {
-  @apply h-1 rounded-full bg-amber-200;
+	@apply h-1 rounded-full bg-amber-200;
 }
 
 @utility react-slider-thumb {
-  @apply rounded-full bg-amber-500 px-1 py-0.5 text-sm text-white hover:cursor-pointer focus:outline-hidden focus:ring-2 focus:ring-amber-500 focus:ring-opacity-50;
+	@apply rounded-full bg-amber-500 px-1 py-0.5 text-sm text-white hover:cursor-pointer focus:ring-2 focus:ring-amber-500/50 focus:outline-hidden;
 }
 
 @layer base {

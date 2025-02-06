@@ -3,14 +3,14 @@ import MapComponent from '@/components/Map/MapComponent'
 import { ProductConfigurator, SingleProduct } from '@/components/Product'
 import Image from 'next/image'
 
-import { Coffee, PositionStackAPIResponse } from '@/types'
 import { CartContextProvider } from '@/context/CartContext'
+import { Coffee, PositionStackAPIResponse } from '@/types'
 
 function getRandomItemsExceptId(products: Coffee[], excludeId: number, count = 3) {
 	const filteredItems = products.filter((product) => product.id !== excludeId)
 	for (let i = filteredItems.length - 1; i > 0; i--) {
 		const j = Math.floor(Math.random() * (i + 1))
-			;[filteredItems[i], filteredItems[j]] = [filteredItems[j], filteredItems[i]]
+		;[filteredItems[i], filteredItems[j]] = [filteredItems[j], filteredItems[i]]
 	}
 	return filteredItems.slice(0, count)
 }

@@ -23,7 +23,7 @@ export const CheckboxFilter = ({
 			className={clsx(sectionIdx === 0 ? '' : 'pt-6', 'checkbox-filter')}
 			id='checkbox-filter-container'>
 			<fieldset>
-				<legend className='block font-lora text-lg font-bold text-gray-900'>{filter.name}</legend>
+				<legend className='font-lora block text-lg font-bold text-gray-900'>{filter.name}</legend>
 				<div className='space-y-2 pt-3'>
 					{filter.values.slice(0, showFullList ? undefined : 3).map((option, optionIdx) => (
 						<div
@@ -82,7 +82,7 @@ export const RangeFilter = ({
 	return (
 		<div className='pt-6'>
 			<fieldset>
-				<legend className='block font-lora text-lg font-bold text-gray-900'>{filter.name}</legend>
+				<legend className='font-lora block text-lg font-bold text-gray-900'>{filter.name}</legend>
 				<ReactSlider
 					className='react-slider-two-thumb'
 					thumbClassName='react-slider-thumb'

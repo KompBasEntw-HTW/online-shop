@@ -58,7 +58,7 @@ const SingleProduct = ({ product }: { product: Coffee }) => {
 					<Tag content={product.flavor} />
 				</div>
 				<span
-					className='text-md pt-2 font-lora font-extrabold text-gray-900 underline decoration-amber-400'
+					className='text-md font-lora pt-2 font-extrabold text-gray-900 underline decoration-amber-400'
 					id='product-price'>
 					${formattedPrice} USD
 				</span>
