@@ -12,7 +12,6 @@ jobs:
     name: Build docker image
     runs-on: self-hosted
     steps:
-      - name: Checkout Repository
       - uses: actions/checkout@main
         with:
           token: ${{secrets.RELEASE_PLEASE_TOKEN}}
