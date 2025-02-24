@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/KompBasEntw-HTW/online-shop/compare/v1.1.0...v1.2.0) (2025-02-24)
+
+
+### Features
+
+* use version tag to build docker image ([8fe81ed](https://github.com/KompBasEntw-HTW/online-shop/commit/8fe81ed8d473e30a9cd76abf34aba2cdd1435052))
+
 ## [1.1.0](https://github.com/KompBasEntw-HTW/online-shop/compare/v1.0.0...v1.1.0) (2025-02-24)
 
 
