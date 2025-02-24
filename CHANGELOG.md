@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.1.0](https://github.com/KompBasEntw-HTW/online-shop/compare/v1.0.0...v1.1.0) (2025-02-24)
+
+
+### Features
+
+* add bake file for building images ([989211d](https://github.com/KompBasEntw-HTW/online-shop/commit/989211df65494a983b0061ec288f2af40564c2af))
+* **CI:** test building of image on server ([956e7a1](https://github.com/KompBasEntw-HTW/online-shop/commit/956e7a1700170399c120d273bdf3218e07428b48))
+* **docker:** consolidate dockerfiles ([40916a3](https://github.com/KompBasEntw-HTW/online-shop/commit/40916a34ac007ab32fe63fb23b00b853e050cb08))
+
+
+### Bug Fixes
+
+* **CI:** fix bug in action ([6fe8860](https://github.com/KompBasEntw-HTW/online-shop/commit/6fe88602bae46e174e140f3899a5c56c28b0196d))
+* remove branches condition to only trigger on new tags ([e29976e](https://github.com/KompBasEntw-HTW/online-shop/commit/e29976e5bde8e849d310927f70ab84c3368035a4))
+* some small issues and disable prerendiring on main page ([d449547](https://github.com/KompBasEntw-HTW/online-shop/commit/d4495472f09752839b0d1b923d220aade75ec871))
+* warning in env declaration in dockerfiles and type import in cypress ([ca14a12](https://github.com/KompBasEntw-HTW/online-shop/commit/ca14a1295daca2034344d36bb2fb85397d558554))
+
 ## 1.0.0 (2025-02-24)
 
 
