@@ -2,7 +2,6 @@
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/solid'
 import clsx from 'clsx'
 import { ChangeEvent, useState } from 'react'
-import ReactSlider from 'react-slider'
 import { CheckboxFilterType, RangeFilterType } from '../../types'
 
 export const CheckboxFilter = ({
@@ -79,22 +78,33 @@ export const RangeFilter = ({
 	filter: RangeFilterType
 	onFilterChange: (min: number, max: number, filterId: string) => void
 }) => {
+	let maxForMin
+	let minForMax
 	return (
 		<div className='pt-6'>
 			<fieldset>
 				<legend className='font-lora block text-lg font-bold text-gray-900'>{filter.name}</legend>
-				<ReactSlider
-					className='react-slider-two-thumb'
-					thumbClassName='react-slider-thumb'
-					trackClassName='react-slider-track'
-					defaultValue={[filter.min, filter.max]}
+				<input
+					type='number'
+					name='min'
+					max={maxForMin}
 					min={filter.min}
+					defaultValue={filter.min}
+					onChange={(e) => {
+						minForMax = parseFloat(e.target.value)
+						onFilterChange(parseFloat(e.target.value), filter.max, filter.id)
+					}}
+				/>
+				<input
+					type='number'
+					name='max'
 					max={filter.max}
-					minDistance={1}
-					ariaLabel={['Lower thumb', 'Upper thumb']}
-					ariaValuetext={(state) => `Thumb value ${state.valueNow}`}
-					renderThumb={(props, state) => <div {...props}>${state.valueNow}</div>}
-					onChange={(e) => onFilterChange(e[0], e[1], filter.id)}
+					min={minForMax}
+					defaultValue={filter.max}
+					onChange={(e) => {
+						maxForMin = parseFloat(e.target.value)
+						onFilterChange(filter.min, parseFloat(e.target.value), filter.id)
+					}}
 				/>
 			</fieldset>
 		</div>

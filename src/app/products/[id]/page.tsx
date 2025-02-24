@@ -1,10 +1,9 @@
 import { Tag } from '@/components/General'
-import MapComponent from '@/components/Map/MapComponent'
 import { ProductConfigurator, SingleProduct } from '@/components/Product'
 import Image from 'next/image'
 
 import { CartContextProvider } from '@/context/CartContext'
-import { Coffee, PositionStackAPIResponse } from '@/types'
+import { Coffee } from '@/types'
 
 function getRandomItemsExceptId(products: Coffee[], excludeId: number, count = 3) {
 	const filteredItems = products.filter((product) => product.id !== excludeId)
@@ -17,7 +16,7 @@ function getRandomItemsExceptId(products: Coffee[], excludeId: number, count = 3
 
 const ProductPage = async ({ params }: { params: Promise<{ id: number }> }) => {
 	const id = (await params).id
-	let latLng: [number, number]
+	// let latLng: [number, number]
 	let product: Coffee
 	let relatedProducts: Coffee[]
 	try {
@@ -25,15 +24,6 @@ const ProductPage = async ({ params }: { params: Promise<{ id: number }> }) => {
 		const products: Coffee[] = await productsRes.json()
 		product = products.filter((product) => product.id == id)[0]
 		relatedProducts = getRandomItemsExceptId(products, id)
-
-		// const locationRes = await fetch(
-		// 	`http://api.positionstack.com/v1/forward?access_key=${process.env.POSITIONSTACK_API_KEY
-		// 	}&query=${encodeURIComponent(product.location)}&limit=1`
-		// )
-
-		// const locationData: PositionStackAPIResponse = await locationRes.json()
-
-		// latLng = [locationData?.data[0]?.latitude, locationData?.data[0]?.longitude]
 	} catch (err) {
 		console.log(err)
 		return {
@@ -89,18 +79,6 @@ const ProductPage = async ({ params }: { params: Promise<{ id: number }> }) => {
 							<p className='pt-4'>{product.roasterNotes}</p>
 						</section>
 					)}
-
-					{/**latLng && (
-						<section className='isolate mx-auto max-w-5xl overflow-hidden pt-12'>
-							<h2 className='pb-4'>Origin</h2>
-							<hr />
-							<p className='pt-4'>
-								{product.name} is roasted by <strong>{product.roaster}</strong> in{' '}
-								<strong>{product.location}</strong>.
-							</p>
-							<MapComponent centerPosition={latLng} className='mt-6' />
-						</section>
-					)**/}
 
 					{relatedProducts && (
 						<section className='mx-auto max-w-5xl overflow-hidden py-16'>

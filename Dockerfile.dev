@@ -24,7 +24,7 @@ ENV NEXT_TELEMETRY_DISABLED 1
 
 WORKDIR /app
 COPY package.json package-lock.json* ./
-RUN npm ci --force
+RUN npm ci
 COPY . .
 
 CMD npm run dev

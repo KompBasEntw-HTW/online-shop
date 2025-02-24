@@ -10,7 +10,6 @@ import {
 	ShippingMethodWidget,
 	SingleCheckoutItem
 } from '@/components/Checkout/'
-import { Layout } from '@/components/General'
 import { useCartContext } from '@/context/CartContext'
 import { CheckCircleIcon, ShoppingCartIcon, UserIcon } from '@heroicons/react/24/solid'
 
