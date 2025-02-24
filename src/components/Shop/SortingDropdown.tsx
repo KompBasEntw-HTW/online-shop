@@ -38,10 +38,10 @@ const SortingDropdown = ({
 					className='absolute right-0 z-10 mt-2 w-56 origin-top-right overflow-hidden rounded-md bg-white ring-1 shadow-lg ring-black/5 focus:outline-hidden'
 					id='sorting-dropdown-items'>
 					{sortingOptions.map((option) => (
-						<MenuItem
-							key={option.value}
-							className='block w-full px-4 py-2 text-left text-sm text-zinc-500 data-focus:bg-amber-600 data-focus:text-white'>
-							<button onClick={() => onSelectOption(option)}>{option.name}</button>
+						<MenuItem key={option.value}>
+							<button
+								onClick={() => onSelectOption(option)}
+								className='block w-full px-4 py-2 text-left text-sm text-zinc-500 data-focus:bg-amber-600 data-focus:text-white'>{option.name}</button>
 						</MenuItem>
 					))}
 				</MenuItems>

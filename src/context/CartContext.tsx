@@ -191,7 +191,7 @@ export const CartContextProvider = ({ children }: { children: ReactNode }) => {
 				setCart(remoteCart)
 			}
 		})
-	}, [])
+	}, [session])
 
 	return (
 		<CartContext.Provider

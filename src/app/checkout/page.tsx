@@ -1,6 +1,6 @@
 'use client'
 import { getCsrfToken, useSession } from 'next-auth/react'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 import { useEffect, useReducer, useState } from 'react'
 
 import {
@@ -104,7 +104,7 @@ const Checkout = () => {
 							).then((order) => {
 								if (!order) return
 								cartContext.cart.forEach((cartItem) => {
-									cartContext.removeItem(cartItem.product.id, cartItem.size.bagSize.id)
+									cartContext.removeItem(cartItem.product.id, cartItem.size.bagSize.id, session.data)
 								})
 								router.push('/order-confirmation')
 							})
@@ -122,7 +122,7 @@ const Checkout = () => {
 									).then((order) => {
 										if (!order) return
 										cartContext.cart.forEach((cartItem) => {
-											cartContext.removeItem(cartItem.product.id, cartItem.size.bagSize.id)
+											cartContext.removeItem(cartItem.product.id, cartItem.size.bagSize.id, session.data)
 										})
 										router.push('/order-confirmation')
 									})
@@ -148,7 +148,7 @@ const Checkout = () => {
 								// If order didn't go through, show an error message
 								if (!order) return
 								cartContext.cart.forEach((cartItem) => {
-									cartContext.removeItem(cartItem.product.id, cartItem.size.bagSize.id)
+									cartContext.removeItem(cartItem.product.id, cartItem.size.bagSize.id, session.data)
 								})
 								router.push('/order-confirmation')
 							})
@@ -389,10 +389,10 @@ const Checkout = () => {
 													},
 													quantity: parseInt(e.target.value)
 												}
-											])
+											], session.data)
 										}
 										onRemoveItem={() =>
-											cartContext.removeItem(cartItem.product.id, cartItem.size.bagSize.id)
+											cartContext.removeItem(cartItem.product.id, cartItem.size.bagSize.id, session.data)
 										}
 									/>
 								))}
