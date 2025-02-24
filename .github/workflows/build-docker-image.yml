@@ -16,3 +16,5 @@ jobs:
       - name: Build image
         run: |
           docker buildx bake
+        env:
+          TAG: ${{ github.ref_name }}
