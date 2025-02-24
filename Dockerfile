@@ -12,14 +12,14 @@ CMD ["npm", "run", "dev"]
 
 
 FROM deps AS build
-ENV NEXT_TELEMETRY_DISABLED 1
+ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
 
 # Production image, copy all the files and run next
 FROM node:lts AS prod
-ENV NODE_ENV production
+ENV NODE_ENV=production
 
-ENV NEXT_TELEMETRY_DISABLED 1
+ENV NEXT_TELEMETRY_DISABLED=1
 
 WORKDIR /app
 RUN addgroup --system --gid 1001 nodejs
